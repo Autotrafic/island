@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  #__next {
+    @apply contents;
+  }
+
+  html {
+    @apply h-full scroll-smooth antialiased font-poppins;
+  }
+
+  body {
+    @apply flex h-full flex-col text-neutral-600;
+  }
+
+  main {
+    @apply grow;
+  }
+
+  .section {
+    @apply py-6 px-6 pb-56 flex flex-col;
+  }
+
+  .container {
+    @apply pt-2 sm:pt-4 md:pt-6 lg:pt-8 w-full flex justify-center;
+  }
+
+  .title {
+    @apply text-primary;
+  }
+}
+
+.custom-card-title .ant-card-head-title {
+  white-space: normal;
+}

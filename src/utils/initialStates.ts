@@ -21,3 +21,12 @@ export const documentsDataInitialState: Documents = {
   sellerDocuments: { dniFrontal: emptyFile, dniBack: emptyFile },
   vehicleDocuments: { contratoCompVent: emptyFile, permisoCirculacion: emptyFile, fichaTecnica: emptyFile },
 };
+
+export const detailsFormInitialState: FormValues = {
+  vehiclePlate: '',
+  shipmentAddressStreet: '',
+  shipmentAddressCity: '',
+  shipmentAddressPostalCode: '',
+  buyerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
+  sellerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
+};

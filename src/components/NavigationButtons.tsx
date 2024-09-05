@@ -2,15 +2,31 @@ import { Button } from 'antd';
 import { useMultiStep } from '../context/multiStep';
 import { Steps } from '../interfaces/enums';
 
-function NavigationButtons({ isOnlyNext }: { isOnlyNext?: boolean }) {
+interface NavigationButtonsProps {
+  isOnlyNext?: boolean;
+  handleNext?: () => Promise<void>;
+}
+
+function NavigationButtons({
+  isOnlyNext,
+  handleNext = () =>
+    new Promise((res) => {
+      res();
+    }),
+}: NavigationButtonsProps) {
   const { updateCurrentStep } = useMultiStep();
 
   const navigateToPreviousStep = () => {
     updateCurrentStep((prevStep: Steps) => prevStep - 1);
   };
 
-  const navigateToNextStep = () => {
-    updateCurrentStep((prevStep: Steps) => prevStep + 1);
+  const navigateToNextStep = async () => {
+    try {
+      await handleNext();
+      updateCurrentStep((prevStep: Steps) => prevStep + 1);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

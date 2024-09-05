@@ -1,5 +1,6 @@
 import { autotraficApi } from '.';
 
-export const updateNestedOrder = async (orderId: string, newData: UpdateOrderNestedPropertiesBody) => {
-  await autotraficApi.order.update(orderId, newData);
+export const updateOrderWithDocsDetails = (orderId: string, newData: UpdateOrderNestedPropertiesBody) => {
+  console.log('newdata', newData);
+  autotraficApi.order.update(orderId, newData);
 };

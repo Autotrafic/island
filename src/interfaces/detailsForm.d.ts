@@ -1,8 +1,15 @@
 interface FormValues {
-  vehicleRegistration: string;
-  address: string;
-  city: string;
-  postalCode: string;
-  buyerPhone: string;
-  sellerPhone: string;
+  vehiclePlate: string;
+  shipmentAddressStreet: string;
+  shipmentAddressCity: string;
+  shipmentAddressPostalCode: string;
+  buyerPhone: PhoneNumber;
+  sellerPhone: PhoneNumber;
+}
+
+interface PhoneNumber {
+  areaCode: string;
+  countryCode: number;
+  isoCode: string;
+  phoneNumber: string;
 }

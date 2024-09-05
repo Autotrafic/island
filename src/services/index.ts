@@ -2,7 +2,7 @@ import { BASE_API_URL } from '../utils/urls';
 
 export const autotraficApi = {
   order: {
-    update: (orderId: string, data: UpdateOrderNestedPropertiesBody) => makeRequest(`order/nested/${orderId}`, data),
+    update: (orderId: string, data: UpdateOrderNestedPropertiesBody) => makeRequest(`order/documentsDetails/${orderId}`, data),
   },
 };
 

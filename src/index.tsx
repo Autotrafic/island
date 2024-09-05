@@ -6,28 +6,31 @@ import { MultiStepProvider } from './context/multiStep';
 import { ConfigProvider } from 'antd';
 import { locale } from 'antd-phone-input';
 import { Locale } from 'antd/es/locale';
+import { ModalProvider } from './context/modal';
 
 const rootElement = document.getElementById('root');
 
 const root = createRoot(rootElement!);
 
 root.render(
-  <MultiStepProvider>
-    <ConfigProvider
-     locale={locale("esES") as Locale}
-      theme={{
-        token: {
-          // Seed Token
-          colorPrimary: '#4154F1',
-          borderRadius: 2,
-          fontFamily: 'Poppins',
+  <ConfigProvider
+    locale={locale('esES') as Locale}
+    theme={{
+      token: {
+        // Seed Token
+        colorPrimary: '#4154F1',
+        borderRadius: 2,
+        fontFamily: 'Poppins',
 
-          // Alias Token
-          colorBgContainer: '#f6ffed',
-        },
-      }}
-    >
-      <App />
-    </ConfigProvider>
-  </MultiStepProvider>
+        // Alias Token
+        colorBgContainer: '#f6ffed',
+      },
+    }}
+  >
+    <ModalProvider>
+      <MultiStepProvider>
+        <App />
+      </MultiStepProvider>
+    </ModalProvider>
+  </ConfigProvider>
 );

@@ -5,8 +5,11 @@ import { updateOrderWithDocsDetails } from '../services/order';
 import DetailsForm from '../components/details-form';
 import { detailsFormInitialState } from '../utils/initialStates';
 import { checkFilledForm } from '../utils/functions';
+import { useModal } from '../context/modal';
 
 export default function DetailsFormContainer() {
+  const { showModal } = useModal();
+
   const [formValues, setFormValues] = useState<FormValues>(detailsFormInitialState);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -18,6 +21,7 @@ export default function DetailsFormContainer() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      showModal();
       throw new Error(error as string);
     }
   };

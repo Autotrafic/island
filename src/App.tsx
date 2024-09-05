@@ -1,3 +1,4 @@
+import ErrorModal from './components/Modal';
 import MultiStepHeader from './components/MultiStepHeader/MultiStepHeader';
 import NavigationButtons from './components/NavigationButtons';
 import DetailsFormContainer from './containers/DetailsFormContainer';
@@ -22,6 +23,7 @@ export default function App() {
           </div>
         </div>
       </section>
+      <ErrorModal />
     </>
   );
 }

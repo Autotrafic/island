@@ -20,7 +20,7 @@ export default function ModalStore(): ModalStore {
   return { isModalOpen, showModal, handleOk };
 }
 
-const ModalContext = createContext({ showModal: () => {} });
+const ModalContext = createContext({ isModalOpen: false, showModal: () => {}, handleOk: () => {} });
 
 export const useModal = () => useContext(ModalContext);
 

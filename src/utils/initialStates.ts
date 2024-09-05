@@ -22,7 +22,7 @@ export const documentsDataInitialState: Documents = {
   vehicleDocuments: { contratoCompVent: emptyFile, permisoCirculacion: emptyFile, fichaTecnica: emptyFile },
 };
 
-export const detailsFormInitialState: FormValues = {
+export const detailsFormInitialState: DetailsForm = {
   vehiclePlate: '',
   shipmentAddressStreet: '',
   shipmentAddressCity: '',

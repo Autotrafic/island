@@ -3,14 +3,14 @@ import PhoneInput from 'antd-phone-input';
 import { HomeIcon, CityIcon, PostalCodeIcon } from '../../assets/icons';
 
 interface DetailsFormProps {
-  formValues: FormValues;
-  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>;
+  formValues: DetailsForm;
+  setFormValues: React.Dispatch<React.SetStateAction<DetailsForm>>;
 }
 
 export default function DetailsForm({ formValues, setFormValues }: DetailsFormProps) {
   const [form] = Form.useForm();
 
-  const handleFormChange = (changedValues: Partial<FormValues>, allValues: FormValues) => {
+  const handleFormChange = (changedValues: Partial<DetailsForm>, allValues: DetailsForm) => {
     setFormValues(allValues);
   };
 

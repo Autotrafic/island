@@ -1,4 +1,4 @@
-export function formatDetailsDataForExport(formValues: FormValues): UpdateOrderNestedPropertiesBody {
+export function formatDetailsDataForExport(formValues: DetailsForm): UpdateOrderNestedPropertiesBody {
   const { vehiclePlate, buyerPhone, sellerPhone, shipmentAddressCity, shipmentAddressPostalCode, shipmentAddressStreet } =
     formValues;
 

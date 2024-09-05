@@ -25,7 +25,7 @@ export function getCurrentStepTitle(currentStep: Steps) {
   }
 }
 
-export function checkFilledForm(formValues: FormValues): boolean {
+export function checkFilledForm(formValues: DetailsForm): boolean {
   const { vehiclePlate, shipmentAddressStreet, shipmentAddressCity, shipmentAddressPostalCode, buyerPhone, sellerPhone } =
     formValues;
 

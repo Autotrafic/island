@@ -10,7 +10,7 @@ import { useModal } from '../context/modal';
 export default function DetailsFormContainer() {
   const { showModal } = useModal();
 
-  const [formValues, setFormValues] = useState<FormValues>(detailsFormInitialState);
+  const [formValues, setFormValues] = useState<DetailsForm>(detailsFormInitialState);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async () => {

@@ -1,0 +1,1 @@
+interface DocumentsData extends DetailsForm {}

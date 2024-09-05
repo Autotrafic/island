@@ -1,4 +1,4 @@
-interface FormValues {
+interface DetailsForm {
   vehiclePlate: string;
   shipmentAddressStreet: string;
   shipmentAddressCity: string;

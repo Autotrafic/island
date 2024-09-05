@@ -1,39 +1,29 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useState } from 'react';
+import { defaultDocumentsData, documentsDataContextInitialState } from '../utils/initialStates';
 
-const DocumentsDataStore = (orderId: string): IOrderDataContext => {
-    const orderDataInitialState: IOrder = { ...defaultOrderData, isProduction, isReferralValid };
-  
-    const [orderData, setOrderData] = useState<IOrder>(orderDataInitialState);
-  
-    useEffect(() => {
-      setOrderData((prev: IOrder) => ({ ...prev, isReferralValid }));
-    }, [isReferralValid]);
-  
-    const updateOrderData = (setStateFunc: (prevOrder: IOrder) => IOrder) => {
-      setOrderData(setStateFunc);
-    };
-  
-    const isBillDataFilled: boolean = !!orderData.billData.fullName && !!orderData.billData.email;
-  
-    return {
-      updateOrderData,
-  
-      ...orderData,
-    };
+const DocumentsDataStore = (orderId: string): DocumentsDataContext => {
+  const documentsDataInitialState: DocumentsData = { ...defaultDocumentsData, orderId };
+
+  const [documentsData, setDocumentsData] = useState<DocumentsData>(documentsDataInitialState);
+
+  const updateDocumentsData = (setStateFunc: (prevOrder: DocumentsData) => DocumentsData) => {
+    setDocumentsData(setStateFunc);
   };
-  
-  const OrderDataContext = createContext<IOrderDataContext>(orderDataContextInitialState);
-  
-  export const useOrderData = () => useContext(OrderDataContext);
-  
-  export const OrderDataProvider = ({
+
+  return {
     orderId,
-    children,
-  }: {
-    orderId: string;
-    children: ReactNode;
-  }) => {
-    const orderDataStore = DocumentsDataStore();
-  
-    return <OrderDataContext.Provider value={orderDataStore}>{children}</OrderDataContext.Provider>;
+    detailsForm: documentsData.detailsForm,
+
+    updateDocumentsData,
   };
+};
+
+const DocumentsDataContext = createContext<DocumentsDataContext>(documentsDataContextInitialState);
+
+export const useDocumentsData = () => useContext(DocumentsDataContext);
+
+export const DocumentsDataProvider = ({ orderId, children }: { orderId: string; children: ReactNode }) => {
+  const documentsDataStore = DocumentsDataStore(orderId);
+
+  return <DocumentsDataContext.Provider value={documentsDataStore}>{children}</DocumentsDataContext.Provider>;
+};

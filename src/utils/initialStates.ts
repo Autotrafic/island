@@ -22,11 +22,19 @@ export const documentsDataInitialState: Documents = {
   vehicleDocuments: { contratoCompVent: emptyFile, permisoCirculacion: emptyFile, fichaTecnica: emptyFile },
 };
 
-export const detailsFormInitialState: DetailsForm = {
-  vehiclePlate: '',
-  shipmentAddressStreet: '',
-  shipmentAddressCity: '',
-  shipmentAddressPostalCode: '',
-  buyerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
-  sellerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
+export const defaultDocumentsData: DocumentsData = {
+  orderId: '',
+  detailsForm: {
+    vehiclePlate: '',
+    shipmentAddressStreet: '',
+    shipmentAddressCity: '',
+    shipmentAddressPostalCode: '',
+    buyerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
+    sellerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
+  },
+};
+
+export const documentsDataContextInitialState: DocumentsDataContext = {
+  updateDocumentsData(setStateFunc) {},
+  ...defaultDocumentsData,
 };

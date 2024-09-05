@@ -11,8 +11,12 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@heroicons/react": "^2.1.5",
     "antd": "^5.20.5",
+    "antd-phone-input": "^0.3.9",
     "postcss-loader": "^8.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

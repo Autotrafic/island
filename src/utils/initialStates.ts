@@ -5,6 +5,8 @@ const emptyFile = new File([''], 'file.txt', { type: 'text/plain' });
 
 export const multiStepContextInitialState: IMultiStepContext = {
   updateCurrentStep(newStep) {},
+  updateToNextStep() {},
+  updateToPreviousStep() {},
   currentStep: Steps.REQUIREMENTS,
   stepTitle: getCurrentStepTitle(Steps.REQUIREMENTS),
 };

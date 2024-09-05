@@ -13,6 +13,12 @@ const MultiStepStore = (): IMultiStepContext => {
       setCurrentStep(step);
       scrollToNextStep();
     },
+    updateToNextStep() {
+      setCurrentStep((prevStep) => prevStep + 1);
+    },
+    updateToPreviousStep() {
+      setCurrentStep((prevStep) => prevStep - 1);
+    },
 
     currentStep,
     stepTitle,

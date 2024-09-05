@@ -2,10 +2,8 @@ import { Button } from 'antd';
 import { useMultiStep } from '../context/multiStep';
 import { Steps } from '../interfaces/enums';
 
-function NavigationButtons() {
-  const { currentStep, updateCurrentStep } = useMultiStep();
-
-  const isFirstStep = currentStep === Steps.REQUIREMENTS;
+function NavigationButtons({ isOnlyNext }: { isOnlyNext?: boolean }) {
+  const { updateCurrentStep } = useMultiStep();
 
   const navigateToPreviousStep = () => {
     updateCurrentStep((prevStep: Steps) => prevStep - 1);
@@ -16,9 +14,15 @@ function NavigationButtons() {
   };
 
   return (
-    <div className={`w-full flex align-center justify-${isFirstStep ? 'end' : 'between'} mt-6`}>
-      {!isFirstStep && <Button type="default" onClick={navigateToPreviousStep} style={{background: 'transparent'}}>Atrás</Button>}
-      <Button type="primary" onClick={navigateToNextStep}>Siguiente</Button>
+    <div className={`w-full flex align-center justify-${isOnlyNext ? 'end' : 'between'} mt-6`}>
+      {!isOnlyNext && (
+        <Button type="default" onClick={navigateToPreviousStep} style={{ background: 'transparent' }}>
+          Atrás
+        </Button>
+      )}
+      <Button type="primary" onClick={navigateToNextStep}>
+        Siguiente
+      </Button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 export enum Steps {
   REQUIREMENTS = 1,
-  DATA_INPUTS = 2,
+  DETAILS_FORM = 2,
   CUSTOMERS_FILES = 3,
   VEHICLE_FILES = 4,
   CONCLUSION = 5,

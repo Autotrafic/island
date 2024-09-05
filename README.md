@@ -1,7 +1,1 @@
-# Boilerplate for Typescript React app from scratch
-
-## Dependencies installed
-
-- react
-
-- react-dom
+# Upload customer files for transference order

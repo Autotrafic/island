@@ -14,7 +14,7 @@ export function getCurrentStepTitle(currentStep: Steps) {
   switch (currentStep) {
     case Steps.REQUIREMENTS:
       return 'Ten listos éstos documentos antes de empezar';
-    case Steps.DATA_INPUTS:
+    case Steps.DETAILS_FORM:
       return 'Introducir datos';
     case Steps.CUSTOMERS_FILES:
       return 'Adjuntar documentos';

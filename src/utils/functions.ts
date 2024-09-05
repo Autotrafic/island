@@ -24,3 +24,27 @@ export function getCurrentStepTitle(currentStep: Steps) {
       return 'Documentación adjuntada correctamente';
   }
 }
+
+export function checkFilledForm(formValues: FormValues): boolean {
+  const { vehiclePlate, shipmentAddressStreet, shipmentAddressCity, shipmentAddressPostalCode, buyerPhone, sellerPhone } =
+    formValues;
+
+  const isPhoneNumberFilled = (phone: PhoneNumber) => {
+    return (
+      phone.areaCode.trim() !== '' &&
+      phone.countryCode !== undefined &&
+      phone.isoCode.trim() !== '' &&
+      phone.phoneNumber !== null &&
+      phone.phoneNumber.trim() !== ''
+    );
+  };
+
+  return (
+    vehiclePlate.trim() !== '' &&
+    shipmentAddressStreet.trim() !== '' &&
+    shipmentAddressCity.trim() !== '' &&
+    shipmentAddressPostalCode.trim() !== '' &&
+    isPhoneNumberFilled(buyerPhone) &&
+    isPhoneNumberFilled(sellerPhone)
+  );
+}

@@ -4,11 +4,15 @@ import { Steps } from '../interfaces/enums';
 
 interface NavigationButtonsProps {
   isOnlyNext?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
   handleNext?: () => Promise<void>;
 }
 
 function NavigationButtons({
   isOnlyNext,
+  disabled,
+  loading,
   handleNext = () =>
     new Promise((res) => {
       res();
@@ -36,7 +40,7 @@ function NavigationButtons({
           Atrás
         </Button>
       )}
-      <Button type="primary" onClick={navigateToNextStep}>
+      <Button type="primary" disabled={disabled} loading={loading} onClick={navigateToNextStep}>
         Siguiente
       </Button>
     </div>

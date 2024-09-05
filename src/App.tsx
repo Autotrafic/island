@@ -1,6 +1,6 @@
+import { Route, Routes } from 'react-router-dom';
 import ErrorModal from './components/Modal';
 import MultiStepHeader from './components/MultiStepHeader/MultiStepHeader';
-import NavigationButtons from './components/NavigationButtons';
 import DetailsFormContainer from './containers/DetailsFormContainer';
 import FilesContainer from './containers/FilesContainer';
 import RequirementsContainer from './containers/RequirementsContainer';

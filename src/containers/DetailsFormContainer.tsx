@@ -3,14 +3,15 @@ import NavigationButtons from '../components/NavigationButtons';
 import { formatDetailsDataForExport } from '../utils/formatter';
 import { updateOrderWithDocsDetails } from '../services/order';
 import DetailsForm from '../components/details-form';
-import { detailsFormInitialState } from '../utils/initialStates';
 import { checkFilledForm } from '../utils/functions';
 import { useModal } from '../context/modal';
+import { useDocumentsData } from '../context/documentsData';
 
 export default function DetailsFormContainer() {
   const { showModal } = useModal();
+  const { detailsForm } = useDocumentsData();
 
-  const [formValues, setFormValues] = useState<DetailsForm>(detailsFormInitialState);
+  const [formValues, setFormValues] = useState<DetailsForm>(detailsForm);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async () => {

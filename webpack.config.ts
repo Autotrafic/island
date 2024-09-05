@@ -1,8 +1,9 @@
+import * as webpack from 'webpack';
+import * as webpackDevServer from 'webpack-dev-server';
 import path from 'path';
-import { Configuration } from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-const config: Configuration = {
+const config: webpack.Configuration = {
   mode: (process.env.NODE_ENV as 'production' | 'development' | undefined) ?? 'development',
   entry: './src/index.tsx',
   module: {
@@ -24,6 +25,11 @@ const config: Configuration = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: 'http://localhost:5100/'
+  },
+  devServer: {
+    port: 5100,
+    historyApiFallback: true,
   },
   plugins: [
     new CopyWebpackPlugin({

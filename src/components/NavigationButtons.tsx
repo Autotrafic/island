@@ -1,6 +1,7 @@
 import { Button } from 'antd';
 import { useMultiStep } from '../context/multiStep';
 import { Steps } from '../interfaces/enums';
+import { animateScroll } from 'react-scroll';
 
 interface NavigationButtonsProps {
   isOnlyNext?: boolean;
@@ -22,11 +23,13 @@ function NavigationButtons({
 
   const navigateToPreviousStep = () => {
     updateCurrentStep((prevStep: Steps) => prevStep - 1);
+    animateScroll.scrollToTop();
   };
 
   const navigateToNextStep = async () => {
     try {
       await handleNext();
+      animateScroll.scrollToTop();
       updateCurrentStep((prevStep: Steps) => prevStep + 1);
     } catch (error) {
       console.error(error);

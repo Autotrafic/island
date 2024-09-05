@@ -15,11 +15,11 @@ export function getCurrentStepTitle(currentStep: Steps) {
     case Steps.REQUIREMENTS:
       return 'Ten listos éstos documentos antes de empezar';
     case Steps.DETAILS_FORM:
-      return 'Introducir datos';
+      return 'Introduce los datos';
     case Steps.CUSTOMERS_FILES:
-      return 'Adjuntar documentos';
+      return 'Adjunta los documentos';
     case Steps.VEHICLE_FILES:
-      return 'Adjuntar documentos vehículo';
+      return 'Adjunta los documentos del vehículo';
     case Steps.CONCLUSION:
       return 'Documentación adjuntada correctamente';
   }

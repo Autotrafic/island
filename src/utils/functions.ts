@@ -49,13 +49,15 @@ export function checkFilledForm(formValues: DetailsForm): boolean {
   );
 }
 
-interface CustomerDropzone {
-  id: keyof CustomersFiles;
+interface Dropzone {
+  id: keyof CustomersFiles | keyof VehicleFiles;
   files: ExtendedFile[];
   title: string;
 }
 
-export function getCustomersDropzones(files: ExtendedFile[]): CustomerDropzone[] {
+export type GetDropzoneFunc = (files: ExtendedFile[]) => Dropzone[];
+
+export const getCustomersDropzones: GetDropzoneFunc = (files) => {
   const buyerDniFront = files.filter((file) => file.id === 'buyerDniFront');
   const buyerDniBack = files.filter((file) => file.id === 'buyerDniBack');
   const sellerDniFront = files.filter((file) => file.id === 'sellerDniFront');
@@ -83,4 +85,34 @@ export function getCustomersDropzones(files: ExtendedFile[]): CustomerDropzone[]
       title: 'DNI Vendedor trasero',
     },
   ];
-}
+};
+
+export const getVehicleDropzones: GetDropzoneFunc = (files) => {
+  const permisoCirculacion = files.filter((file) => file.id === 'permisoCirculacion');
+  const fichaTecnica = files.filter((file) => file.id === 'fichaTecnica');
+  const contratoCompVent = files.filter((file) => file.id === 'contratoCompVent');
+  const padron = files.filter((file) => file.id === 'padron');
+
+  return [
+    {
+      id: 'permisoCirculacion',
+      files: permisoCirculacion,
+      title: 'Permiso de circulación',
+    },
+    {
+      id: 'fichaTecnica',
+      files: fichaTecnica,
+      title: 'Ficha técnica',
+    },
+    {
+      id: 'contratoCompVent',
+      files: contratoCompVent,
+      title: 'Contrato de compraventa o factura',
+    },
+    {
+      id: 'padron',
+      files: padron,
+      title: 'Padron',
+    },
+  ];
+};

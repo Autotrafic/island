@@ -1,7 +1,12 @@
 interface DocumentsData {
   orderId: string;
   detailsForm: DetailsForm;
-  files: ExtendedFile[];
+  files: filesForms;
+}
+
+interface FilesForms {
+  customers: ExtendedFile[];
+  vehicle: ExtendedFile[];
 }
 
 interface DocumentsDataContext extends DocumentsData {

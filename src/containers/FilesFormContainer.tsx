@@ -4,15 +4,20 @@ import { XMarkIcon } from '@heroicons/react/24/solid';
 import Dropzone from '../components/Dropzone';
 import NavigationButtons from '../components/NavigationButtons';
 import { Divider } from 'antd';
-import { getCustomersDropzones } from '../utils/functions';
+import { GetDropzoneFunc } from '../utils/functions';
 import pdfPreviewImage from '../assets/pdf-file-preview.jpg';
 import { useDocumentsData } from '../context/documentsData';
 import { uploadFilesToDrive } from '../services/file';
 
-export default function CustomersFilesContainer() {
+interface FilesFormContainerProps {
+  documentsPropertyName: string;
+  getDropdowns: GetDropzoneFunc;
+}
+
+export default function FilesFormContainer({ documentsPropertyName, getDropdowns }: FilesFormContainerProps) {
   const { orderId, files: documentsFiles, updateDocumentsData } = useDocumentsData();
 
-  const [files, setFiles] = useState<ExtendedFile[]>(documentsFiles);
+  const [files, setFiles] = useState<ExtendedFile[]>(documentsFiles[documentsPropertyName]);
   const [rejected, setRejected] = useState<FileRejection[]>([]);
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[], fileId: keyof Files) => {
@@ -50,7 +55,7 @@ export default function CustomersFilesContainer() {
   const handleSubmit = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        updateDocumentsData((prev) => ({ ...prev, files: { ...prev.files, ...files } }));
+        updateDocumentsData((prev) => ({ ...prev, files: { ...prev.files, [documentsPropertyName]: files } }));
         const preparedFiles = files.map((file) => file.file);
         await uploadFilesToDrive(preparedFiles, orderId);
 
@@ -64,7 +69,7 @@ export default function CustomersFilesContainer() {
   return (
     <>
       <form className="flex flex-col gap-5">
-        {getCustomersDropzones(files).map((dropzone) => (
+        {getDropdowns(files).map((dropzone) => (
           <div>
             <Divider style={{ borderColor: 'blue' }} orientation="left" className="!mb-1">
               {dropzone.title}

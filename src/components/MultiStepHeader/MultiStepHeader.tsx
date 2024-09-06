@@ -21,7 +21,7 @@ function MultiStepHeader() {
           </li>
           <li
             className={`multi-step-item ${
-              (currentStep === 3 || currentStep === 4) && "current"
+              (currentStep === 3 || currentStep === 3) && "current"
             }`}
           >
             <div className="item-wrap">
@@ -31,7 +31,7 @@ function MultiStepHeader() {
           </li>
           <li
             className={`multi-step-item ${
-              (currentStep === 5 || currentStep === 6) && "current"
+              (currentStep === 5 || currentStep === 4) && "current"
             }`}
           >
             <div className="item-wrap">

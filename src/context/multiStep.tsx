@@ -4,7 +4,7 @@ import { multiStepContextInitialState } from '../utils/initialStates';
 import { getCurrentStepTitle, scrollToNextStep } from '../utils/functions';
 
 const MultiStepStore = (): IMultiStepContext => {
-  const [currentStep, setCurrentStep] = useState<Steps>(Steps.CUSTOMERS_FILES);
+  const [currentStep, setCurrentStep] = useState<Steps>(Steps.VEHICLE_FILES);
 
   const stepTitle = getCurrentStepTitle(currentStep);
 

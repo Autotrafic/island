@@ -43,18 +43,22 @@ export default function CustomersFilesContainer() {
     setFiles((files) => files.filter((file) => file.id !== id));
   };
 
-  const removeAll = () => {
-    setFiles([]);
-    setRejected([]);
-  };
-
   const removeRejected = (name: string) => {
     setRejected((files: FileRejection[]) => files.filter(({ file }: { file: File }) => file.name !== name));
   };
 
-  const handleSubmit = async () => {
-    updateDocumentsData((prev) => ({ ...prev, files: { ...prev.files, ...files } }));
-    await uploadFilesToDrive(files, orderId);
+  const handleSubmit = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        updateDocumentsData((prev) => ({ ...prev, files: { ...prev.files, ...files } }));
+        const preparedFiles = files.map((file) => file.file);
+        await uploadFilesToDrive(preparedFiles, orderId);
+
+        resolve(true);
+      } catch (error) {
+        reject(error);
+      }
+    });
   };
 
   return (
@@ -117,7 +121,7 @@ export default function CustomersFilesContainer() {
                   className="mt-1 py-1 text-[12px] uppercase tracking-wider font-bold text-neutral-500 border border-secondary-400 rounded-md px-3 hover:bg-secondary-400 hover:text-white transition-colors"
                   onClick={() => removeRejected(file.name)}
                 >
-                  remove
+                  borrar
                 </button>
               </li>
             ))}

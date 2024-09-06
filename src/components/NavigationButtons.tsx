@@ -37,12 +37,13 @@ function NavigationButtons({
       await handleNext();
 
       animateScroll.scrollToTop();
+      
       setLoading(false);
-
       updateCurrentStep((prevStep: Steps) => prevStep + 1);
     } catch (error) {
       setLoading(false);
       showModal();
+
       console.error(error);
     }
   };

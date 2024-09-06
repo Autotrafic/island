@@ -4,11 +4,9 @@ import { formatDetailsDataForExport } from '../utils/formatter';
 import { updateOrderWithDocsDetails } from '../services/order';
 import DetailsForm from '../components/details-form';
 import { checkFilledForm } from '../utils/functions';
-import { useModal } from '../context/modal';
 import { useDocumentsData } from '../context/documentsData';
 
 export default function DetailsFormContainer() {
-  const { showModal } = useModal();
   const { orderId, detailsForm, updateDocumentsData } = useDocumentsData();
 
   const [formValues, setFormValues] = useState<DetailsForm>(detailsForm);
@@ -22,7 +20,7 @@ export default function DetailsFormContainer() {
 
         resolve(true);
       } catch (error) {
-        reject(new Error(error as string));
+        reject(error);
       }
     });
   };

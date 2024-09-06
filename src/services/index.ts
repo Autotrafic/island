@@ -8,7 +8,7 @@ export const autotraficApi = {
       makeRequest(`order/documentsDetails/${orderId}`, data),
   },
   files: {
-    upload: (files: ExtendedFile[], orderId: string) => fetchFiles('files/upload', files, orderId),
+    upload: (files: File[], orderId: string) => fetchFiles('files/upload', files, orderId),
   },
 };
 

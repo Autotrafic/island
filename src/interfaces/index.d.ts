@@ -11,6 +11,7 @@ interface ExtendedFile extends File {
   preview: string;
   path: string;
   id: keyof Files;
+  file: File;
 }
 
 interface Documents {

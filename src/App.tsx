@@ -1,8 +1,7 @@
-import { Route, Routes } from 'react-router-dom';
 import ErrorModal from './components/Modal';
 import MultiStepHeader from './components/MultiStepHeader/MultiStepHeader';
 import DetailsFormContainer from './containers/DetailsFormContainer';
-import FilesContainer from './containers/FilesContainer';
+import CustomersFilesContainer from './containers/CustomersFilesContainer';
 import RequirementsContainer from './containers/RequirementsContainer';
 import { useMultiStep } from './context/multiStep';
 import { Steps } from './interfaces/enums';
@@ -19,7 +18,7 @@ export default function App() {
           <div className=" max-w-screen-sm flex-1">
             {currentStep === Steps.REQUIREMENTS && <RequirementsContainer />}
             {currentStep === Steps.DETAILS_FORM && <DetailsFormContainer />}
-            {currentStep === Steps.CUSTOMERS_FILES && <FilesContainer />}
+            {currentStep === Steps.CUSTOMERS_FILES && <CustomersFilesContainer />}
           </div>
         </div>
       </section>

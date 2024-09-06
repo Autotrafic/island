@@ -48,3 +48,39 @@ export function checkFilledForm(formValues: DetailsForm): boolean {
     isPhoneNumberFilled(sellerPhone)
   );
 }
+
+interface CustomerDropzone {
+  id: keyof CustomersFiles;
+  files: ExtendedFile[];
+  title: string;
+}
+
+export function getCustomersDropzones(files: ExtendedFile[]): CustomerDropzone[] {
+  const buyerDniFront = files.filter((file) => file.id === 'buyerDniFront');
+  const buyerDniBack = files.filter((file) => file.id === 'buyerDniBack');
+  const sellerDniFront = files.filter((file) => file.id === 'sellerDniFront');
+  const sellerDniBack = files.filter((file) => file.id === 'sellerDniBack');
+
+  return [
+    {
+      id: 'buyerDniFront',
+      files: buyerDniFront,
+      title: 'DNI Comprador frontal',
+    },
+    {
+      id: 'buyerDniBack',
+      files: buyerDniBack,
+      title: 'DNI Comprador trasero',
+    },
+    {
+      id: 'sellerDniFront',
+      files: sellerDniFront,
+      title: 'DNI Vendedor frontal',
+    },
+    {
+      id: 'sellerDniBack',
+      files: sellerDniBack,
+      title: 'DNI Vendedor trasero',
+    },
+  ];
+}

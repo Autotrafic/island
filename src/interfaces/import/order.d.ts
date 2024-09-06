@@ -1,0 +1,1 @@
+type DatabaseOrder = WebOrder & WebOrderDetails;

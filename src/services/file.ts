@@ -7,7 +7,7 @@ export async function uploadFilesToDrive(files: File[], orderId: string) {
 
 export async function fetchFiles(endpoint: string, files: File[], orderId: string) {
   try {
-    const orderData = await autotraficApi.order.get(orderId);
+    const orderData: DatabaseOrder = await autotraficApi.order.get(orderId);
 
     const formData = new FormData();
     files.forEach((file: Blob) => {

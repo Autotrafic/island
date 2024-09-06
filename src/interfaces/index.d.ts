@@ -1,5 +1,15 @@
+declare module '*.jpg'{
+  const value: any;
+  export = value;
+};
+declare module '*.jpeg';
+declare module '*.png';
+declare module '*.gif';
+declare module '*.svg';
+
 interface ExtendedFile extends File {
   preview: string;
+  path: string;
   id: keyof Files;
 }
 

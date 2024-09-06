@@ -5,6 +5,7 @@ import Dropzone from '../components/Dropzone';
 import NavigationButtons from '../components/NavigationButtons';
 import { Divider } from 'antd';
 import { getCustomersDropzones } from '../utils/functions';
+import pdfPreviewImage from '../assets/pdf-file-preview.jpg';
 
 export default function CustomersFilesContainer() {
   const [files, setFiles] = useState<ExtendedFile[]>([]);
@@ -14,7 +15,7 @@ export default function CustomersFilesContainer() {
     if (acceptedFiles?.length) {
       setFiles((previousFiles: ExtendedFile[]) => [
         ...previousFiles,
-        ...acceptedFiles.map((file) => ({ ...file, preview: URL.createObjectURL(file), id: fileId })),
+        ...acceptedFiles.map((file: File) => ({ ...file, preview: URL.createObjectURL(file), id: fileId, path: file.name })),
       ]);
     }
 
@@ -45,44 +46,47 @@ export default function CustomersFilesContainer() {
     e.preventDefault();
   };
 
+  console.log(files);
+
   return (
     <>
-      {getCustomersDropzones(files).map((dropzone) => (
-        <form onSubmit={handleSubmit} className='flex flex-col'>
-          <Divider style={{ borderColor: 'blue' }} orientation="left">
-            {dropzone.title}
-          </Divider>
-          {dropzone.files.length < 1 ? (
-            <Dropzone fileId={dropzone.id} onDrop={onDrop} />
-          ) : (
-            <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10">
-              {dropzone.files.map((file) => (
-                <li key={file.name} className="relative h-32 rounded-md shadow-lg">
-                  <img
-                    src={file.preview}
-                    alt={file.name}
-                    width={100}
-                    height={100}
-                    onLoad={() => {
-                      URL.revokeObjectURL(file.preview);
-                    }}
-                    className="h-full w-full object-contain rounded-md"
-                  />
-                  <button
-                    type="button"
-                    className="w-7 h-7 border border-secondary-400 bg-secondary-400 rounded-full flex justify-center items-center absolute -top-3 -right-3 hover:bg-white transition-colors"
-                    onClick={() => removeFile(file.id)}
-                  >
-                    <XMarkIcon className="w-5 h-5 fill-white hover:fill-secondary-400 transition-colors" />
-                  </button>
-                  <p className="mt-2 text-neutral-500 text-[12px] font-medium">{file.name}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </form>
-      ))}
-
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {getCustomersDropzones(files).map((dropzone) => (
+          <div>
+            <Divider style={{ borderColor: 'blue' }} orientation="left" className="!mb-1">
+              {dropzone.title}
+            </Divider>
+            {dropzone.files.length < 1 ? (
+              <Dropzone fileId={dropzone.id} onDrop={onDrop} />
+            ) : (
+              <ul className="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10">
+                {dropzone.files.map((file) => (
+                  <li key={file.name} className="relative h-32 rounded-md shadow-lg">
+                    <img
+                      src={file.path.endsWith('.pdf') ? pdfPreviewImage : file.preview}
+                      alt={file.name}
+                      width={100}
+                      height={100}
+                      onLoad={() => {
+                        URL.revokeObjectURL(file.preview);
+                      }}
+                      className="h-full w-full object-contain rounded-md"
+                    />
+                    <button
+                      type="button"
+                      className="w-7 h-7 border border-secondary-400 bg-secondary-400 rounded-full flex justify-center items-center absolute -top-3 -right-3 hover:bg-white transition-colors"
+                      onClick={() => removeFile(file.id)}
+                    >
+                      <XMarkIcon className="w-5 h-5 fill-white hover:fill-secondary-400 transition-colors" />
+                    </button>
+                    <p className="mt-2 text-neutral-500 text-[12px] font-medium">{file.name}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </form>
       {/* Rejected Files */}
       {rejected.length > 0 && (
         <section className="mt-10">

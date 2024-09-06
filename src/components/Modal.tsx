@@ -3,12 +3,13 @@ import { useModal } from '../context/modal';
 import { WHATSAPP_HELP_LINK } from '../utils/urls';
 
 export default function ErrorModal() {
-  const { isModalOpen, handleOk } = useModal();
+  const { isModalOpen, handleOk, handleCancel } = useModal();
 
   return (
     <AntModal
       title="Se ha producido un error"
       open={isModalOpen}
+      onCancel={handleCancel}
       footer={[
         <Button key="link" href={WHATSAPP_HELP_LINK} target="_blank" type="primary" onClick={handleOk}>
           Abrir WhatsApp

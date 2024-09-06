@@ -4,6 +4,7 @@ interface ModalStore {
   isModalOpen: boolean;
   showModal: () => void;
   handleOk: () => void;
+  handleCancel: () => void;
 }
 
 export default function ModalStore(): ModalStore {
@@ -17,10 +18,14 @@ export default function ModalStore(): ModalStore {
     setIsModalOpen(false);
   };
 
-  return { isModalOpen, showModal, handleOk };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  return { isModalOpen, showModal, handleOk, handleCancel };
 }
 
-const ModalContext = createContext({ isModalOpen: false, showModal: () => {}, handleOk: () => {} });
+const ModalContext = createContext({ isModalOpen: false, showModal: () => {}, handleOk: () => {}, handleCancel: () => {} });
 
 export const useModal = () => useContext(ModalContext);
 

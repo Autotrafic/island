@@ -9,22 +9,22 @@ import { useDocumentsData } from '../context/documentsData';
 
 export default function DetailsFormContainer() {
   const { showModal } = useModal();
-  const { detailsForm } = useDocumentsData();
+  const { orderId, detailsForm, updateDocumentsData } = useDocumentsData();
 
   const [formValues, setFormValues] = useState<DetailsForm>(detailsForm);
-  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      const detailsData = formatDetailsDataForExport(formValues);
-      await updateOrderWithDocsDetails('gkkdt3d8lnhuo8ryh55rsgou', detailsData);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      showModal();
-      throw new Error(error as string);
-    }
+  const handleSubmit = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const detailsData = formatDetailsDataForExport(formValues);
+        await updateOrderWithDocsDetails(orderId, detailsData);
+        updateDocumentsData((prev) => ({ ...prev, detailsForm: formValues }));
+
+        resolve(true);
+      } catch (error) {
+        reject(new Error(error as string));
+      }
+    });
   };
 
   const isAllFormFilled = checkFilledForm(formValues);
@@ -32,7 +32,7 @@ export default function DetailsFormContainer() {
   return (
     <>
       <DetailsForm formValues={formValues} setFormValues={setFormValues} />
-      <NavigationButtons disabled={!isAllFormFilled} loading={loading} handleNext={handleSubmit} />
+      <NavigationButtons disabled={!isAllFormFilled} handleNext={handleSubmit} />
     </>
   );
 }

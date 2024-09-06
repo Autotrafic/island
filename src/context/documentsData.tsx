@@ -13,6 +13,7 @@ const DocumentsDataStore = (orderId: string): DocumentsDataContext => {
   return {
     orderId,
     detailsForm: documentsData.detailsForm,
+    files: documentsData.files,
 
     updateDocumentsData,
   };

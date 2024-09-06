@@ -32,6 +32,7 @@ export const defaultDocumentsData: DocumentsData = {
     buyerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
     sellerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
   },
+  files: [],
 };
 
 export const documentsDataContextInitialState: DocumentsDataContext = {

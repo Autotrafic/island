@@ -2,24 +2,28 @@ import { Button } from 'antd';
 import { useMultiStep } from '../context/multiStep';
 import { Steps } from '../interfaces/enums';
 import { animateScroll } from 'react-scroll';
+import { useState } from 'react';
+import { useModal } from '../context/modal';
 
 interface NavigationButtonsProps {
   isOnlyNext?: boolean;
   disabled?: boolean;
   loading?: boolean;
-  handleNext?: () => Promise<void>;
+  handleNext?: () => Promise<any>;
 }
 
 function NavigationButtons({
   isOnlyNext,
   disabled,
-  loading,
   handleNext = () =>
     new Promise((res) => {
-      res();
+      res(true);
     }),
 }: NavigationButtonsProps) {
+  const { showModal } = useModal();
   const { updateCurrentStep } = useMultiStep();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigateToPreviousStep = () => {
     updateCurrentStep((prevStep: Steps) => prevStep - 1);
@@ -28,10 +32,17 @@ function NavigationButtons({
 
   const navigateToNextStep = async () => {
     try {
+      setLoading(true);
+
       await handleNext();
+
       animateScroll.scrollToTop();
+      setLoading(false);
+
       updateCurrentStep((prevStep: Steps) => prevStep + 1);
     } catch (error) {
+      setLoading(false);
+      showModal();
       console.error(error);
     }
   };

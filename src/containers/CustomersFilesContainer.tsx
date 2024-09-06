@@ -6,16 +6,26 @@ import NavigationButtons from '../components/NavigationButtons';
 import { Divider } from 'antd';
 import { getCustomersDropzones } from '../utils/functions';
 import pdfPreviewImage from '../assets/pdf-file-preview.jpg';
+import { useDocumentsData } from '../context/documentsData';
+import { uploadFilesToDrive } from '../services/file';
 
 export default function CustomersFilesContainer() {
-  const [files, setFiles] = useState<ExtendedFile[]>([]);
+  const { orderId, files: documentsFiles, updateDocumentsData } = useDocumentsData();
+
+  const [files, setFiles] = useState<ExtendedFile[]>(documentsFiles);
   const [rejected, setRejected] = useState<FileRejection[]>([]);
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[], fileId: keyof Files) => {
     if (acceptedFiles?.length) {
       setFiles((previousFiles: ExtendedFile[]) => [
         ...previousFiles,
-        ...acceptedFiles.map((file: File) => ({ ...file, preview: URL.createObjectURL(file), id: fileId, path: file.name })),
+        ...acceptedFiles.map((file: File) => ({
+          ...file,
+          preview: URL.createObjectURL(file),
+          id: fileId,
+          path: file.name,
+          file,
+        })),
       ]);
     }
 
@@ -42,15 +52,14 @@ export default function CustomersFilesContainer() {
     setRejected((files: FileRejection[]) => files.filter(({ file }: { file: File }) => file.name !== name));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    updateDocumentsData((prev) => ({ ...prev, files: { ...prev.files, ...files } }));
+    await uploadFilesToDrive(files, orderId);
   };
-
-  console.log(files);
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form className="flex flex-col gap-5">
         {getCustomersDropzones(files).map((dropzone) => (
           <div>
             <Divider style={{ borderColor: 'blue' }} orientation="left" className="!mb-1">
@@ -87,6 +96,7 @@ export default function CustomersFilesContainer() {
           </div>
         ))}
       </form>
+
       {/* Rejected Files */}
       {rejected.length > 0 && (
         <section className="mt-10">
@@ -115,7 +125,7 @@ export default function CustomersFilesContainer() {
         </section>
       )}
 
-      <NavigationButtons />
+      <NavigationButtons handleNext={handleSubmit} />
     </>
   );
 }

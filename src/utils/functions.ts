@@ -97,12 +97,12 @@ export const getVehicleDropzones: GetDropzoneFunc = (files) => {
     {
       id: 'permisoCirculacion',
       files: permisoCirculacion,
-      title: 'Permiso de circulación',
+      title: 'Permiso de circulacion',
     },
     {
       id: 'fichaTecnica',
       files: fichaTecnica,
-      title: 'Ficha técnica',
+      title: 'Ficha tecnica',
     },
     {
       id: 'contratoCompVent',
@@ -115,4 +115,15 @@ export const getVehicleDropzones: GetDropzoneFunc = (files) => {
       title: 'Padron',
     },
   ];
+};
+
+export const checkFilledFiles = (documentsPropertyName: 'customers' | 'vehicle', files: ExtendedFile[]): boolean => {
+  const checkKeysMap = {
+    customers: ['buyerDniFront', 'buyerDniBack', 'sellerDniFront', 'sellerDniBack'] as Array<keyof CustomersFiles>,
+    vehicle: ['permisoCirculacion', 'fichaTecnica', 'contratoCompVent'] as Array<keyof VehicleFiles>,
+  };
+
+  const checkKeys = checkKeysMap[documentsPropertyName];
+
+  return checkKeys.every((_, index) => !!files[index]?.id);
 };

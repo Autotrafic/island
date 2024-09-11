@@ -3,14 +3,15 @@ import { FileRejection } from 'react-dropzone';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import Dropzone from '../components/Dropzone';
 import NavigationButtons from '../components/NavigationButtons';
-import { Divider } from 'antd';
-import { GetDropzoneFunc } from '../utils/functions';
+import { Alert, Divider } from 'antd';
+import { checkFilledFiles, GetDropzoneFunc } from '../utils/functions';
 import pdfPreviewImage from '../assets/pdf-file-preview.jpg';
 import { useDocumentsData } from '../context/documentsData';
 import { uploadFilesToDrive } from '../services/file';
+import { renameFile } from '../utils/formatter';
 
 interface FilesFormContainerProps {
-  documentsPropertyName: string;
+  documentsPropertyName: 'customers' | 'vehicle';
   getDropdowns: GetDropzoneFunc;
 }
 
@@ -19,25 +20,29 @@ export default function FilesFormContainer({ documentsPropertyName, getDropdowns
 
   const [files, setFiles] = useState<ExtendedFile[]>(documentsFiles[documentsPropertyName]);
   const [rejected, setRejected] = useState<FileRejection[]>([]);
+  const [filledForm, setFilledForm] = useState<boolean | null>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[], fileId: keyof Files) => {
-    if (acceptedFiles?.length) {
-      setFiles((previousFiles: ExtendedFile[]) => [
-        ...previousFiles,
-        ...acceptedFiles.map((file: File) => ({
-          ...file,
-          preview: URL.createObjectURL(file),
-          id: fileId,
-          path: file.name,
-          file,
-        })),
-      ]);
-    }
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejectedFiles: FileRejection[], fileId: keyof Files, fileName: string) => {
+      if (acceptedFiles?.length) {
+        setFiles((previousFiles: ExtendedFile[]) => [
+          ...previousFiles,
+          ...acceptedFiles.map((file: File) => ({
+            ...file,
+            preview: URL.createObjectURL(file),
+            id: fileId,
+            path: file.name,
+            file: renameFile(file, fileName),
+          })),
+        ]);
+      }
 
-    if (rejectedFiles?.length) {
-      setRejected((previousFiles) => [...previousFiles, ...rejectedFiles]);
-    }
-  }, []);
+      if (rejectedFiles?.length) {
+        setRejected((previousFiles) => [...previousFiles, ...rejectedFiles]);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     // Revoke the data uris to avoid memory leaks
@@ -55,7 +60,15 @@ export default function FilesFormContainer({ documentsPropertyName, getDropdowns
   const handleSubmit = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        updateDocumentsData((prev) => ({ ...prev, files: { ...prev.files, [documentsPropertyName]: files } }));
+        const isFormFilled = checkFilledFiles(documentsPropertyName, files);
+        setFilledForm(isFormFilled);
+
+        if (!isFormFilled) resolve(false);
+
+        updateDocumentsData((prev: DocumentsData) => ({
+          ...prev,
+          files: { ...prev.files, [documentsPropertyName]: files },
+        }));
         const preparedFiles = files.map((file) => file.file);
         await uploadFilesToDrive(preparedFiles, orderId);
 
@@ -75,7 +88,7 @@ export default function FilesFormContainer({ documentsPropertyName, getDropdowns
               {dropzone.title}
             </Divider>
             {dropzone.files.length < 1 ? (
-              <Dropzone fileId={dropzone.id} onDrop={onDrop} />
+              <Dropzone fileId={dropzone.id} fileName={dropzone.title} onDrop={onDrop} />
             ) : (
               <ul className="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10">
                 {dropzone.files.map((file) => (
@@ -132,6 +145,9 @@ export default function FilesFormContainer({ documentsPropertyName, getDropdowns
             ))}
           </ul>
         </section>
+      )}
+      {filledForm === false && (
+        <Alert message="Debes adjuntar los archivos necesarios para continuar" type="warning" showIcon closable />
       )}
 
       <NavigationButtons handleNext={handleSubmit} />

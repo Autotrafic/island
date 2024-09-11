@@ -34,11 +34,12 @@ function NavigationButtons({
     try {
       setLoading(true);
 
-      await handleNext();
+      const isValidForm = await handleNext();
+      setLoading(false);
+      if (!isValidForm) return;
 
       animateScroll.scrollToTop();
       
-      setLoading(false);
       updateCurrentStep((prevStep: Steps) => prevStep + 1);
     } catch (error) {
       setLoading(false);

@@ -3,17 +3,18 @@ import { ArrowUpTrayIcon } from '@heroicons/react/24/solid';
 
 interface DropdownProps {
   fileId: keyof CustomersFiles | keyof VehicleFiles;
-  onDrop: (acceptedFiles: File[], rejectedFiles: FileRejection[], fileId: keyof CustomersFiles | keyof VehicleFiles) => void;
+  fileName: string;
+  onDrop: (acceptedFiles: File[], rejectedFiles: FileRejection[], fileId: keyof CustomersFiles | keyof VehicleFiles, fileName: string) => void;
 }
 
-export default function Dropzone({ fileId, onDrop }: DropdownProps) {
+export default function Dropzone({ fileId, fileName, onDrop }: DropdownProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       'image/*': [],
       'application/pdf': [],
     },
     maxSize: 10240 * 1000, // 10MB max file size
-    onDrop: (acceptedFiles, rejectedFiles) => onDrop(acceptedFiles, rejectedFiles, fileId),
+    onDrop: (acceptedFiles, rejectedFiles) => onDrop(acceptedFiles, rejectedFiles, fileId, fileName),
   });
 
   return (

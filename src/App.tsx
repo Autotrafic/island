@@ -1,5 +1,6 @@
 import ErrorModal from './components/Modal';
 import MultiStepHeader from './components/MultiStepHeader/MultiStepHeader';
+import ConclusionContainer from './containers/ConclusionContainer';
 import DetailsFormContainer from './containers/DetailsFormContainer';
 import FilesFormContainer from './containers/FilesFormContainer';
 import RequirementsContainer from './containers/RequirementsContainer';
@@ -25,6 +26,7 @@ export default function App() {
             {currentStep === Steps.VEHICLE_FILES && (
               <FilesFormContainer documentsPropertyName="vehicle" getDropdowns={getVehicleDropzones} />
             )}
+            {currentStep === Steps.CONCLUSION && <ConclusionContainer />}
           </div>
         </div>
       </section>

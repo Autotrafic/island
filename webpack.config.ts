@@ -36,10 +36,10 @@ const config: webpack.Configuration = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: 'http://localhost:5100/'
+    publicPath: 'http://localhost:5300/'
   },
   devServer: {
-    port: 5100,
+    port: 5300,
     historyApiFallback: true,
   },
   plugins: [

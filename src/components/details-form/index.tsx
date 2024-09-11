@@ -19,6 +19,15 @@ export default function DetailsForm({ formValues, setFormValues }: DetailsFormPr
     return Promise.reject('Número de teléfono inválido');
   };
 
+  const handleVehiclePlateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const upperCaseValue = e.target.value.toUpperCase();
+    setFormValues({
+      ...formValues,
+      vehiclePlate: upperCaseValue,
+    });
+    form.setFieldsValue({ vehiclePlate: upperCaseValue });
+  };
+
   return (
     <div className="w-full">
       <Form
@@ -30,7 +39,7 @@ export default function DetailsForm({ formValues, setFormValues }: DetailsFormPr
         layout="vertical"
       >
         <Form.Item label="Matrícula del vehículo" name="vehiclePlate">
-          <Input value={formValues.vehiclePlate} />
+          <Input value={formValues.vehiclePlate} onChange={handleVehiclePlateChange} />
         </Form.Item>
 
         <Form.Item label="Dirección de envío del nuevo permiso de circulación">

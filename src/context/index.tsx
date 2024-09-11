@@ -36,9 +36,6 @@ export default function Providers({ children }: { children: ReactNode }) {
               colorPrimary: '#4154F1',
               borderRadius: 2,
               fontFamily: 'Poppins',
-
-              // Alias Token
-              colorBgContainer: '#f6ffed',
             },
           }}
         >

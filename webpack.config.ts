@@ -2,11 +2,20 @@ import * as webpack from 'webpack';
 import * as webpackDevServer from 'webpack-dev-server';
 import path from 'path';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import Dotenv from 'dotenv-webpack'
+import Dotenv from 'dotenv-webpack';
 
 const config: webpack.Configuration = {
   mode: (process.env.NODE_ENV as 'production' | 'development' | undefined) ?? 'development',
+
   entry: './src/index.tsx',
+
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath:
+      process.env.NODE_ENV === 'development' ? 'http://localhost:5100/' : 'https://upload-customer-files.onrender.com/',
+  },
+
   module: {
     rules: [
       {
@@ -32,18 +41,16 @@ const config: webpack.Configuration = {
       },
     ],
   },
+
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: 'http://localhost:5300/'
-  },
+
   devServer: {
     port: 5300,
     historyApiFallback: true,
   },
+
   plugins: [
     new CopyWebpackPlugin({
       patterns: [{ from: 'public' }],

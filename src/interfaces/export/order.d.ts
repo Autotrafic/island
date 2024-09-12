@@ -8,3 +8,8 @@ interface UpdateOrderNestedPropertiesBody {
 interface UpdateTotalumOrderDetailsBody extends UpdateOrderNestedPropertiesBody {
   orderId: string;
 }
+
+interface UpdateTotalumOrderDocsUrlBody {
+  orderId: string;
+  driveFolderId: string;
+}

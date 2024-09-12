@@ -7,6 +7,8 @@ export const autotraficApi = {
       makeRequest(`order/documentsDetails/${orderId}`, data),
     updateTotalumOrderDocsDetails: (data: UpdateTotalumOrderDetailsBody) =>
       makeRequest('order/totalum/update-with-documents-details', data),
+    updateTotalumOrderDocsUrl: (orderId: string, driveFolderId: string) =>
+      makeRequest('order/totalum/update-documents-url', { orderId, driveFolderId }),
   },
   files: {
     upload: (files: File[], orderId: string) => fetchFiles('files/upload', files, orderId),
@@ -14,7 +16,11 @@ export const autotraficApi = {
   },
 };
 
-type RequestParams = UpdateOrderNestedPropertiesBody | CreateInformationFileBody | UpdateTotalumOrderDetailsBody;
+type RequestParams =
+  | UpdateOrderNestedPropertiesBody
+  | CreateInformationFileBody
+  | UpdateTotalumOrderDetailsBody
+  | UpdateTotalumOrderDocsUrlBody;
 
 const makeRequest = async (endpoint: string, data?: RequestParams) => {
   try {

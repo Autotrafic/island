@@ -14,3 +14,7 @@ export const updateOrderWithDocsDetails: UpdateOrderWithDocsDetails = async (ord
 export const updateTotalumOrderWithDocsDetails: UpdateOrderWithDocsDetails = async (orderId, newData) => {
   await autotraficApi.order.updateTotalumOrderDocsDetails({ orderId, ...newData });
 };
+
+export const updateTotalumOrderDocsFolderUrl = async (orderId: string, driveFolderId: string) => {
+  await autotraficApi.order.updateTotalumOrderDocsUrl(orderId, driveFolderId);
+};

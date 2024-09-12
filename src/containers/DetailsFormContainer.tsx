@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import NavigationButtons from '../components/NavigationButtons';
 import { formatDetailsDataForExport } from '../utils/formatter';
-import { updateOrderWithDocsDetails, updateTotalumOrderWithDocsDetails } from '../services/order';
+import {
+  updateOrderWithDocsDetails,
+  updateTotalumOrderDocsFolderUrl,
+  updateTotalumOrderWithDocsDetails,
+} from '../services/order';
 import DetailsForm from '../components/details-form';
 import { checkFilledForm } from '../utils/functions';
 import { useDocumentsData } from '../context/documentsData';
@@ -18,7 +22,8 @@ export default function DetailsFormContainer() {
         const detailsData = formatDetailsDataForExport(formValues);
         updateOrderWithDocsDetails(orderId, detailsData);
         updateTotalumOrderWithDocsDetails(orderId, detailsData);
-        await createInformationFile(orderId);
+        const driveOrderFolderId = await createInformationFile(orderId);
+        await updateTotalumOrderDocsFolderUrl(orderId, driveOrderFolderId);
         updateDocumentsData((prev) => ({ ...prev, detailsForm: formValues }));
 
         resolve(true);

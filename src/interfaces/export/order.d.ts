@@ -4,3 +4,7 @@ interface UpdateOrderNestedPropertiesBody {
   buyerPhone: string;
   sellerPhone: string;
 }
+
+interface UpdateTotalumOrderDetailsBody extends UpdateOrderNestedPropertiesBody {
+  orderId: string;
+}

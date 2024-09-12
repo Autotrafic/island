@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import NavigationButtons from '../components/NavigationButtons';
 import { formatDetailsDataForExport } from '../utils/formatter';
-import { updateOrderWithDocsDetails } from '../services/order';
+import { updateOrderWithDocsDetails, updateTotalumOrderWithDocsDetails } from '../services/order';
 import DetailsForm from '../components/details-form';
 import { checkFilledForm } from '../utils/functions';
 import { useDocumentsData } from '../context/documentsData';
@@ -16,7 +16,8 @@ export default function DetailsFormContainer() {
     return new Promise(async (resolve, reject) => {
       try {
         const detailsData = formatDetailsDataForExport(formValues);
-        await updateOrderWithDocsDetails(orderId, detailsData);
+        updateOrderWithDocsDetails(orderId, detailsData);
+        updateTotalumOrderWithDocsDetails(orderId, detailsData);
         await createInformationFile(orderId);
         updateDocumentsData((prev) => ({ ...prev, detailsForm: formValues }));
 

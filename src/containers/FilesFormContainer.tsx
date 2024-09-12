@@ -94,7 +94,7 @@ export default function FilesFormContainer({ documentsPropertyName, getDropdowns
                 {dropzone.files.map((file) => (
                   <li key={file.name} className="relative h-32 rounded-md shadow-lg">
                     <img
-                      src={file.path.endsWith('.pdf') ? `${process.env.PUBLIC_URL}/src/assets/pdf-file-preview.jpg` : file.preview}
+                      src={file.path.endsWith('.pdf') ? pdfPreviewImage : file.preview}
                       alt={file.name}
                       width={100}
                       height={100}

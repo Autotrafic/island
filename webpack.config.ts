@@ -20,6 +20,7 @@ const config: webpack.Configuration = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
+        type: 'asset/resource',
         use: [
           {
             loader: 'file-loader',

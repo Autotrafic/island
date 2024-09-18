@@ -129,7 +129,7 @@ export const checkFilledFiles = (documentsPropertyName: 'customers' | 'vehicle',
 };
 
 export function createWhatsAppConfirmationMessage(): string {
-  return `✅ Hemos recibido correctamente los documentos
+  return `✅ Hemos recibido correctamente toda la documentación
 
 ⏳ El siguiente paso es esperar a que os enviemos los mandatos para firmar por *SMS*
   

@@ -20,7 +20,7 @@ export default function Dropzone({ fileId, fileName, onDrop }: DropdownProps) {
   return (
     <div
       {...getRootProps({
-        className: 'p-4 mb-5 border border-neutral-200',
+        className: 'p-4 mb-5 border border-neutral-200 cursor-pointer',
       })}
     >
       <input {...getInputProps()} />

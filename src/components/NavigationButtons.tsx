@@ -39,13 +39,13 @@ function NavigationButtons({
       if (!isValidForm) return;
 
       animateScroll.scrollToTop();
-      
+
       updateCurrentStep((prevStep: Steps) => prevStep + 1);
     } catch (error) {
+      console.error('Error: ', error);
+
       setLoading(false);
       showModal();
-
-      console.error(error);
     }
   };
 

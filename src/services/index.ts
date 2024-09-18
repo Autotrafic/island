@@ -1,4 +1,4 @@
-import { BASE_API_URL } from '../utils/urls';
+import { BASE_API_URL, WHATSAPP_API_URL } from '../utils/urls';
 
 export const autotraficApi = {
   order: {
@@ -14,13 +14,19 @@ export const autotraficApi = {
     upload: (files: File[], orderId: string) => fetchFiles('files/upload', files, orderId),
     createInformationFile: (data: CreateInformationFileBody) => makeRequest('files/create-information-file', data),
   },
+  notification: {
+    sendWhatsapp: (data: SendWhatsAppNotificationBody) => makeWhatsappRequest('messages/send', data),
+    sendSlack: (data: SendNotificationBody) => makeRequest('messages/slack', data),
+  },
 };
 
 type RequestParams =
   | UpdateOrderNestedPropertiesBody
   | CreateInformationFileBody
   | UpdateTotalumOrderDetailsBody
-  | UpdateTotalumOrderDocsUrlBody;
+  | UpdateTotalumOrderDocsUrlBody
+  | SendWhatsAppNotificationBody
+  | SendNotificationBody;
 
 const makeRequest = async (endpoint: string, data?: RequestParams) => {
   try {
@@ -74,3 +80,32 @@ async function fetchFiles(endpoint: string, files: File[], orderId: string) {
     throw new Error(error as string);
   }
 }
+
+const makeWhatsappRequest = async (endpoint: string, data?: RequestParams) => {
+  try {
+    const response = await fetch(`${WHATSAPP_API_URL}/${endpoint}`, {
+      method: data ? 'POST' : 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: data ? JSON.stringify(data) : null,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    let result;
+    try {
+      result = await response.json();
+    } catch (jsonError) {
+      throw new Error('Failed to parse JSON');
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error during request:', error);
+    throw error;
+  }
+};

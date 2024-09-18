@@ -9,13 +9,15 @@ import pdfPreviewImage from '../assets/pdf-file-preview.jpg';
 import { useDocumentsData } from '../context/documentsData';
 import { uploadFilesToDrive } from '../services/file';
 import { renameFile } from '../utils/formatter';
+import { getOrderById } from '../services/order';
 
 interface FilesFormContainerProps {
   documentsPropertyName: 'customers' | 'vehicle';
   getDropdowns: GetDropzoneFunc;
+  submitAction?: (orderId: string) => Promise<void>;
 }
 
-export default function FilesFormContainer({ documentsPropertyName, getDropdowns }: FilesFormContainerProps) {
+export default function FilesFormContainer({ documentsPropertyName, getDropdowns, submitAction }: FilesFormContainerProps) {
   const { orderId, files: documentsFiles, updateDocumentsData } = useDocumentsData();
 
   const [files, setFiles] = useState<ExtendedFile[]>(documentsFiles[documentsPropertyName]);
@@ -70,7 +72,9 @@ export default function FilesFormContainer({ documentsPropertyName, getDropdowns
           files: { ...prev.files, [documentsPropertyName]: files },
         }));
         const preparedFiles = files.map((file) => file.file);
+
         await uploadFilesToDrive(preparedFiles, orderId);
+        if (submitAction) await submitAction(orderId);
 
         resolve(true);
       } catch (error) {

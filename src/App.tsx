@@ -7,6 +7,7 @@ import RequirementsContainer from './containers/RequirementsContainer';
 import { useMultiStep } from './context/multiStep';
 import { Steps } from './interfaces/enums';
 import { getCustomersDropzones, getVehicleDropzones } from './utils/functions';
+import { sendConfirmationNotifications } from './services/notifications';
 
 export default function App() {
   const { currentStep, stepTitle } = useMultiStep();
@@ -24,7 +25,7 @@ export default function App() {
               <FilesFormContainer documentsPropertyName="customers" getDropdowns={getCustomersDropzones} />
             )}
             {currentStep === Steps.VEHICLE_FILES && (
-              <FilesFormContainer documentsPropertyName="vehicle" getDropdowns={getVehicleDropzones} />
+              <FilesFormContainer documentsPropertyName="vehicle" getDropdowns={getVehicleDropzones} submitAction={sendConfirmationNotifications} />
             )}
             {currentStep === Steps.CONCLUSION && <ConclusionContainer />}
           </div>

@@ -127,3 +127,11 @@ export const checkFilledFiles = (documentsPropertyName: 'customers' | 'vehicle',
 
   return checkKeys.every((_, index) => !!files[index]?.id);
 };
+
+export function createWhatsAppConfirmationMessage(): string {
+  return `✅ Hemos recibido correctamente los documentos
+
+⏳ El siguiente paso es esperar a que os enviemos los mandatos para firmar por *SMS*
+  
+📢 Te avisaremos por aquí cuando se hayan enviado`;
+}

@@ -30,6 +30,8 @@ export function checkFilledForm(formValues: DetailsForm): boolean {
     formValues;
 
   const isPhoneNumberFilled = (phone: PhoneNumber) => {
+    if (!phone.areaCode || !phone.isoCode || !phone.phoneNumber) return false;
+
     return (
       phone.areaCode.trim() !== '' &&
       phone.countryCode !== undefined &&

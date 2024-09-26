@@ -20,8 +20,8 @@ export default function DetailsFormContainer() {
     return new Promise(async (resolve, reject) => {
       try {
         const detailsData = formatDetailsDataForExport(formValues);
-        updateOrderWithDocsDetails(orderId, detailsData);
-        updateTotalumOrderWithDocsDetails(orderId, detailsData);
+        await updateOrderWithDocsDetails(orderId, detailsData);
+        await updateTotalumOrderWithDocsDetails(orderId, detailsData);
         const driveOrderFolderId = await createInformationFile(orderId);
         await updateTotalumOrderDocsFolderUrl(orderId, driveOrderFolderId);
         updateDocumentsData((prev) => ({ ...prev, detailsForm: formValues }));

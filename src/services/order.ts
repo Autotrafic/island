@@ -1,6 +1,6 @@
 import { autotraficApi } from '.';
 
-type UpdateOrderWithDocsDetails = (orderId: string, newData: UpdateOrderNestedPropertiesBody) => void;
+type UpdateOrderWithDocsDetails = (orderId: string, newData: UpdateOrderNestedPropertiesBody) => Promise<void>;
 
 export const getOrderById = async (orderId: string) => {
   const order = await autotraficApi.order.get(orderId);

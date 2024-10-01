@@ -130,8 +130,8 @@ export const checkFilledFiles = (documentsPropertyName: 'customers' | 'vehicle',
   return checkKeys.every((_, index) => !!files[index]?.id);
 };
 
-export function createWhatsAppConfirmationMessage(): string {
-  return `✅ Hemos recibido correctamente toda la documentación
+export function createWhatsAppConfirmationMessage(order: DatabaseOrder): string {
+  return `✅ Hemos recibido correctamente la documentación del vehículo con matrícula *${order.vehicle.plate}*
 
 ⏳ El siguiente paso es esperar a que os enviemos los mandatos para firmar por *SMS*
   

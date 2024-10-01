@@ -2,7 +2,7 @@ import { autotraficApi } from '.';
 import { createWhatsAppConfirmationMessage } from '../utils/functions';
 
 export async function sendWhatsAppConfirmation(order: DatabaseOrder) {
-  const message = createWhatsAppConfirmationMessage();
+  const message = createWhatsAppConfirmationMessage(order);
 
   const phoneNumber = order.user.phoneNumber.replace(/\D/g, '');
 

@@ -1,7 +1,7 @@
 import { autotraficApi } from '.';
 import { createWhatsAppConfirmationMessage } from '../utils/functions';
 
-export async function sendWhatsAppConfirmation(order: DatabaseOrder) {
+async function sendWhatsAppConfirmation(order: DatabaseOrder) {
   const message = createWhatsAppConfirmationMessage(order);
 
   const phoneNumber = order.user.phoneNumber.replace(/\D/g, '');
@@ -9,7 +9,7 @@ export async function sendWhatsAppConfirmation(order: DatabaseOrder) {
   await autotraficApi.notification.sendWhatsapp({ phoneNumber, message });
 }
 
-export async function sendSlackConfirmation(order: DatabaseOrder) {
+async function sendSlackConfirmation(order: DatabaseOrder) {
   const message = `Se han subido los documentos para la matrícula: ${order.vehicle.plate}.
   
 ✏️ Ya se pueden enviar los mandatos`;

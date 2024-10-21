@@ -14,7 +14,7 @@ async function sendSlackConfirmation(order: DatabaseOrder) {
   
 ✏️ Ya se pueden enviar los mandatos`;
 
-  await autotraficApi.notification.sendSlack({ message });
+  await autotraficApi.notification.sendSlack({ message, channel: 'orders' });
 }
 
 export async function sendConfirmationNotifications(orderId: string) {

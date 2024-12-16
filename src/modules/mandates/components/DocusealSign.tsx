@@ -7,13 +7,16 @@ export default function DocusealSign() {
   return (
     <>
       {templateSlug ? (
-        <DocusealForm
-          src={`https://docuseal.com/d/${templateSlug}`}
-          email="mandatos@autotrafic.es"
-          onComplete={(data) => console.log(data)}
-        />
+        <>
+          <DocusealForm
+            src={`https://docuseal.com/d/${templateSlug}`}
+            email="mandatos@autotrafic.es"
+            onComplete={(data) => console.log(data)}
+          />
+          <div>Documento para firmar</div>
+        </>
       ) : (
-        <div>Document not found</div>
+        <div>No hemos encontrado ningun documento para firmar</div>
       )}
     </>
   );

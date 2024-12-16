@@ -16,8 +16,9 @@ export const defaultDocumentsData: DocumentsData = {
   detailsForm: {
     vehiclePlate: '',
     shipmentAddressStreet: '',
-    shipmentAddressCity: '',
+    shipmentAddressHouseNumber: '',
     shipmentAddressPostalCode: '',
+    shipmentAddressCity: '',
     buyerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
     sellerPhone: { areaCode: '', countryCode: 0, isoCode: '', phoneNumber: '' },
   },

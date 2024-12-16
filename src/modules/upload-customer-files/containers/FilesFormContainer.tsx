@@ -9,7 +9,6 @@ import pdfPreviewImage from '../assets/pdf-file-preview.jpg';
 import { useDocumentsData } from '../context/documentsData';
 import { uploadFilesToDrive } from '../services/file';
 import { renameFile } from '../utils/formatter';
-import { getOrderById } from '../services/order';
 
 interface FilesFormContainerProps {
   documentsPropertyName: 'customers' | 'vehicle';
@@ -47,7 +46,6 @@ export default function FilesFormContainer({ documentsPropertyName, getDropdowns
   );
 
   useEffect(() => {
-    // Revoke the data uris to avoid memory leaks
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 

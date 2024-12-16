@@ -35,5 +35,5 @@ export const REQUIRED_DOCS_CONDITION = [
     title: 'Toma las fotos con suficiente luminosidad',
     description: 'La foto debe tener suficiente luz para que el documento sea claramente visible',
     icon: LightBulbIcon,
-  }
+  },
 ];

@@ -6,11 +6,13 @@
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development",
     "build:start": "cd dist && PORT=5300 npx serve",
-    "start": "webpack serve --open --mode development",
+    "start": "webpack serve --open --mode development --env upload_files",
+    "start:mandates": "webpack serve --open --mode development --env mandates",
     "start:live": "webpack serve --open --mode development --live-reload --hot"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
+    "@docuseal/react": "^1.0.49",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",

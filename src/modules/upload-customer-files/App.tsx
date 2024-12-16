@@ -20,13 +20,21 @@ export default function App() {
         <div className="container">
           <div className=" max-w-screen-sm flex-1">
             {currentStep === Steps.REQUIREMENTS && <RequirementsContainer />}
+
             {currentStep === Steps.DETAILS_FORM && <DetailsFormContainer />}
+
             {currentStep === Steps.CUSTOMERS_FILES && (
               <FilesFormContainer documentsPropertyName="customers" getDropdowns={getCustomersDropzones} />
             )}
+
             {currentStep === Steps.VEHICLE_FILES && (
-              <FilesFormContainer documentsPropertyName="vehicle" getDropdowns={getVehicleDropzones} submitAction={sendConfirmationNotifications} />
+              <FilesFormContainer
+                documentsPropertyName="vehicle"
+                getDropdowns={getVehicleDropzones}
+                submitAction={sendConfirmationNotifications}
+              />
             )}
+
             {currentStep === Steps.CONCLUSION && <ConclusionContainer />}
           </div>
         </div>

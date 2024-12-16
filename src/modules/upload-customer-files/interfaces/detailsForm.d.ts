@@ -1,8 +1,9 @@
 interface DetailsForm {
   vehiclePlate: string;
   shipmentAddressStreet: string;
-  shipmentAddressCity: string;
+  shipmentAddressHouseNumber: string;
   shipmentAddressPostalCode: string;
+  shipmentAddressCity: string;
   buyerPhone: PhoneNumber;
   sellerPhone: PhoneNumber;
 }

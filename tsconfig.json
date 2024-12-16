@@ -10,5 +10,5 @@
     "outDir": "dist",
     "moduleResolution": "node"
   },
-  "include": ["**/*.ts", "**/*.tsx", "src/components/Dropzone.tsx"]
+  "include": ["**/*.ts", "**/*.tsx", "src/modules/upload-customer-files/components/Dropzone.tsx"]
 }

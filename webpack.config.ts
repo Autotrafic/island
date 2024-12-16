@@ -15,7 +15,11 @@ module.exports = (env: any, argv: any) => {
       filename: 'bundle.js',
       path: path.resolve(__dirname, 'dist'),
       publicPath:
-        process.env.NODE_ENV === 'development' ? 'http://localhost:5100/' : 'https://upload-customer-files.onrender.com/',
+        process.env.NODE_ENV === 'development'
+          ? 'http://localhost:5100/'
+          : env.mandates
+          ? 'https://send-mandates.onrender.com'
+          : 'https://upload-customer-files.onrender.com/',
     },
 
     module: {

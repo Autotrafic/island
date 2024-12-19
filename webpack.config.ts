@@ -8,7 +8,7 @@ module.exports = (env: any, argv: any) => {
   return {
     mode: (process.env.NODE_ENV as 'production' | 'development' | undefined) ?? 'development',
 
-    entry: env.mandates ? './src/modules/mandates/index.tsx' : './src/modules/upload-customer-files/index.tsx',
+    entry: env.copy_order ? './src/modules/copy-order/index.tsx' : './src/modules/upload-customer-files/index.tsx',
 
     output: {
       filename: 'bundle.js',
@@ -16,7 +16,7 @@ module.exports = (env: any, argv: any) => {
       publicPath:
         process.env.NODE_ENV === 'development'
           ? 'http://localhost:5100/'
-          : env.mandates
+          : env.copy_order
           ? 'https://send-mandates.onrender.com'
           : 'https://upload-customer-files.onrender.com/',
     },

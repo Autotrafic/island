@@ -1,4 +1,4 @@
-import { BASE_API_URL, WHATSAPP_API_URL } from '../utils/urls';
+import { BASE_API_URL, WHATSAPP_API_URL } from '../../modules/upload-customer-files/utils/urls';
 
 export const autotraficApi = {
   order: {

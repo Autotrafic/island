@@ -1,4 +1,4 @@
-import { autotraficApi } from '.';
+import { autotraficApi } from '../../../shared/services';
 import { createWhatsAppConfirmationMessage } from '../utils/functions';
 
 async function sendWhatsAppConfirmation(order: DatabaseOrder) {

@@ -1,4 +1,4 @@
-import { autotraficApi } from '.';
+import { autotraficApi } from '../../../shared/services';
 
 type UpdateOrderWithDocsDetails = (orderId: string, newData: UpdateOrderNestedPropertiesBody) => Promise<void>;
 

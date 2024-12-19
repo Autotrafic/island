@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 
-export default function DocusealSign() {
+export default function CopyOrder() {
   const { templateSlug } = useParams();
 
   return (

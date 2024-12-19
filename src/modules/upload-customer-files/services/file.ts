@@ -1,4 +1,4 @@
-import { autotraficApi } from '.';
+import { autotraficApi } from '../../../shared/services';
 
 export async function uploadFilesToDrive(files: File[], orderId: string) {
   await autotraficApi.files.upload(files, orderId);

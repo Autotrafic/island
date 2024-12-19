@@ -1,8 +1,9 @@
-import { BASE_API_URL, WHATSAPP_API_URL } from '../../modules/upload-customer-files/utils/urls';
+import { BASE_API_URL, WHATSAPP_API_URL } from '../utils/urls';
 
 export const autotraficApi = {
   order: {
     get: (orderId: string) => makeRequest(`order/${orderId}`),
+    getTotalum: (orderId: string) => makeRequest(`order/totalum/${orderId}`),
     update: (orderId: string, data: UpdateOrderNestedPropertiesBody) =>
       makeRequest(`order/documentsDetails/${orderId}`, data),
     updateTotalumOrderDocsDetails: (data: UpdateTotalumOrderDetailsBody) =>
@@ -51,9 +52,12 @@ const makeRequest = async (endpoint: string, data?: RequestParams) => {
     }
 
     return result;
-  } catch (error) {
-    console.error('Error during request:', error);
-    throw error;
+  } catch (error: any) {
+    if (error.response.data.error) {
+      throw new Error(error.response.data.error);
+    } else {
+      throw new Error(error.message);
+    }
   }
 };
 

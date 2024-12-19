@@ -11,7 +11,7 @@ const root = createRoot(rootElement!);
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<CopyOrder />} />
+      <Route path="/:orderId" element={<CopyOrder />} />
     </Routes>
   </BrowserRouter>
 );

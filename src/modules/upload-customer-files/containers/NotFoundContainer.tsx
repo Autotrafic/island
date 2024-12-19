@@ -1,5 +1,5 @@
 import { Button, Result } from 'antd';
-import { WHATSAPP_HELP_LINK } from '../utils/urls';
+import { WHATSAPP_HELP_LINK } from '../../../shared/utils/urls';
 
 export default function NotFoundContainer() {
   return (

@@ -5,7 +5,6 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import Dotenv from 'dotenv-webpack';
 
 module.exports = (env: any, argv: any) => {
-  console.log(env.mandates ? './src/modules/mandates/index.tsx' : './src/modules/upload-customer-files/index.tsx');
   return {
     mode: (process.env.NODE_ENV as 'production' | 'development' | undefined) ?? 'development',
 

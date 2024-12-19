@@ -11,7 +11,7 @@ const root = createRoot(rootElement!);
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/:templateSlug" element={<DocusealSign />} />
+      <Route path="/" element={<DocusealSign />} />
     </Routes>
   </BrowserRouter>
 );

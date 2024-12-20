@@ -6,6 +6,8 @@ import { RenderOrder } from '../interfaces/RenderOrder';
 export function parseOrderToRenderOrder(order: TExtendedOrder): RenderOrder {
   const displayOrder = parseOrderToDisplayOrder(order);
 
+  console.log(order, displayOrder)
+
   const renderOrder = parseDisplayOrderToRenderOrder(displayOrder);
 
   return renderOrder;
@@ -147,8 +149,8 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
   return {
     general: mapGeneralToRenderData(general),
     client: mapPersonToRenderData(client, 'Comprador', client.type),
-    relatedPerson: mapPersonToRenderData(relatedPerson, 'Vendedor', client.type),
-    secondRelatedPerson: mapPersonToRenderData(secondRelatedPerson, 'Segundo Vendedor', client.type),
+    relatedPerson: mapPersonToRenderData(relatedPerson, 'Vendedor', relatedPerson?.type),
+    secondRelatedPerson: mapPersonToRenderData(secondRelatedPerson, 'Segundo Vendedor', secondRelatedPerson?.type),
     partner: mapPersonToRenderData(partner, 'Socio Profesional', client.type),
   };
 }

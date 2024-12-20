@@ -6,6 +6,7 @@ import { isEmptyObject, parseOrderToRenderOrder } from '../parser';
 import HeaderCard from './HeaderCard';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 import { PersonRenderOrder, RenderCard, RenderOrder } from '../interfaces/RenderOrder';
+import { getCardSubtitleColor } from '../utils/funcs';
 
 export default function CopyOrder() {
   const { orderId } = useParams();
@@ -43,7 +44,11 @@ export default function CopyOrder() {
         title={
           <div className="w-full flex justify-between">
             <span>{cardData.title}</span>
-            {cardData.subtitle && <span>{cardData.subtitle}</span>}
+            {cardData.subtitle && (
+              <span style={{ backgroundColor: getCardSubtitleColor(cardData.subtitle) }} className="px-2 rounded">
+                {cardData.subtitle}
+              </span>
+            )}
           </div>
         }
         bordered={true}

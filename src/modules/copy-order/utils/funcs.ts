@@ -85,3 +85,16 @@ export function getClientTypeColor(clientType: TClientType): string {
       return '#5b00d7';
   }
 }
+
+export function getCardSubtitleColor(cardSubtitle: string): string {
+  switch (cardSubtitle) {
+    case 'Particular':
+      return 'rgba(0,80,203,0.41)';
+    case 'Autónomo':
+      return 'rgba(1, 194, 154, 0.46)';
+    case 'Empresa':
+      return 'rgba(91, 0, 215, 0.46)';
+    default:
+      return '';
+  }
+}

@@ -53,6 +53,11 @@ module.exports = (env: any, argv: any) => {
     devServer: {
       port: 5300,
       historyApiFallback: true,
+      hot: true,
+      open: true,
+      static: {
+        directory: path.resolve(__dirname, 'dist'),
+      },
     },
 
     plugins: [

@@ -1,3 +1,4 @@
+import { AutonomousCommunity, TOrderType } from "../enums";
 import { TExtendedClient, TExtendedRelatedPerson } from "./cliente";
 import { ExtendedTotalumShipment } from "./envio";
 import { TExtendedProfessionalPartner } from "./socio_profesional";
@@ -11,10 +12,10 @@ interface TExtendedOrder extends Omit<TotalumOrder, 'cliente' | 'socio_profesion
 }
 
 interface TotalumOrder {
-  comunidad_autonoma: TAutonomousCommunity;
+  comunidad_autonoma: AutonomousCommunity;
   prioridad: TPriority;
   estado: TState;
-  tipo: TType;
+  tipo: TOrderType;
   fecha_inicio: Date;
   factura: object;
   matricula: string;
@@ -32,25 +33,6 @@ interface TotalumOrder {
   metadata: object;
   _id: string;
 }
-
-type TAutonomousCommunity =
-  | 'Cataluña'
-  | 'Andalucía'
-  | 'Aragón'
-  | 'Asturias'
-  | 'Baleares'
-  | 'Canarias'
-  | 'Cantabria'
-  | 'Castilla y León'
-  | 'Castilla la Mancha'
-  | 'Extremadura'
-  | 'Galicia'
-  | 'Madrid'
-  | 'Murcia'
-  | 'Navarra'
-  | 'País Vasco'
-  | 'La Rioja'
-  | 'Valencia';
 
 type TPriority = 'Normal' | 'Alta';
 
@@ -72,16 +54,5 @@ type TState =
   | 'Pendiente entrega Correos'
   | 'Pendiente Pago Devolución Envío'
   | 'Pendiente Pago Trámite';
-
-type TType =
-  | 'Transferencia'
-  | 'Duplicado permiso'
-  | 'Distintivo'
-  | 'Notificacion'
-  | 'Entrega compraventa'
-  | 'Transferencia por finalizacion entrega'
-  | 'Alta por baja voluntaria'
-  | 'Cambio de domicilio'
-  | 'Baja temporal';
 
 type TOrderMandate = 'No enviados' | 'Enviados' | 'Firmados' | 'Adjuntados';

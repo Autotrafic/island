@@ -1,4 +1,4 @@
-import { AutonomousCommunity, TOrderMandate, TOrderType } from '../../../shared/interfaces/enums';
+import { AutonomousCommunity, TClientType, TOrderMandate, TOrderType } from '../../../shared/interfaces/enums';
 
 export function getAutonomousCommunityColor(autonomousCommunity: AutonomousCommunity): string {
   switch (autonomousCommunity) {
@@ -75,17 +75,13 @@ export function getOrderTypeColor(orderType: TOrderType): string {
   }
 }
 
-export function getCardName(key: string): string {
-  switch (key) {
-    case 'client':
-      return 'Comprador';
-    case 'relatedPerson':
-      return 'Vendedor';
-    case 'secondRelatedPerson':
-      return 'Segundo Vendedor';
-    case 'partner':
-      return 'Socio Profesional';
-    default:
-      return key;
+export function getClientTypeColor(clientType: TClientType): string {
+  switch (clientType) {
+    case TClientType.Particular:
+      return '#0050cb';
+    case TClientType.Autonomo:
+      return '#01c29a';
+    case TClientType.Empresa:
+      return '#5b00d7';
   }
 }

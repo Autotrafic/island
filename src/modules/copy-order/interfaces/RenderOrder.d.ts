@@ -2,11 +2,11 @@ import { AutonomousCommunity, TOrderMandate } from "../../../shared/interfaces/e
 import { OptionalButton } from "./DisplayOrder";
 
 interface RenderOrder {
-    general: GeneralRenderOrder;
-    client: PersonRenderOrder | null;
-    relatedPerson: PersonRenderOrder | null;
-    secondRelatedPerson: PersonRenderOrder | null;
-    partner: PersonRenderOrder | null;
+    general: RenderCard<GeneralRenderOrder>;
+    client: RenderCard<PersonRenderOrder> | null;
+    relatedPerson: RenderCard<PersonRenderOrder> | null;
+    secondRelatedPerson: RenderCard<PersonRenderOrder> | null;
+    partner: RenderCard<PersonRenderOrder> | null;
   }
   
   interface GeneralRenderOrder {
@@ -36,5 +36,11 @@ interface RenderOrder {
     label: string;
     value: T;
     buttons: OptionalButton[];
+  }
+
+  interface RenderCard<T> {
+    title: string;
+    subtitle?: string;
+    data: T;
   }
   

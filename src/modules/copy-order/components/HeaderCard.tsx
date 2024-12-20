@@ -5,7 +5,7 @@ import { RenderOrder } from '../interfaces/RenderOrder';
 import { parseOrderToDisplayOrder } from '../parser';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 
-export default function GeneralInfoCard({ order, copyFunc }: GeneralInfoCardProps) {
+export default function HeaderCard({ order, copyFunc }: HeaderCardProps) {
   const displayOrder = parseOrderToDisplayOrder(order);
   const { general } = displayOrder;
 
@@ -28,31 +28,41 @@ export default function GeneralInfoCard({ order, copyFunc }: GeneralInfoCardProp
             {general.vehiclePlate}
           </h1>
         </Tooltip>
+        <div className="flex flex-col items-center">
+          <span>Tipo trámite</span>
+          <span
+            className="font-medium text-lg rounded px-3 py-1"
+            style={{ backgroundColor: getOrderTypeColor(general.orderType) }}
+          >
+            {general.orderType}
+          </span>
+        </div>
 
-        <span
-          className="font-medium text-lg rounded px-3 py-1"
-          style={{ backgroundColor: getOrderTypeColor(general.orderType) }}
-        >
-          {general.orderType}
-        </span>
-        <span
-          className="font-medium text-lg rounded px-3 py-1"
-          style={{ backgroundColor: getAutonomousCommunityColor(general.autonomousCommunity) }}
-        >
-          {general.autonomousCommunity}
-        </span>
-        <span
-          className="font-medium text-lg rounded px-3 py-1"
-          style={{ backgroundColor: getMandatesColor(general.mandate) }}
-        >
-          {general.mandate}
-        </span>
+        <div className="flex flex-col items-center">
+          <span>CCAA</span>
+          <span
+            className="font-medium text-lg rounded px-3 py-1"
+            style={{ backgroundColor: getAutonomousCommunityColor(general.autonomousCommunity) }}
+          >
+            {general.autonomousCommunity}
+          </span>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <span>Mandatos</span>
+          <span
+            className="font-medium text-lg rounded px-3 py-1"
+            style={{ backgroundColor: getMandatesColor(general.mandate) }}
+          >
+            {general.mandate}
+          </span>
+        </div>
       </div>
     </Card>
   );
 }
 
-interface GeneralInfoCardProps {
+interface HeaderCardProps {
   order: TExtendedOrder;
   copyFunc: (text: string) => void;
 }

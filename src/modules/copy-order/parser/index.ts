@@ -56,109 +56,114 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
 function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder {
   const { client, relatedPerson, secondRelatedPerson, partner, general } = displayOrder;
 
-  const mapPersonToRenderData = (person: DisplayPerson | undefined) => {
+  const mapPersonToRenderData = (person: DisplayPerson | undefined, cardTitle: string, cardSubtitle?: string) => {
     if (!person) return null;
 
     return {
-      nif: {
-        label: 'NIF',
-        value: person.nif,
-        buttons: [],
+      title: cardTitle,
+      subtitle: cardSubtitle,
+      data: {
+        nif: {
+          label: 'NIF',
+          value: person.nif,
+          buttons: [],
+        },
+        name: {
+          label: 'Nombre',
+          value: person.name,
+          buttons: [],
+        },
+        firstSurname: {
+          label: 'Primer Apellido',
+          value: person.firstSurname,
+          buttons: [],
+        },
+        secondSurname: {
+          label: 'Segundo Apellido',
+          value: person.secondSurname,
+          buttons: [],
+        },
+        address: {
+          label: 'Dirección',
+          value: person.address,
+          buttons: [],
+        },
+        representative: person.representative
+          ? {
+              nif: {
+                label: 'NIF',
+                value: person.representative.nif,
+                buttons: [],
+              },
+              name: {
+                label: 'Nombre',
+                value: person.representative.name,
+                buttons: [],
+              },
+              firstSurname: {
+                label: 'Primer Apellido',
+                value: person.representative.firstSurname,
+                buttons: [],
+              },
+              secondSurname: {
+                label: 'Segundo Apellido',
+                value: person.representative.secondSurname,
+                buttons: [],
+              },
+            }
+          : null,
       },
-      name: {
-        label: 'Nombre',
-        value: person.name,
-        buttons: [],
-      },
-      firstSurname: {
-        label: 'Primer Apellido',
-        value: person.firstSurname,
-        buttons: [],
-      },
-      secondSurname: {
-        label: 'Segundo Apellido',
-        value: person.secondSurname,
-        buttons: [],
-      },
-      address: {
-        label: 'Dirección',
-        value: person.address,
-        buttons: [],
-      },
-      representative: person.representative
-        ? {
-            nif: {
-              label: 'NIF',
-              value: person.representative.nif,
-              buttons: [],
-            },
-            name: {
-              label: 'Nombre',
-              value: person.representative.name,
-              buttons: [],
-            },
-            firstSurname: {
-              label: 'Primer Apellido',
-              value: person.representative.firstSurname,
-              buttons: [],
-            },
-            secondSurname: {
-              label: 'Segundo Apellido',
-              value: person.representative.secondSurname,
-              buttons: [],
-            },
-          }
-        : null,
     };
   };
 
   const mapGeneralToRenderData = (general: GeneralOrderInfo) => {
     return {
-      orderType: {
-        label: 'Tipo de Pedido',
-        value: general.orderType,
-        buttons: [],
-      },
-      vehiclePlate: {
-        label: 'Matrícula',
-        value: general.vehiclePlate,
-        buttons: [],
-      },
-      autonomousCommunity: {
-        label: 'Comunidad Autónoma',
-        value: general.autonomousCommunity,
-        buttons: [],
-      },
-      mandate: {
-        label: 'Mandato',
-        value: general.mandate,
-        buttons: [],
+      title: 'General',
+      data: {
+        orderType: {
+          label: 'Tipo de Pedido',
+          value: general.orderType,
+          buttons: [],
+        },
+        vehiclePlate: {
+          label: 'Matrícula',
+          value: general.vehiclePlate,
+          buttons: [],
+        },
+        autonomousCommunity: {
+          label: 'Comunidad Autónoma',
+          value: general.autonomousCommunity,
+          buttons: [],
+        },
+        mandate: {
+          label: 'Mandato',
+          value: general.mandate,
+          buttons: [],
+        },
       },
     };
   };
 
   return {
     general: mapGeneralToRenderData(general),
-    client: mapPersonToRenderData(client),
-    relatedPerson: mapPersonToRenderData(relatedPerson),
-    secondRelatedPerson: mapPersonToRenderData(secondRelatedPerson),
-    partner: mapPersonToRenderData(partner),
+    client: mapPersonToRenderData(client, 'Comprador', client.type),
+    relatedPerson: mapPersonToRenderData(relatedPerson, 'Vendedor', client.type),
+    secondRelatedPerson: mapPersonToRenderData(secondRelatedPerson, 'Segundo Vendedor', client.type),
+    partner: mapPersonToRenderData(partner, 'Socio Profesional', client.type),
   };
 }
 
 export const isEmptyObject = (obj: Record<string, any>): boolean => {
-    return Object.values(obj).every((fieldValue) => {
-      if (fieldValue == null || fieldValue === '' || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
-        return true;
-      }
-  
-      if (typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
-        const filteredObject = Object.fromEntries(
-          Object.entries(fieldValue).filter(([key]) => key !== 'label')
-        );
-        return isEmptyObject(filteredObject);
-      }
-  
-      return false;
-    });
-  };
+  return Object.values(obj).every((fieldValue) => {
+    if (fieldValue == null || fieldValue === '' || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
+      return true;
+    }
+
+    if (typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
+      const filteredObject = Object.fromEntries(Object.entries(fieldValue).filter(([key]) => key !== 'label'));
+      return isEmptyObject(filteredObject);
+    }
+
+    return false;
+  });
+};

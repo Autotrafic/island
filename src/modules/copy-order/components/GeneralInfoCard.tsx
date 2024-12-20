@@ -1,8 +1,12 @@
 import { Card, Tooltip } from 'antd';
-import { DisplayOrder } from '../interfaces';
+import { DisplayOrder } from '../interfaces/DisplayOrder';
 import { getAutonomousCommunityColor, getMandatesColor, getOrderTypeColor } from '../utils/funcs';
+import { RenderOrder } from '../interfaces/RenderOrder';
+import { parseOrderToDisplayOrder } from '../parser';
+import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 
-export default function GeneralInfoCard({ displayOrder, copyFunc }: GeneralInfoCardProps) {
+export default function GeneralInfoCard({ order, copyFunc }: GeneralInfoCardProps) {
+  const displayOrder = parseOrderToDisplayOrder(order);
   const { general } = displayOrder;
 
   return (
@@ -49,6 +53,6 @@ export default function GeneralInfoCard({ displayOrder, copyFunc }: GeneralInfoC
 }
 
 interface GeneralInfoCardProps {
-  displayOrder: DisplayOrder;
+  order: TExtendedOrder;
   copyFunc: (text: string) => void;
 }

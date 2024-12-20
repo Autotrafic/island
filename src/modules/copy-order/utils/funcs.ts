@@ -74,3 +74,18 @@ export function getOrderTypeColor(orderType: TOrderType): string {
       return '#f1874f';
   }
 }
+
+export function getCardName(key: string): string {
+  switch (key) {
+    case 'client':
+      return 'Comprador';
+    case 'relatedPerson':
+      return 'Vendedor';
+    case 'secondRelatedPerson':
+      return 'Segundo Vendedor';
+    case 'partner':
+      return 'Socio Profesional';
+    default:
+      return key;
+  }
+}

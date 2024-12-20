@@ -32,3 +32,8 @@ interface GeneralOrderInfo {
   autonomousCommunity: AutonomousCommunity;
   mandate: TOrderMandate;
 }
+
+type OptionalButton = {
+  label: string;
+  onClick: () => void;
+};

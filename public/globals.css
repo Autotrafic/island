@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
   #__next {
     @apply contents;
@@ -30,6 +31,10 @@
   .title {
     @apply text-primary;
   }
+}
+
+:root {
+  --ant-font-family: 'Poppins', sans-serif;
 }
 
 .custom-card-title .ant-card-head-title {

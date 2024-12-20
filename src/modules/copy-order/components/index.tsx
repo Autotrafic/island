@@ -4,6 +4,7 @@ import { Button, Card } from 'antd'; // Replace with actual parsing function imp
 import { DisplayOrder } from '../interfaces';
 import { getTotalumOrder } from '../services/totalum';
 import { parseOrderToDisplayOrder } from '../parser';
+import GeneralInfoCard from './GeneralInfoCard';
 
 export default function CopyOrder() {
   const { orderId } = useParams();
@@ -18,12 +19,17 @@ export default function CopyOrder() {
   };
 
   const renderProperty = (key: string, value: any, path: string, optionalButtons: any[] = []) => (
-    <div key={path} className="flex gap-2 items-center my-3">
-      <span className="font-semibold">{key}:</span>
-      <span>{value ?? 'N/A'}</span>
+    <div key={path} className="flex items-center my-3 justify-between gap-4">
+      <div className="flex gap-2">
+        <span className="font-semibold">{key}:</span>
+        <span>{value ?? 'N/A'}</span>
+      </div>
+
       {value && (
-        <>
-          <Button onClick={() => copyToClipboard(value)}>Copiar</Button>
+        <div>
+          <Button size="small" onClick={() => copyToClipboard(value)}>
+            Copiar
+          </Button>
           {optionalButtons.map((button, index) => (
             <button
               key={index}
@@ -33,7 +39,7 @@ export default function CopyOrder() {
               {button.label}
             </button>
           ))}
-        </>
+        </div>
       )}
     </div>
   );
@@ -48,13 +54,14 @@ export default function CopyOrder() {
         bordered={true}
         size="small"
         style={{
+          fontFamily: 'Poppins',
           boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)',
           width: '100%',
-          maxWidth: '400px', // Adjusted max width for the cards
-          flex: '1 1 400px', // Ensure cards grow but do not exceed 350px
-          marginBottom: '16px', // Added margin bottom to ensure spacing between cards
+          maxWidth: '400px',
+          flex: '1 1 400px',
+          marginBottom: '16px',
           display: 'flex',
-          flexDirection: 'column', // Ensure cards' content stacks vertically
+          flexDirection: 'column',
         }}
       >
         {Object.entries(data).map(([key, value]) => {
@@ -83,12 +90,15 @@ export default function CopyOrder() {
     <div className="w-full min-h-screen bg-gray-200 p-10 flex flex-col justify-center">
       <div className="w-full flex justify-center">
         {displayOrder ? (
-          <div className="w-full max-w-[1500px] flex flex-wrap gap-5 justify-center">
-            {renderCard('Información general', displayOrder.general, 'general')}
-            {renderCard('Comprador', displayOrder.client, 'client')}
-            {renderCard('Vendedor', displayOrder.relatedPerson, 'relatedPerson')}
-            {renderCard('Segundo vendedor', displayOrder.secondRelatedPerson, 'secondRelatedPerson')}
-            {renderCard('Socio profesional', displayOrder.partner, 'partner')}
+          <div className="w-full max-w-[1250px] ">
+            <GeneralInfoCard displayOrder={displayOrder} />
+            <div className="w-full flex flex-wrap gap-5 justify-center">
+              {renderCard('Información general', displayOrder.general, 'general')}
+              {renderCard('Comprador', displayOrder.client, 'client')}
+              {renderCard('Vendedor', displayOrder.relatedPerson, 'relatedPerson')}
+              {renderCard('Segundo vendedor', displayOrder.secondRelatedPerson, 'secondRelatedPerson')}
+              {renderCard('Socio profesional', displayOrder.partner, 'partner')}
+            </div>
           </div>
         ) : (
           <div>Cargando...</div>

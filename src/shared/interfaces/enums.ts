@@ -21,6 +21,13 @@ export enum TClientType {
   Empresa = 'Empresa',
 }
 
+export enum TOrderMandate {
+  NoEnviados = 'No enviados',
+  Enviados = 'Enviados',
+  Firmados = 'Firmados',
+  Adjuntados = 'Adjuntados',
+}
+
 export enum AutonomousCommunity {
   Andalucia = 'Andalucía',
   Aragon = 'Aragón',

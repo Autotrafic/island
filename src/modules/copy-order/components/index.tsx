@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Card } from 'antd'; // Replace with actual parsing function import
+import { Button, Card, message } from 'antd'; // Replace with actual parsing function import
 import { DisplayOrder } from '../interfaces';
 import { getTotalumOrder } from '../services/totalum';
 import { parseOrderToDisplayOrder } from '../parser';
@@ -8,10 +8,13 @@ import GeneralInfoCard from './GeneralInfoCard';
 
 export default function CopyOrder() {
   const { orderId } = useParams();
+  const [messageApi, messageContextHolder] = message.useMessage();
   const [displayOrder, setDisplayOrder] = useState<DisplayOrder>();
 
   const copyToClipboard = (value: any) => {
-    navigator.clipboard.writeText(value).then(() => {});
+    navigator.clipboard.writeText(value).then(() => {
+      messageApi.info(`${value} copiado correctamente`);
+    });
   };
 
   const hasNonEmptyProperties = (obj: any): boolean => {
@@ -88,12 +91,12 @@ export default function CopyOrder() {
 
   return (
     <div className="w-full min-h-screen bg-gray-200 p-10 flex flex-col justify-center">
+      {messageContextHolder}
       <div className="w-full flex justify-center">
         {displayOrder ? (
           <div className="w-full max-w-[1250px] ">
-            <GeneralInfoCard displayOrder={displayOrder} />
+            <GeneralInfoCard displayOrder={displayOrder} copyFunc={copyToClipboard} />
             <div className="w-full flex flex-wrap gap-5 justify-center">
-              {renderCard('Información general', displayOrder.general, 'general')}
               {renderCard('Comprador', displayOrder.client, 'client')}
               {renderCard('Vendedor', displayOrder.relatedPerson, 'relatedPerson')}
               {renderCard('Segundo vendedor', displayOrder.secondRelatedPerson, 'secondRelatedPerson')}

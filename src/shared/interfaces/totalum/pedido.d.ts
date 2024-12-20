@@ -1,4 +1,4 @@
-import { AutonomousCommunity, TOrderType } from "../enums";
+import { AutonomousCommunity, TOrderMandate, TOrderType } from "../enums";
 import { TExtendedClient, TExtendedRelatedPerson } from "./cliente";
 import { ExtendedTotalumShipment } from "./envio";
 import { TExtendedProfessionalPartner } from "./socio_profesional";
@@ -54,5 +54,3 @@ type TState =
   | 'Pendiente entrega Correos'
   | 'Pendiente Pago Devolución Envío'
   | 'Pendiente Pago Trámite';
-
-type TOrderMandate = 'No enviados' | 'Enviados' | 'Firmados' | 'Adjuntados';

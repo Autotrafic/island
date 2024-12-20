@@ -17,7 +17,7 @@ module.exports = (env: any, argv: any) => {
         process.env.NODE_ENV === 'development'
           ? 'http://localhost:5100/'
           : env.copy_order
-          ? 'https://send-mandates.onrender.com'
+          ? 'https://copy-order.onrender.com'
           : 'https://upload-customer-files.onrender.com/',
     },
 

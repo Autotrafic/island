@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Card, message } from 'antd';
+import { Button, Card, message, notification } from 'antd';
 import { getTotalumOrder } from '../services/totalum';
 import { isEmptyObject, parseOrderToRenderOrder } from '../parser';
 import HeaderCard from './HeaderCard';
@@ -8,10 +8,14 @@ import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 import { PersonRenderOrder, RenderCard, RenderField, RenderOrder } from '../interfaces/RenderOrder';
 import { getCardSubtitleColor } from '../utils/funcs';
 import { OptionalButton } from '../interfaces/DisplayOrder';
+import { getAlertOptions } from '../../../shared/utils/funcs';
 
 export default function CopyOrder() {
   const { orderId } = useParams();
+
   const [messageApi, messageContextHolder] = message.useMessage();
+  const [api, contextHolder] = notification.useNotification();
+
   const [order, setOrder] = useState<TExtendedOrder>();
   const [renderOrder, setRenderOrder] = useState<RenderOrder>();
 
@@ -21,6 +25,10 @@ export default function CopyOrder() {
     });
   };
 
+  const openNotification = (success: boolean, message: string) => {
+    if (!success) api.error(getAlertOptions('No se han podido obtener los datos', message));
+  };
+
   useEffect(() => {
     if (orderId) {
       (async () => {
@@ -28,7 +36,8 @@ export default function CopyOrder() {
           const order = await getTotalumOrder(orderId);
           setOrder(order);
           setRenderOrder(parseOrderToRenderOrder(order));
-        } catch (error) {
+        } catch (error: any) {
+          openNotification(false, error.message);
           console.error('Error fetching order:', error);
         }
       })();
@@ -122,7 +131,9 @@ export default function CopyOrder() {
 
   return (
     <div className="w-full min-h-screen bg-gray-200 p-10 flex flex-col justify-center">
+      {contextHolder}
       {messageContextHolder}
+
       <div className="w-full flex justify-center">
         {order ? (
           <div className="w-full max-w-[1250px] ">

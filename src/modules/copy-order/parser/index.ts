@@ -40,7 +40,7 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
     const [firstRelatedPerson, secondRelatedPerson] = persona_relacionada;
 
     return {
-      client: cliente ? mapPerson(cliente): undefined,
+      client: cliente ? mapPerson(cliente) : undefined,
       relatedPerson: firstRelatedPerson ? mapPerson(firstRelatedPerson.cliente) : undefined,
       secondRelatedPerson: secondRelatedPerson ? mapPerson(secondRelatedPerson.cliente) : undefined,
       partner: socio_profesional ? mapPerson(socio_profesional.cliente, { iae: socio_profesional.iae }) : undefined,
@@ -57,113 +57,117 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
 }
 
 function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder {
-  const { client, relatedPerson, secondRelatedPerson, partner, general } = displayOrder;
+  try {
+    const { client, relatedPerson, secondRelatedPerson, partner, general } = displayOrder;
 
-  const mapPersonToRenderData = (person: DisplayPerson | undefined, cardTitle: string, cardSubtitle?: string) => {
-    if (!person) return null;
+    const mapPersonToRenderData = (person: DisplayPerson | undefined, cardTitle: string, cardSubtitle?: string) => {
+      if (!person) return null;
 
-    return {
-      title: cardTitle,
-      subtitle: cardSubtitle,
-      data: {
-        nif: {
-          label: person.type === TClientType.Empresa ? 'CIF' : 'NIF',
-          value: person.nif,
-          buttons: [],
-        },
-        name: {
-          label: 'Nombre',
-          value: person.name,
-          buttons: [],
-        },
-        firstSurname:
-          person.type !== TClientType.Empresa
-            ? {
-                label: 'Primer Apellido',
-                value: person.firstSurname,
-                buttons: [],
-              }
-            : null,
-        secondSurname:
-          person.type !== TClientType.Empresa
-            ? {
-                label: 'Segundo Apellido',
-                value: person.secondSurname,
-                buttons: [],
-              }
-            : null,
-        address: {
-          label: 'Dirección',
-          value: person.address,
-          buttons: [],
-        },
-        representative: person.representative
-          ? {
-              label: 'Representante',
-              buttons: [],
-              value: {
-                nif: {
-                  label: 'NIF',
-                  value: person.representative.nif,
-                  buttons: [],
-                },
-                name: {
-                  label: 'Nombre',
-                  value: person.representative.name,
-                  buttons: [],
-                },
-                firstSurname: {
+      return {
+        title: cardTitle,
+        subtitle: cardSubtitle,
+        data: {
+          nif: {
+            label: person.type === TClientType.Empresa ? 'CIF' : 'NIF',
+            value: person.nif,
+            buttons: [],
+          },
+          name: {
+            label: 'Nombre',
+            value: person.name,
+            buttons: [],
+          },
+          firstSurname:
+            person.type !== TClientType.Empresa
+              ? {
                   label: 'Primer Apellido',
-                  value: person.representative.firstSurname,
+                  value: person.firstSurname,
                   buttons: [],
-                },
-                secondSurname: {
+                }
+              : null,
+          secondSurname:
+            person.type !== TClientType.Empresa
+              ? {
                   label: 'Segundo Apellido',
-                  value: person.representative.secondSurname,
+                  value: person.secondSurname,
                   buttons: [],
+                }
+              : null,
+          address: {
+            label: 'Dirección',
+            value: person.address,
+            buttons: [],
+          },
+          representative: person.representative
+            ? {
+                label: 'Representante',
+                buttons: [],
+                value: {
+                  nif: {
+                    label: 'NIF',
+                    value: person.representative.nif,
+                    buttons: [],
+                  },
+                  name: {
+                    label: 'Nombre',
+                    value: person.representative.name,
+                    buttons: [],
+                  },
+                  firstSurname: {
+                    label: 'Primer Apellido',
+                    value: person.representative.firstSurname,
+                    buttons: [],
+                  },
+                  secondSurname: {
+                    label: 'Segundo Apellido',
+                    value: person.representative.secondSurname,
+                    buttons: [],
+                  },
                 },
-              },
-            }
-          : null,
-      },
+              }
+            : null,
+        },
+      };
     };
-  };
 
-  const mapGeneralToRenderData = (general: GeneralOrderInfo) => {
+    const mapGeneralToRenderData = (general: GeneralOrderInfo) => {
+      return {
+        title: 'General',
+        data: {
+          orderType: {
+            label: 'Tipo de Pedido',
+            value: general.orderType,
+            buttons: [],
+          },
+          vehiclePlate: {
+            label: 'Matrícula',
+            value: general.vehiclePlate,
+            buttons: [],
+          },
+          autonomousCommunity: {
+            label: 'Comunidad Autónoma',
+            value: general.autonomousCommunity,
+            buttons: [],
+          },
+          mandate: {
+            label: 'Mandato',
+            value: general.mandate,
+            buttons: [],
+          },
+        },
+      };
+    };
+
     return {
-      title: 'General',
-      data: {
-        orderType: {
-          label: 'Tipo de Pedido',
-          value: general.orderType,
-          buttons: [],
-        },
-        vehiclePlate: {
-          label: 'Matrícula',
-          value: general.vehiclePlate,
-          buttons: [],
-        },
-        autonomousCommunity: {
-          label: 'Comunidad Autónoma',
-          value: general.autonomousCommunity,
-          buttons: [],
-        },
-        mandate: {
-          label: 'Mandato',
-          value: general.mandate,
-          buttons: [],
-        },
-      },
+      general: mapGeneralToRenderData(general),
+      client: mapPersonToRenderData(client, 'Comprador', client?.type),
+      relatedPerson: mapPersonToRenderData(relatedPerson, 'Vendedor', relatedPerson?.type),
+      secondRelatedPerson: mapPersonToRenderData(secondRelatedPerson, 'Segundo Vendedor', secondRelatedPerson?.type),
+      partner: mapPersonToRenderData(partner, 'Socio Profesional', partner?.type),
     };
-  };
-
-  return {
-    general: mapGeneralToRenderData(general),
-    client: mapPersonToRenderData(client, 'Comprador', client.type),
-    relatedPerson: mapPersonToRenderData(relatedPerson, 'Vendedor', relatedPerson?.type),
-    secondRelatedPerson: mapPersonToRenderData(secondRelatedPerson, 'Segundo Vendedor', secondRelatedPerson?.type),
-    partner: mapPersonToRenderData(partner, 'Socio Profesional', client.type),
-  };
+  } catch (error: any) {
+    throw new Error(`Error parseando Display Order a Render Order: ${error.message}`);
+  }
 }
 
 export const isEmptyObject = (obj: Record<string, any>): boolean => {

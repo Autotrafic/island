@@ -5,8 +5,9 @@ import { getTotalumOrder } from '../services/totalum';
 import { isEmptyObject, parseOrderToRenderOrder } from '../parser';
 import HeaderCard from './HeaderCard';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
-import { PersonRenderOrder, RenderCard, RenderOrder } from '../interfaces/RenderOrder';
+import { PersonRenderOrder, RenderCard, RenderField, RenderOrder } from '../interfaces/RenderOrder';
 import { getCardSubtitleColor } from '../utils/funcs';
+import { OptionalButton } from '../interfaces/DisplayOrder';
 
 export default function CopyOrder() {
   const { orderId } = useParams();
@@ -38,6 +39,8 @@ export default function CopyOrder() {
     const person = cardData?.data;
     if (!person || isEmptyObject(person)) return null;
 
+    const personAsRecord = person as unknown as Record<string, RenderField<any> | null>;
+
     return (
       <Card
         key={cardData.title}
@@ -64,27 +67,57 @@ export default function CopyOrder() {
           flexDirection: 'column',
         }}
       >
-        <div className="flex flex-col gap-4">
-          {Object.entries(person).map(([fieldKey, fieldValue]: any) => {
-            if (!fieldValue) return null;
+        <div className="flex flex-col gap-4">{renderFields(personAsRecord)}</div>
+      </Card>
+    );
+  };
+  const renderFields = (data: Record<string, RenderField<any> | null>, parentKey: string = ''): JSX.Element[] => {
+    return (
+      <div className="flex flex-col gap-4">
+        {Object.entries(data)
+          .filter(([, fieldValue]) => fieldValue !== null)
+          .map(([fieldKey, fieldValue]) => {
+            const { label, value = 'N/A', buttons = [] } = fieldValue as RenderField<any>;
 
-            const { label, value = 'N/A' } = fieldValue;
+            // Nested fields
+            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+              return (
+                <div key={parentKey + fieldKey} className="w-full">
+                  <h3 className="font-semibold text-base mb-2">{label}</h3>
+                  <div className="pl-4">
+                    {renderFields(value as Record<string, RenderField<any>>, `${parentKey + fieldKey}.`)}
+                  </div>
+                </div>
+              );
+            }
 
+            // Default fields
             return (
-              <div key={fieldKey} className="w-full flex gap-10 justify-between items-center">
+              <div key={parentKey + fieldKey} className="w-full flex gap-10 justify-between items-center">
                 <div className="flex gap-2 items-center">
                   <span className="font-semibold">{label}:</span>
                   <span>{value}</span>
                 </div>
-                <Button size="small" onClick={() => copyToClipboard(value)}>
-                  Copiar
-                </Button>
+                <div className="flex gap-2">
+                  <Button size="small" onClick={() => copyToClipboard(value)}>
+                    Copiar
+                  </Button>
+
+                  {buttons.length > 0 && (
+                    <>
+                      {buttons.map((button: OptionalButton, index: number) => (
+                        <Button key={index} size="small" onClick={button.onClick}>
+                          {button.label}
+                        </Button>
+                      ))}
+                    </>
+                  )}
+                </div>
               </div>
             );
           })}
-        </div>
-      </Card>
-    );
+      </div>
+    ) as any;
   };
 
   return (

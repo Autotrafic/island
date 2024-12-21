@@ -19,10 +19,10 @@ interface RenderOrder {
   interface PersonRenderOrder {
     nif: RenderField<string>;
     name: RenderField<string>;
-    firstSurname: RenderField<string | undefined>;
-    secondSurname: RenderField<string | undefined>;
+    firstSurname: RenderField<string | undefined> | null;
+    secondSurname: RenderField<string | undefined> | null;
     address: RenderField<string | undefined>;
-    representative: RepresentativeRenderOrder | null;
+    representative: RenderField<RepresentativeRenderOrder> | null;
   }
   
   interface RepresentativeRenderOrder {

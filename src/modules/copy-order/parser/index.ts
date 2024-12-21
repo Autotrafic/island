@@ -1,3 +1,5 @@
+import { TClientType } from '../../../shared/interfaces/enums';
+import { TExtendedClient } from '../../../shared/interfaces/totalum/cliente';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 import { validateOrder } from '../handlers';
 import { DisplayOrder, DisplayPerson, GeneralOrderInfo } from '../interfaces/DisplayOrder';
@@ -5,8 +7,6 @@ import { RenderOrder } from '../interfaces/RenderOrder';
 
 export function parseOrderToRenderOrder(order: TExtendedOrder): RenderOrder {
   const displayOrder = parseOrderToDisplayOrder(order);
-
-  console.log(order, displayOrder)
 
   const renderOrder = parseDisplayOrderToRenderOrder(displayOrder);
 
@@ -17,21 +17,22 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
   try {
     validateOrder(order);
 
-    const mapPerson = (person: any, extraData?: any) => ({
+    const mapPerson = (person: TExtendedClient, extraData?: any) => ({
       type: person.tipo,
       nif: person.nif,
       name: person.nombre_o_razon_social,
       firstSurname: person.primer_apellido,
       secondSurname: person.segundo_apellido,
       address: person.direccion,
-      representative: person.representante
-        ? {
-            nif: person.representante.nif,
-            name: person.representante.nombre_o_razon_social,
-            firstSurname: person.representante.primer_apellido,
-            secondSurname: person.representante.segundo_apellido,
-          }
-        : undefined,
+      representative:
+        person.representante && person.representante.length > 0
+          ? {
+              nif: person.representante[0].nif,
+              name: person.representante[0].nombre_o_razon_social,
+              firstSurname: person.representante[0].primer_apellido,
+              secondSurname: person.representante[0].segundo_apellido,
+            }
+          : undefined,
       ...extraData,
     });
 
@@ -39,7 +40,7 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
     const [firstRelatedPerson, secondRelatedPerson] = persona_relacionada;
 
     return {
-      client: mapPerson(cliente),
+      client: cliente ? mapPerson(cliente): undefined,
       relatedPerson: firstRelatedPerson ? mapPerson(firstRelatedPerson.cliente) : undefined,
       secondRelatedPerson: secondRelatedPerson ? mapPerson(secondRelatedPerson.cliente) : undefined,
       partner: socio_profesional ? mapPerson(socio_profesional.cliente, { iae: socio_profesional.iae }) : undefined,
@@ -66,7 +67,7 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
       subtitle: cardSubtitle,
       data: {
         nif: {
-          label: 'NIF',
+          label: person.type === TClientType.Empresa ? 'CIF' : 'NIF',
           value: person.nif,
           buttons: [],
         },
@@ -75,16 +76,22 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
           value: person.name,
           buttons: [],
         },
-        firstSurname: {
-          label: 'Primer Apellido',
-          value: person.firstSurname,
-          buttons: [],
-        },
-        secondSurname: {
-          label: 'Segundo Apellido',
-          value: person.secondSurname,
-          buttons: [],
-        },
+        firstSurname:
+          person.type !== TClientType.Empresa
+            ? {
+                label: 'Primer Apellido',
+                value: person.firstSurname,
+                buttons: [],
+              }
+            : null,
+        secondSurname:
+          person.type !== TClientType.Empresa
+            ? {
+                label: 'Segundo Apellido',
+                value: person.secondSurname,
+                buttons: [],
+              }
+            : null,
         address: {
           label: 'Dirección',
           value: person.address,
@@ -92,25 +99,29 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
         },
         representative: person.representative
           ? {
-              nif: {
-                label: 'NIF',
-                value: person.representative.nif,
-                buttons: [],
-              },
-              name: {
-                label: 'Nombre',
-                value: person.representative.name,
-                buttons: [],
-              },
-              firstSurname: {
-                label: 'Primer Apellido',
-                value: person.representative.firstSurname,
-                buttons: [],
-              },
-              secondSurname: {
-                label: 'Segundo Apellido',
-                value: person.representative.secondSurname,
-                buttons: [],
+              label: 'Representante',
+              buttons: [],
+              value: {
+                nif: {
+                  label: 'NIF',
+                  value: person.representative.nif,
+                  buttons: [],
+                },
+                name: {
+                  label: 'Nombre',
+                  value: person.representative.name,
+                  buttons: [],
+                },
+                firstSurname: {
+                  label: 'Primer Apellido',
+                  value: person.representative.firstSurname,
+                  buttons: [],
+                },
+                secondSurname: {
+                  label: 'Segundo Apellido',
+                  value: person.representative.secondSurname,
+                  buttons: [],
+                },
               },
             }
           : null,

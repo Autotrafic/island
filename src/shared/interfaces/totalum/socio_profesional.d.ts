@@ -1,5 +1,5 @@
 import { TMomentPayment } from "../enums";
-import { TClient } from "./cliente";
+import { TClient, TExtendedClient } from "./cliente";
 
 interface TProfessionalPartner {
     _id: string;
@@ -17,6 +17,6 @@ interface TProfessionalPartner {
   }
   
   interface TExtendedProfessionalPartner extends TProfessionalPartner {
-    cliente: TClient;
+    cliente: TExtendedClient;
   }
   

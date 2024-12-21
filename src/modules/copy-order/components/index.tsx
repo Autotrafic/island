@@ -7,8 +7,8 @@ import HeaderCard from './HeaderCard';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 import { PersonRenderOrder, RenderCard, RenderField, RenderOrder } from '../interfaces/RenderOrder';
 import { getCardSubtitleColor } from '../utils/funcs';
-import { OptionalButton } from '../interfaces/DisplayOrder';
 import { getAlertOptions } from '../../../shared/utils/funcs';
+import { BuildingUserIcon } from '../../../shared/assets/icons';
 
 export default function CopyOrder() {
   const { orderId } = useParams();
@@ -55,7 +55,9 @@ export default function CopyOrder() {
         key={cardData.title}
         title={
           <div className="w-full flex justify-between">
-            <span>{cardData.title}</span>
+            <span className="flex items-center gap-4">
+              {cardData.icon} {cardData.title}
+            </span>
             {cardData.subtitle && (
               <span style={{ backgroundColor: getCardSubtitleColor(cardData.subtitle) }} className="px-2 rounded">
                 {cardData.subtitle}
@@ -92,7 +94,8 @@ export default function CopyOrder() {
             if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
               return (
                 <div key={parentKey + fieldKey} className="w-full">
-                  <h3 className="font-semibold text-base mb-2">{label}</h3>
+                  
+                  <h3 className="font-semibold text-base mb-2 flex gap-4 items-center">{BuildingUserIcon} {label}</h3>
                   <div className="pl-4">
                     {renderFields(value as Record<string, RenderField<any>>, `${parentKey + fieldKey}.`)}
                   </div>
@@ -107,17 +110,15 @@ export default function CopyOrder() {
                   <span className="font-semibold">{label}:</span>
                   <span>{value}</span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
                   <Button size="small" onClick={() => copyToClipboard(value)}>
                     Copiar
                   </Button>
 
                   {buttons.length > 0 && (
                     <>
-                      {buttons.map((button: OptionalButton, index: number) => (
-                        <Button key={index} size="small" onClick={button.onClick}>
-                          {button.label}
-                        </Button>
+                      {buttons.map((button: JSX.Element, index: number) => (
+                        <>{button}</>
                       ))}
                     </>
                   )}

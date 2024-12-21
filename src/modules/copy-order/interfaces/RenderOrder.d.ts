@@ -35,12 +35,13 @@ interface RenderOrder {
   interface RenderField<T> {
     label: string;
     value: T;
-    buttons: OptionalButton[];
+    buttons: JSX.Element[];
   }
 
   interface RenderCard<T> {
     title: string;
     subtitle?: string;
+    icon?: JSX.Element;
     data: T;
   }
   

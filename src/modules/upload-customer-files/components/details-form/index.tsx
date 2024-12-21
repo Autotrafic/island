@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import PhoneInput from 'antd-phone-input';
-import { HomeIcon, CityIcon, PostalCodeIcon } from '../../assets/icons';
+import { HomeIcon, CityIcon, PostalCodeIcon } from '../../../../shared/assets/icons';
 
 interface DetailsFormProps {
   formValues: DetailsForm;

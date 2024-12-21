@@ -1,3 +1,4 @@
+import { BuildingIcon, UserIcon } from '../../../shared/assets/icons';
 import { AutonomousCommunity, TClientType, TOrderMandate, TOrderType } from '../../../shared/interfaces/enums';
 
 export function getAutonomousCommunityColor(autonomousCommunity: AutonomousCommunity): string {
@@ -96,5 +97,16 @@ export function getCardSubtitleColor(cardSubtitle: string): string {
       return 'rgba(91, 0, 215, 0.46)';
     default:
       return '';
+  }
+}
+
+export function getPersonTypeIcon(personType: TClientType): JSX.Element {
+  switch (personType) {
+    case TClientType.Particular:
+      return UserIcon;
+    case TClientType.Autonomo:
+      return UserIcon;
+    case TClientType.Empresa:
+      return BuildingIcon;
   }
 }

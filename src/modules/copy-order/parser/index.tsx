@@ -1,9 +1,12 @@
+import { Button } from 'antd';
+import { HandshakeIcon, SquareBinaryIcon } from '../../../shared/assets/icons';
 import { TClientType } from '../../../shared/interfaces/enums';
 import { TExtendedClient } from '../../../shared/interfaces/totalum/cliente';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 import { validateOrder } from '../handlers';
 import { DisplayOrder, DisplayPerson, GeneralOrderInfo } from '../interfaces/DisplayOrder';
 import { RenderOrder } from '../interfaces/RenderOrder';
+import { getPersonTypeIcon } from '../utils/funcs';
 
 export function parseOrderToRenderOrder(order: TExtendedOrder): RenderOrder {
   const displayOrder = parseOrderToDisplayOrder(order);
@@ -16,7 +19,7 @@ export function parseOrderToRenderOrder(order: TExtendedOrder): RenderOrder {
 export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
   try {
     validateOrder(order);
-
+    console.log(order);
     const mapPerson = (person: TExtendedClient, extraData?: any) => ({
       type: person.tipo,
       nif: person.nif,
@@ -60,12 +63,18 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
   try {
     const { client, relatedPerson, secondRelatedPerson, partner, general } = displayOrder;
 
-    const mapPersonToRenderData = (person: DisplayPerson | undefined, cardTitle: string, cardSubtitle?: string) => {
+    const mapPersonToRenderData = (
+      person: DisplayPerson | undefined,
+      cardTitle: string,
+      cardSubtitle?: string,
+      icon?: JSX.Element
+    ) => {
       if (!person) return null;
 
       return {
         title: cardTitle,
         subtitle: cardSubtitle,
+        icon: icon ?? getPersonTypeIcon(person.type as TClientType),
         data: {
           nif: {
             label: person.type === TClientType.Empresa ? 'CIF' : 'NIF',
@@ -96,7 +105,13 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
           address: {
             label: 'Dirección',
             value: person.address,
-            buttons: [],
+            buttons: [
+              <Button
+                icon={SquareBinaryIcon}
+                onClick={() => window.open(`https://www.google.com/search?q=${person.address + ', maps'}`, '_blank')}
+                style={{ padding: 0 }}
+              />,
+            ],
           },
           representative: person.representative
             ? {
@@ -163,7 +178,7 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
       client: mapPersonToRenderData(client, 'Comprador', client?.type),
       relatedPerson: mapPersonToRenderData(relatedPerson, 'Vendedor', relatedPerson?.type),
       secondRelatedPerson: mapPersonToRenderData(secondRelatedPerson, 'Segundo Vendedor', secondRelatedPerson?.type),
-      partner: mapPersonToRenderData(partner, 'Socio Profesional', partner?.type),
+      partner: mapPersonToRenderData(partner, 'Socio Profesional', partner?.type, HandshakeIcon),
     };
   } catch (error: any) {
     throw new Error(`Error parseando Display Order a Render Order: ${error.message}`);

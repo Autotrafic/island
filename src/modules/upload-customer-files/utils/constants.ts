@@ -1,4 +1,4 @@
-import { CheckGreenIcon, DocumentVisibleIcon, InfoGreyIcon, LightBulbIcon } from '../assets/icons';
+import { CheckGreenIcon, DocumentVisibleIcon, InfoGreyIcon, LightBulbIcon } from '../../../shared/assets/icons';
 
 export const REQUIRED_DOCS = [
   {

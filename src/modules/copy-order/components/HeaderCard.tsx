@@ -22,40 +22,50 @@ export default function HeaderCard({ order, copyFunc }: HeaderCardProps) {
         flexDirection: 'column',
       }}
     >
-      <div className="flex justify-around items-center">
-        <Tooltip placement="top" title="Click para copiar">
-          <h1 className="font-semibold text-2xl cursor-pointer" onClick={() => copyFunc(general.vehiclePlate)}>
-            {general.vehiclePlate}
-          </h1>
-        </Tooltip>
-        <div className="flex flex-col items-center">
-          <span>Tipo trámite</span>
-          <span
-            className="font-medium text-lg rounded px-3 py-1"
-            style={{ backgroundColor: getOrderTypeColor(general.orderType) }}
-          >
-            {general.orderType}
-          </span>
+      <div className="flex flex-col w-full items-center gap-10">
+        <div className="flex w-full">
+          <div className="w-full flex justify-around items-center">
+            <Tooltip placement="top" title="Click para copiar">
+              <h1 className="font-semibold text-2xl cursor-pointer" onClick={() => copyFunc(general.vehiclePlate)}>
+                {general.vehiclePlate}
+              </h1>
+            </Tooltip>
+            <div className="flex flex-col items-center">
+              <span>Tipo trámite</span>
+              <span
+                className="font-medium text-lg rounded px-3 py-1"
+                style={{ backgroundColor: getOrderTypeColor(general.orderType) }}
+              >
+                {general.orderType}
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <span>CCAA</span>
+              <span
+                className="font-medium text-lg rounded px-3 py-1"
+                style={{ backgroundColor: getAutonomousCommunityColor(general.autonomousCommunity) }}
+              >
+                {general.autonomousCommunity}
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <span>Mandatos</span>
+              <span
+                className="font-medium text-lg rounded px-3 py-1"
+                style={{ backgroundColor: getMandatesColor(general.mandate) }}
+              >
+                {general.mandate}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center">
-          <span>CCAA</span>
-          <span
-            className="font-medium text-lg rounded px-3 py-1"
-            style={{ backgroundColor: getAutonomousCommunityColor(general.autonomousCommunity) }}
-          >
-            {general.autonomousCommunity}
-          </span>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <span>Mandatos</span>
-          <span
-            className="font-medium text-lg rounded px-3 py-1"
-            style={{ backgroundColor: getMandatesColor(general.mandate) }}
-          >
-            {general.mandate}
-          </span>
+        <div className="flex w-full">
+          <div className="w-full flex justify-center gap-2">
+            <strong>Notas:</strong> {order.notas}
+          </div>
         </div>
       </div>
     </Card>

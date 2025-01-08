@@ -1,6 +1,6 @@
 import { Card, Tooltip } from 'antd';
 import { DisplayOrder } from '../interfaces/DisplayOrder';
-import { getAutonomousCommunityColor, getMandatesColor, getOrderTypeColor } from '../utils/funcs';
+import { getAutonomousCommunityColor, getMandatesColor, getOrderStateColor, getOrderTypeColor } from '../utils/funcs';
 import { RenderOrder } from '../interfaces/RenderOrder';
 import { parseOrderToDisplayOrder } from '../parser';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
@@ -37,6 +37,16 @@ export default function HeaderCard({ order, copyFunc }: HeaderCardProps) {
                 style={{ backgroundColor: getOrderTypeColor(general.orderType) }}
               >
                 {general.orderType}
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <span>Estado trámite</span>
+              <span
+                className="font-medium text-lg rounded px-3 py-1"
+                style={{ backgroundColor: getOrderStateColor(general.orderState) }}
+              >
+                {general.orderState}
               </span>
             </div>
 

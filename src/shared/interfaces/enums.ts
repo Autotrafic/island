@@ -3,6 +3,27 @@ export enum TMomentPayment {
   AfterProcedure = 'Despues del tramite',
 }
 
+export enum TOrderState {
+  PendienteTramitarA9 = 'Pendiente Tramitar A9',
+  PendienteEntregaTrafic = 'Pendiente Entrega Tráfico',
+  EnTrafic = 'En Tráfico',
+  PendienteEnvioCliente = 'Pendiente Envío Cliente',
+  Rechazado = 'Rechazado',
+  EnviadoCliente = 'Enviado Cliente',
+  EntregadoCliente = 'Entregado Cliente',
+  PendienteRecibirPermisoGestoria = 'Pendiente Recibir Permiso Gestoría',
+  PendientePagoITP = 'Pendiente Pago ITP',
+  PendienteEnviar3Gestoria = 'Pendiente enviar 3º gestoría',
+  Enviado3Gestoria = 'Enviado 3º gestoría',
+  PendienteRecibirInfoCliente = 'Pendiente recibir info cliente',
+  NuevoPedidoWeb = 'Nuevo pedido web',
+  PendienteDevolucionCorreos = 'Pendiente devolución Correos',
+  PendienteEntregarCorreos = 'Pendiente entrega Correos',
+  PendientePagoDevolucionEnvio = 'Pendiente Pago Devolución Envío',
+  PendientePagoTramite = 'Pendiente Pago Trámite',
+  Cancelado = 'Cancelado',
+}
+
 export enum TOrderType {
   Transferencia = 'Transferencia',
   TransferenciaPorFinalizacionEntrega = 'Transferencia por finalizacion entrega',

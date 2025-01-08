@@ -82,13 +82,16 @@ export default function CopyOrder() {
       </Card>
     );
   };
+
   const renderFields = (data: Record<string, RenderField<any> | null>, parentKey: string = ''): JSX.Element[] => {
     return (
       <div className="flex flex-col gap-4">
         {Object.entries(data)
-          .filter(([, fieldValue]) => fieldValue !== null)
+          .filter(([, fieldValue]: any) => fieldValue !== null)
           .map(([fieldKey, fieldValue]) => {
-            const { label, value = 'N/A', buttons = [] } = fieldValue as RenderField<any>;
+            console.log(fieldKey, fieldValue);
+            const { label, value, buttons = [] } = fieldValue as RenderField<any>;
+            if (!value) return null;
 
             // Nested fields
             if (typeof value === 'object' && value !== null && !Array.isArray(value)) {

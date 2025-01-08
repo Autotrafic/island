@@ -7,6 +7,7 @@ import { validateOrder } from '../handlers';
 import { DisplayOrder, DisplayPerson, GeneralOrderInfo } from '../interfaces/DisplayOrder';
 import { RenderOrder } from '../interfaces/RenderOrder';
 import { getPersonTypeIcon } from '../utils/funcs';
+import { parseDateToDDMMYYYY } from '../../../shared/utils/parser';
 
 export function parseOrderToRenderOrder(order: TExtendedOrder): RenderOrder {
   const displayOrder = parseOrderToDisplayOrder(order);
@@ -19,7 +20,6 @@ export function parseOrderToRenderOrder(order: TExtendedOrder): RenderOrder {
 export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
   try {
     validateOrder(order);
-    console.log(order);
     const mapPerson = (person: TExtendedClient, extraData?: any) => ({
       type: person.tipo,
       nif: person.nif,
@@ -27,6 +27,7 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
       firstSurname: person.primer_apellido,
       secondSurname: person.segundo_apellido,
       address: person.direccion,
+      birthDate: person.fecha_nacimiento,
       representative:
         person.representante && person.representante.length > 0
           ? {
@@ -49,6 +50,7 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
       partner: socio_profesional ? mapPerson(socio_profesional.cliente, { iae: socio_profesional.iae }) : undefined,
       general: {
         orderType: order.tipo,
+        orderState: order.estado,
         vehiclePlate: order.matricula,
         autonomousCommunity: order.comunidad_autonoma,
         mandate: order.mandatos,
@@ -141,6 +143,10 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
                 },
               }
             : null,
+          birthDate:
+            person.type === TClientType.Particular
+              ? { label: 'Fecha de Nacimiento', value: parseDateToDDMMYYYY(person.birthDate), buttons: [] }
+              : null,
         },
       };
     };
@@ -185,8 +191,11 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
   }
 }
 
-export const isEmptyObject = (obj: Record<string, any>): boolean => {
+export const isEmptyObject = (obj: Record<string, any> | undefined): boolean => {
+  if (!obj) return true;
+  
   return Object.values(obj).every((fieldValue) => {
+    console.log(fieldValue)
     if (fieldValue == null || fieldValue === '' || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
       return true;
     }

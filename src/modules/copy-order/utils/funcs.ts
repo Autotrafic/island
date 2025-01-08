@@ -1,5 +1,5 @@
 import { BuildingIcon, UserIcon } from '../../../shared/assets/icons';
-import { AutonomousCommunity, TClientType, TOrderMandate, TOrderType } from '../../../shared/interfaces/enums';
+import { AutonomousCommunity, TClientType, TOrderMandate, TOrderState, TOrderType } from '../../../shared/interfaces/enums';
 
 export function getAutonomousCommunityColor(autonomousCommunity: AutonomousCommunity): string {
   switch (autonomousCommunity) {
@@ -50,6 +50,49 @@ export function getMandatesColor(mandates: TOrderMandate): string {
       return '#00ce6e';
     case TOrderMandate.Adjuntados:
       return '#ca1dff';
+  }
+}
+
+export function getOrderStateColor(orderState: TOrderState): string {
+  switch (orderState) {
+    case TOrderState.PendienteTramitarA9:
+      return 'rgba(139,189,255,0.57)';
+    case TOrderState.PendienteEntregaTrafic:
+      return 'rgba(255,190,70,0.54)';
+    case TOrderState.EnTrafic:
+      return 'rgba(254,253,109,0.67)';
+    case TOrderState.PendienteEnvioCliente:
+      return 'rgba(195,107,255,0.45)';
+    case TOrderState.Rechazado:
+      return 'rgba(222,0,0,0.77)';
+    case TOrderState.EnviadoCliente:
+      return 'rgba(255,128,203,0.64)';
+    case TOrderState.EntregadoCliente:
+      return 'rgba(0,179,4,0.47)';
+    case TOrderState.PendienteRecibirPermisoGestoria:
+      return 'rgba(164,140,255,0.44)';
+    case TOrderState.PendientePagoITP:
+      return '#91fff6';
+    case TOrderState.PendienteEnviar3Gestoria:
+      return 'rgba(204,255,81,0.61)';
+    case TOrderState.Enviado3Gestoria:
+      return 'rgba(144,249,103,0.48)';
+    case TOrderState.PendienteRecibirInfoCliente:
+      return 'rgba(164,113,35,0.59)';
+    case TOrderState.NuevoPedidoWeb:
+      return '#ff4dd7';
+    case TOrderState.PendienteDevolucionCorreos:
+      return 'rgba(255, 149, 80, 0.75)';
+    case TOrderState.PendienteEntregarCorreos:
+      return '#f7f44d';
+    case TOrderState.PendientePagoDevolucionEnvio:
+      return '#a490e3';
+    case TOrderState.PendientePagoTramite:
+      return '#ecb397';
+    case TOrderState.Cancelado:
+      return '#c3c3c3';
+    default:
+      return '#000000';
   }
 }
 

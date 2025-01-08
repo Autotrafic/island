@@ -11,6 +11,7 @@ interface TClient {
     telefono: string;
     email: string;
     direccion: string;
+    fecha_nacimiento: Date;
     createdAt: string;
     updatedAt: string;
     id: string;

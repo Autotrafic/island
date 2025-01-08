@@ -1,4 +1,4 @@
-import { AutonomousCommunity, TOrderMandate, TOrderType } from "../enums";
+import { AutonomousCommunity, TOrderMandate, TOrderState, TOrderType } from "../enums";
 import { TExtendedClient, TExtendedRelatedPerson } from "./cliente";
 import { ExtendedTotalumShipment } from "./envio";
 import { TExtendedProfessionalPartner } from "./socio_profesional";
@@ -14,7 +14,7 @@ interface TExtendedOrder extends Omit<TotalumOrder, 'cliente' | 'socio_profesion
 interface TotalumOrder {
   comunidad_autonoma: AutonomousCommunity;
   prioridad: TPriority;
-  estado: TState;
+  estado: TOrderState;
   tipo: TOrderType;
   fecha_inicio: Date;
   factura: object;
@@ -35,22 +35,3 @@ interface TotalumOrder {
 }
 
 type TPriority = 'Normal' | 'Alta';
-
-type TState =
-  | 'Pendiente Tramitar A9'
-  | 'Pendiente Entrega Tráfico'
-  | 'En Tráfico'
-  | 'Pendiente Envío Cliente'
-  | 'Rechazado'
-  | 'Enviado Cliente'
-  | 'Entregado Cliente'
-  | 'Pendiente Recibir Permiso Gestoría'
-  | 'Pendiente Pago ITP'
-  | 'Pendiente enviar 3º gestoría'
-  | 'Enviado 3º gestoría'
-  | 'Pendiente recibir info cliente'
-  | 'Nuevo pedido web'
-  | 'Pendiente devolución Correos'
-  | 'Pendiente entrega Correos'
-  | 'Pendiente Pago Devolución Envío'
-  | 'Pendiente Pago Trámite';

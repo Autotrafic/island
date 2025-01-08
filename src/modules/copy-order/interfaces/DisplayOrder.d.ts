@@ -1,4 +1,4 @@
-import { AutonomousCommunity, TOrderType } from '../../../shared/interfaces/enums';
+import { AutonomousCommunity, TOrderState, TOrderType } from '../../../shared/interfaces/enums';
 import { TClientType } from '../../../shared/interfaces/totalum/cliente';
 import { TOrderMandate } from '../../../shared/interfaces/totalum/pedido';
 
@@ -17,6 +17,7 @@ interface DisplayPerson {
   firstSurname?: string;
   secondSurname?: string;
   address?: string;
+  birthDate?: Date;
   representative?: {
     nif: string;
     name: string;
@@ -28,6 +29,7 @@ interface DisplayPerson {
 
 interface GeneralOrderInfo {
   orderType: TOrderType;
+  orderState: TOrderState;
   vehiclePlate: string;
   autonomousCommunity: AutonomousCommunity;
   mandate: TOrderMandate;

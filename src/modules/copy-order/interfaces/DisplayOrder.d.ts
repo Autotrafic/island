@@ -3,6 +3,7 @@ import { TClientType } from '../../../shared/interfaces/totalum/cliente';
 import { TOrderMandate } from '../../../shared/interfaces/totalum/pedido';
 
 interface DisplayOrder {
+  vehicle: Vehicle;
   client: DisplayPerson;
   relatedPerson?: DisplayPerson;
   secondRelatedPerson?: DisplayPerson;
@@ -33,4 +34,11 @@ interface GeneralOrderInfo {
   vehiclePlate: string;
   autonomousCommunity: AutonomousCommunity;
   mandate: TOrderMandate;
+}
+
+interface Vehicle {
+  registrationDate: Date;
+  brand: string;
+  model: string;
+  serialNumber: string;
 }

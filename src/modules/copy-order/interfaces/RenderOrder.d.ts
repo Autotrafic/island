@@ -2,11 +2,19 @@ import { AutonomousCommunity, TOrderMandate } from "../../../shared/interfaces/e
 import { OptionalButton } from "./DisplayOrder";
 
 interface RenderOrder {
+  vehicle: RenderCard<VehicleRenderOrder>;
     general: RenderCard<GeneralRenderOrder>;
     client: RenderCard<PersonRenderOrder> | null;
     relatedPerson: RenderCard<PersonRenderOrder> | null;
     secondRelatedPerson: RenderCard<PersonRenderOrder> | null;
     partner: RenderCard<PersonRenderOrder> | null;
+  }
+
+  interface VehicleRenderOrder {
+    registrationDate: RenderField<string>;
+    brand: RenderField<string>;
+    model: RenderField<string>;
+    serialNumber: RenderField<string>;
   }
   
   interface GeneralRenderOrder {

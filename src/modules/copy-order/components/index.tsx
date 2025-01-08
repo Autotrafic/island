@@ -5,7 +5,7 @@ import { getTotalumOrder } from '../services/totalum';
 import { isEmptyObject, parseOrderToRenderOrder } from '../parser';
 import HeaderCard from './HeaderCard';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
-import { PersonRenderOrder, RenderCard, RenderField, RenderOrder } from '../interfaces/RenderOrder';
+import { PersonRenderOrder, RenderCard, RenderField, RenderOrder, VehicleRenderOrder } from '../interfaces/RenderOrder';
 import { getCardSubtitleColor } from '../utils/funcs';
 import { getAlertOptions } from '../../../shared/utils/funcs';
 import { BuildingUserIcon } from '../../../shared/assets/icons';
@@ -44,7 +44,7 @@ export default function CopyOrder() {
     }
   }, [orderId]);
 
-  const renderPersonCard = (cardData: RenderCard<PersonRenderOrder> | null) => {
+  const renderPersonCard = (cardData: RenderCard<PersonRenderOrder> | RenderCard<VehicleRenderOrder> | null) => {
     const person = cardData?.data;
     if (!person || isEmptyObject(person)) return null;
 
@@ -147,6 +147,7 @@ export default function CopyOrder() {
               {renderOrder?.relatedPerson && renderPersonCard(renderOrder.relatedPerson)}
               {renderOrder?.secondRelatedPerson && renderPersonCard(renderOrder.secondRelatedPerson)}
               {renderOrder?.partner && renderPersonCard(renderOrder.partner)}
+              {renderOrder?.vehicle && renderPersonCard(renderOrder.vehicle)}
             </div>
           </div>
         ) : (

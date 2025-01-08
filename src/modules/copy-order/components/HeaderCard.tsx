@@ -1,7 +1,5 @@
 import { Card, Tooltip } from 'antd';
-import { DisplayOrder } from '../interfaces/DisplayOrder';
 import { getAutonomousCommunityColor, getMandatesColor, getOrderStateColor, getOrderTypeColor } from '../utils/funcs';
-import { RenderOrder } from '../interfaces/RenderOrder';
 import { parseOrderToDisplayOrder } from '../parser';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 
@@ -72,11 +70,13 @@ export default function HeaderCard({ order, copyFunc }: HeaderCardProps) {
           </div>
         </div>
 
-        <div className="flex w-full">
-          <div className="w-full flex justify-center gap-2">
-            <strong>Notas:</strong> {order.notas}
+        {order.notas && (
+          <div className="flex w-full">
+            <div className="w-full flex justify-center gap-2">
+              <strong>Notas:</strong> {order.notas}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Card>
   );

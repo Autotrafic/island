@@ -1,10 +1,10 @@
 import { Button } from 'antd';
-import { HandshakeIcon, SquareBinaryIcon } from '../../../shared/assets/icons';
+import { CarIcon, HandshakeIcon, SquareBinaryIcon } from '../../../shared/assets/icons';
 import { TClientType } from '../../../shared/interfaces/enums';
 import { TExtendedClient } from '../../../shared/interfaces/totalum/cliente';
 import { TExtendedOrder } from '../../../shared/interfaces/totalum/pedido';
 import { validateOrder } from '../handlers';
-import { DisplayOrder, DisplayPerson, GeneralOrderInfo } from '../interfaces/DisplayOrder';
+import { DisplayOrder, DisplayPerson, GeneralOrderInfo, Vehicle } from '../interfaces/DisplayOrder';
 import { RenderOrder } from '../interfaces/RenderOrder';
 import { getPersonTypeIcon } from '../utils/funcs';
 import { parseDateToDDMMYYYY } from '../../../shared/utils/parser';
@@ -40,10 +40,12 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
       ...extraData,
     });
 
+    const { fecha_matriculacion, marca, modelo, bastidor } = order.vehiculo[0];
     const { cliente, persona_relacionada = [], socio_profesional } = order;
     const [firstRelatedPerson, secondRelatedPerson] = persona_relacionada;
 
     return {
+      vehicle: { registrationDate: fecha_matriculacion, brand: marca, model: modelo, serialNumber: bastidor },
       client: cliente ? mapPerson(cliente) : undefined,
       relatedPerson: firstRelatedPerson ? mapPerson(firstRelatedPerson.cliente) : undefined,
       secondRelatedPerson: secondRelatedPerson ? mapPerson(secondRelatedPerson.cliente) : undefined,
@@ -63,7 +65,7 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
 
 function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder {
   try {
-    const { client, relatedPerson, secondRelatedPerson, partner, general } = displayOrder;
+    const { vehicle, client, relatedPerson, secondRelatedPerson, partner, general } = displayOrder;
 
     const mapPersonToRenderData = (
       person: DisplayPerson | undefined,
@@ -179,7 +181,37 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
       };
     };
 
+    const mapVehicleToRenderData = (vehicle: Vehicle) => {
+      return {
+        title: 'Vehículo',
+        icon: CarIcon,
+        data: {
+          registrationDate: {
+            label: 'Fecha de Matriculación',
+            value: parseDateToDDMMYYYY(vehicle.registrationDate),
+            buttons: [],
+          },
+          brand: {
+            label: 'Marca',
+            value: vehicle.brand,
+            buttons: [],
+          },
+          model: {
+            label: 'Modelo',
+            value: vehicle.model,
+            buttons: [],
+          },
+          serialNumber: {
+            label: 'Número de Bastidor',
+            value: vehicle.serialNumber,
+            buttons: [],
+          },
+        },
+      };
+    };
+
     return {
+      vehicle: mapVehicleToRenderData(vehicle),
       general: mapGeneralToRenderData(general),
       client: mapPersonToRenderData(client, 'Comprador', client?.type),
       relatedPerson: mapPersonToRenderData(relatedPerson, 'Vendedor', relatedPerson?.type),
@@ -193,9 +225,8 @@ function parseDisplayOrderToRenderOrder(displayOrder: DisplayOrder): RenderOrder
 
 export const isEmptyObject = (obj: Record<string, any> | undefined): boolean => {
   if (!obj) return true;
-  
+
   return Object.values(obj).every((fieldValue) => {
-    console.log(fieldValue)
     if (fieldValue == null || fieldValue === '' || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
       return true;
     }

@@ -40,7 +40,7 @@ export function parseOrderToDisplayOrder(order: TExtendedOrder): DisplayOrder {
       ...extraData,
     });
 
-    const { fecha_matriculacion, marca, modelo, bastidor } = order.vehiculo[0];
+    const { fecha_matriculacion, marca, modelo, bastidor } = order?.vehiculo?.[0] || {};
     const { cliente, persona_relacionada = [], socio_profesional } = order;
     const [firstRelatedPerson, secondRelatedPerson] = persona_relacionada;
 

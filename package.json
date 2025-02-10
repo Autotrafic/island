@@ -4,12 +4,14 @@
   "scripts": {
     "tsc": "tsc",
     "build": "webpack --mode production",
-    "build:copy_order": "webpack --mode production --env copy_order",
     "build:dev": "webpack --mode development",
     "build:start": "cd dist && PORT=5300 npx serve",
     "start": "webpack serve --open --mode development --env upload_files",
+    "start:live": "webpack serve --open --mode development --live-reload --hot",
     "start:copy_order": "webpack serve --open --mode development --env copy_order",
-    "start:live": "webpack serve --open --mode development --live-reload --hot"
+    "build:copy_order": "webpack --mode production --env copy_order",
+    "start:whatsapp": "webpack serve --open --mode development --env whatsapp",
+    "build:whatsapp": "webpack --mode production --env whatsapp"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
@@ -20,6 +22,7 @@
     "@types/webpack-dev-server": "^4.7.2",
     "antd": "^5.20.5",
     "antd-phone-input": "^0.3.9",
+    "axios": "^1.7.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",

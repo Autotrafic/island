@@ -5,7 +5,18 @@ import {
   HomeIcon as HeroicHomeIcon,
 } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBuilding, faBuildingUser, faCar, faCity, faHandshakeSimple, faHashtag, faSquareBinary, faUser } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBuilding,
+  faBuildingUser,
+  faCar,
+  faCheck,
+  faCheckDouble,
+  faCity,
+  faHandshakeSimple,
+  faHashtag,
+  faSquareBinary,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 
 export const CheckGreenIcon = <CheckCircleTwoTone twoToneColor="#52c41a" />;
 
@@ -33,3 +44,8 @@ export const SquareBinaryIcon = <FontAwesomeIcon icon={faSquareBinary as any} cl
 
 export const CarIcon = <FontAwesomeIcon icon={faCar as any} className="text-gray-700 w-4 h-4" />;
 
+export const CheckIcon: React.FC = () => <FontAwesomeIcon icon={faCheck as any} className="text-gray-500 w-3 h-3" />;
+
+export const DoubleBlueCheckIcon: React.FC = () => (
+  <FontAwesomeIcon icon={faCheckDouble as any} className="text-blue-500 w-3 h-3" />
+);

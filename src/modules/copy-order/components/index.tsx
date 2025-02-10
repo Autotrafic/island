@@ -89,7 +89,6 @@ export default function CopyOrder() {
         {Object.entries(data)
           .filter(([, fieldValue]: any) => fieldValue !== null)
           .map(([fieldKey, fieldValue]) => {
-            console.log(fieldKey, fieldValue);
             const { label, value, buttons = [] } = fieldValue as RenderField<any>;
             if (!value) return null;
 

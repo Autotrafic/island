@@ -5,10 +5,16 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import Dotenv from 'dotenv-webpack';
 
 module.exports = (env: any, argv: any) => {
+  let entry = './src/modules/upload-customer-files/index.tsx';
+
+  if (env.copy_order) entry = './src/modules/copy-order/index.tsx';
+
+  if (env.whatsapp) entry = './src/modules/whatsapp/index.tsx';
+
   return {
     mode: (process.env.NODE_ENV as 'production' | 'development' | undefined) ?? 'development',
 
-    entry: env.copy_order ? './src/modules/copy-order/index.tsx' : './src/modules/upload-customer-files/index.tsx',
+    entry,
 
     output: {
       filename: 'bundle.js',

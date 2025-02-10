@@ -12,17 +12,20 @@ interface WChat {
   unreadCount: number;
   timestamp: number;
   lastMessage: { viewed: boolean; body: string };
+  profilePicUrl?: string;
 }
 
 interface WMessage {
   id: string;
-  fromMe: boolean;
-  viewed: boolean;
-  hasMedia: boolean;
-  body: string;
-  timestamp: number;
-  hasReaction: boolean;
   chatId: string;
+  body: string;
+  fromMe: boolean;
+  viewed: boolean | undefined;
+  timestamp: number;
+  type: string;
+  hasMedia: boolean;
+  mediaUrl: string | undefined;
+  mimetype: string | undefined;
 }
 
 export function Whatsapp() {
@@ -160,7 +163,7 @@ export function Whatsapp() {
       <div className="chat-list w-1/6 border-r border-gray-300 overflow-y-auto">
         <input
           type="text"
-          placeholder="Search chats or messages"
+          placeholder="Buscar contactos o mensajes"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full p-2 border-b border-gray-300"
@@ -168,7 +171,7 @@ export function Whatsapp() {
         {filteredChats.map((chat) => (
           <div
             key={chat.id}
-            className={`chat-item p-2 cursor-pointer ${
+            className={`chat-item p-2 cursor-pointer flex items-center gap-3 ${
               selectedChat?.id === chat.id ? 'bg-gray-100' : 'bg-white'
             } transition-colors ${loadingMessages ? 'pointer-events-none bg-gray-200' : ''}`}
             style={{ transition: 'background-color 0.3s' }}
@@ -176,14 +179,19 @@ export function Whatsapp() {
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = selectedChat?.id === chat.id ? '#f0f0f0' : '#fff')}
             onClick={() => selectChat(chat)}
           >
-            <div className="flex items-center justify-between">
-              <h4>{chat.name}</h4>
-              {chat.unreadCount > 0 && (
-                <div className="flex items-center justify-center w-6 h-6 text-white bg-green-500 rounded-full text-xs">
-                  {chat.unreadCount}
-                </div>
-              )}
+            <img
+              src={chat.profilePicUrl || 'https://www.pngarts.com/files/10/Default-Profile-Picture-Transparent-Image.png'}
+              alt={chat.name}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <div className="flex-1">
+              <h4 className="font-medium">{chat.name}</h4>
             </div>
+            {chat.unreadCount > 0 && (
+              <div className="flex items-center justify-center w-6 h-6 text-white bg-green-500 rounded-full text-xs">
+                {chat.unreadCount}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -206,7 +214,27 @@ export function Whatsapp() {
                     } max-w-lg shadow flex gap-4 items-end`}
                     style={{ minHeight: '32px' }}
                   >
-                    <p>{message.body}</p>
+                    {message.hasMedia ? (
+                      message.mimetype?.startsWith('image/') ? (
+                        <div className="flex flex-col gap-2">
+                          <img src={message.mediaUrl} alt="media" className="max-w-[400px] max-h-[400px] rounded-lg" />
+                          <p>{message.body}</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <a
+                            href={message.mediaUrl}
+                            download={`file.${message.mimetype?.split('/')[1]}`}
+                            className="p-2 bg-blue-500 text-white rounded-lg text-xs"
+                          >
+                            Descargar archivo
+                          </a>
+                          <p>{message.body}</p>
+                        </div>
+                      )
+                    ) : (
+                      <p>{message.body}</p>
+                    )}
                     <div className="text-xs text-gray-500 bottom-1 right-2 flex items-center">
                       {new Date(message.timestamp * 1000).toLocaleTimeString(undefined, {
                         hour: '2-digit',
@@ -214,7 +242,7 @@ export function Whatsapp() {
                         hour12: false,
                       })}
                       {message.fromMe && (
-                        <span className={`ml-1`}>{message.viewed ? <CheckIcon /> : <DoubleBlueCheckIcon />}</span>
+                        <span className="ml-1">{message.viewed ? <CheckIcon /> : <DoubleBlueCheckIcon />}</span>
                       )}
                     </div>
                   </div>
@@ -222,19 +250,18 @@ export function Whatsapp() {
               ))}
         </div>
 
-        {/* Input to send a message */}
         {selectedChat && (
           <div className="message-input p-2 border-t border-gray-300 flex">
             <input
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message"
+              placeholder="Escribe tu mensaje"
               className="flex-1 p-2 border border-gray-300 rounded-l"
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
             />
             <button onClick={sendMessage} className="p-2 bg-blue-500 text-white rounded-r">
-              Send
+              Enviar
             </button>
           </div>
         )}

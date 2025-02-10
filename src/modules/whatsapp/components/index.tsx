@@ -44,7 +44,7 @@ export function Whatsapp() {
     async function fetchChatsAndMessages() {
       try {
         const chatResponse = await axios.get(`${BASE_API_URL}/whatsapp/chats`);
-        const chats = chatResponse.data.chats.slice(0, 5);
+        const chats = chatResponse.data.chats;
         setChats(chats);
         setFilteredChats(chats);
 
@@ -70,7 +70,7 @@ export function Whatsapp() {
     const interval = setInterval(async () => {
       try {
         const chatResponse = await axios.get(`${BASE_API_URL}/whatsapp/chats`);
-        const chats = chatResponse.data.chats.slice(0, 5);
+        const chats = chatResponse.data.chats;
         setChats(chats);
         setFilteredChats(chats);
       } catch (error) {

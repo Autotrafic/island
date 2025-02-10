@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Progress } from 'antd';
-import chatBackground from '../../../shared/assets/chat-background.jpg';
 import { BASE_API_URL } from '../../../shared/utils/urls';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import { DoubleBlueCheckIcon } from '../../../shared/assets/icons';
@@ -189,10 +188,7 @@ export function Whatsapp() {
         ))}
       </div>
 
-      <div
-        className="chat-messages flex-1 flex flex-col relative"
-        style={{ backgroundImage: `${loadingMessages ? '' : `url(${chatBackground})`}`, backgroundSize: 'cover' }}
-      >
+      <div className={`chat-messages flex-1 flex flex-col relative ${!loadingMessages && 'bg-gray-200'}`}>
         {loadingMessages && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-[20%]">
             <Progress percent={progress} format={(percent) => `${percent}%`} />

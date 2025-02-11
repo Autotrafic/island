@@ -51,10 +51,14 @@ export function Whatsapp() {
         let loadedChats = 0;
         const allMessages: WMessage[] = [];
         for (const chat of chats) {
-          const messageResponse = await axios.get(`${BASE_API_URL}/whatsapp/messages/${chat.id}`);
-          allMessages.push(...messageResponse.data.chatMessages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
-          loadedChats++;
-          setProgress(Math.round((loadedChats / chats.length) * 100));
+          try {
+            const messageResponse = await axios.get(`${BASE_API_URL}/whatsapp/messages/${chat.id}`);
+            allMessages.push(...messageResponse.data.chatMessages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
+          } catch {
+          } finally {
+            loadedChats++;
+            setProgress(Math.round((loadedChats / chats.length) * 100));
+          }
         }
         setMessages(allMessages);
       } catch (error) {
@@ -79,7 +83,7 @@ export function Whatsapp() {
         console.error('Error updating chats:', error);
         clearInterval(interval);
       }
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
@@ -154,7 +158,7 @@ export function Whatsapp() {
             ...messageResponse.data.chatMessages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat.id })),
           ]);
         });
-      }, 5000);
+      }, 10000);
 
       return () => clearInterval(interval);
     }

@@ -69,10 +69,12 @@ export function Whatsapp() {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const chatResponse = await axios.get(`${BASE_API_URL}/whatsapp/chats`);
-        const chats = chatResponse.data.chats;
-        setChats(chats);
-        setFilteredChats(chats);
+        if (!loadingMessages) {
+          const chatResponse = await axios.get(`${BASE_API_URL}/whatsapp/chats`);
+          const chats = chatResponse.data.chats;
+          setChats(chats);
+          setFilteredChats(chats);
+        }
       } catch (error) {
         console.error('Error updating chats:', error);
         clearInterval(interval);
@@ -144,7 +146,7 @@ export function Whatsapp() {
 
   // Fetch messages every 5 seconds for the selected chat
   useEffect(() => {
-    if (selectedChat) {
+    if (selectedChat && !loadingMessages) {
       const interval = setInterval(() => {
         axios.get(`${BASE_API_URL}/whatsapp/messages/${selectedChat.id}`).then((messageResponse) => {
           setMessages((prevMessages) => [

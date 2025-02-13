@@ -5,7 +5,7 @@ const prodApiUrl = 'https://api.autotrafic.es';
 const localApiUrl = 'http://localhost:3100';
 export const BASE_API_URL = isTest ? localApiUrl : prodApiUrl;
 
-const whatsProdApiUrl = 'http://161.22.42.128';
+const whatsProdApiUrl = 'https://apiwa.autotrafic.es';
 const whatsLocalApiUrl = 'http://localhost:3200';
 export const WHATSAPP_API_URL = isWhatsappTest ? whatsLocalApiUrl : whatsProdApiUrl;
 

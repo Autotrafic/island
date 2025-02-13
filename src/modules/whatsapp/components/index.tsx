@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Progress } from 'antd';
+import { Button, Progress, Spin } from 'antd';
 import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
-import { CheckIcon } from '@heroicons/react/24/solid';
-import { DoubleBlueCheckIcon } from '../../../shared/assets/icons';
+import { CheckIcon, DoubleBlueCheckIcon } from '../../../shared/assets/icons';
+import { LoadingOutlined } from '@ant-design/icons';
 
 interface WChat {
   id: string;
@@ -11,7 +11,7 @@ interface WChat {
   isGroup: boolean;
   unreadCount: number;
   timestamp: number;
-  lastMessage: { viewed: boolean; body: string };
+  lastMessage: { viewed: boolean | undefined; body: string };
   profilePicUrl?: string;
 }
 
@@ -35,10 +35,14 @@ export function Whatsapp() {
   const [messages, setMessages] = useState<WMessage[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
+  const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
+  const [loadingChats, setLoadingChats] = useState<boolean>(true);
+  const [loadingSendMessage, setLoadingSendMessage] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
 
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const loadingInterface = loadingChats || loadingMessages;
 
   useEffect(() => {
     async function fetchChatsAndMessages() {
@@ -47,6 +51,8 @@ export function Whatsapp() {
         const chats = chatResponse.data.chats.slice(0, 3);
         setChats(chats);
         setFilteredChats(chats);
+        setLoadingChats(false);
+        setLoadingMessages(true);
 
         let loadedChats = 0;
         const allMessages: WMessage[] = [];
@@ -107,7 +113,7 @@ export function Whatsapp() {
           ? {
               ...chat,
               unreadCount: chat.id === selectedChat?.id ? 0 : chat.unreadCount + 1,
-              lastMessage: { viewed: false, body: newMessage.body },
+              lastMessage: { viewed: newMessage.viewed, body: newMessage.body },
             }
           : chat
       )
@@ -121,6 +127,7 @@ export function Whatsapp() {
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
     try {
+      setLoadingSendMessage(true);
       await axios.post(`${WHATSAPP_API_URL}/messages/send`, {
         message: newMessage,
         phoneNumber: selectedChat?.id?.replace('@c.us', ''),
@@ -133,6 +140,8 @@ export function Whatsapp() {
       ]);
     } catch (error) {
       console.error('Error sending message:', error);
+    } finally {
+      setLoadingSendMessage(false);
     }
   };
 
@@ -188,7 +197,7 @@ export function Whatsapp() {
             key={chat.id}
             className={`chat-item p-2 cursor-pointer flex items-center gap-3 ${
               selectedChat?.id === chat.id ? 'bg-gray-100' : 'bg-white'
-            } transition-colors ${loadingMessages ? 'pointer-events-none bg-gray-200' : ''}`}
+            } transition-colors ${loadingInterface ? 'pointer-events-none bg-gray-200' : ''}`}
             style={{ transition: 'background-color 0.3s' }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f7f7f7')}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = selectedChat?.id === chat.id ? '#f0f0f0' : '#fff')}
@@ -211,9 +220,14 @@ export function Whatsapp() {
         ))}
       </div>
 
-      <div className={`chat-messages flex-1 flex flex-col relative ${!loadingMessages && 'bg-gray-200'}`}>
+      <div className={`chat-messages flex-1 flex flex-col relative ${!loadingInterface && 'bg-gray-200'}`}>
+        {loadingChats && (
+          <div className="absolute top-1/3 left-1/2">
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+          </div>
+        )}
         {loadingMessages && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-[20%]">
+          <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-[20%]">
             <Progress percent={progress} format={(percent) => `${percent}%`} />
           </div>
         )}
@@ -257,7 +271,7 @@ export function Whatsapp() {
                         hour12: false,
                       })}
                       {message.fromMe && (
-                        <span className="ml-1">{message.viewed ? <CheckIcon /> : <DoubleBlueCheckIcon />}</span>
+                        <span className="ml-1">{message.viewed ? <DoubleBlueCheckIcon /> : <CheckIcon />}</span>
                       )}
                     </div>
                   </div>
@@ -275,9 +289,9 @@ export function Whatsapp() {
               className="flex-1 p-2 border border-gray-300 rounded-l"
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
             />
-            <button onClick={sendMessage} className="p-2 bg-blue-500 text-white rounded-r">
+            <Button onClick={sendMessage} type="primary" loading={loadingSendMessage} className="h-full ml-2">
               Enviar
-            </button>
+            </Button>
           </div>
         )}
       </div>

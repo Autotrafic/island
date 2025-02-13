@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Progress } from 'antd';
-import { BASE_API_URL } from '../../../shared/utils/urls';
+import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import { DoubleBlueCheckIcon } from '../../../shared/assets/icons';
 
@@ -43,8 +43,8 @@ export function Whatsapp() {
   useEffect(() => {
     async function fetchChatsAndMessages() {
       try {
-        const chatResponse = await axios.get(`${BASE_API_URL}/whatsapp/chats`);
-        const chats = chatResponse.data.chats;
+        const chatResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chats`);
+        const chats = chatResponse.data.chats.slice(0, 3);
         setChats(chats);
         setFilteredChats(chats);
 
@@ -52,8 +52,8 @@ export function Whatsapp() {
         const allMessages: WMessage[] = [];
         for (const chat of chats) {
           try {
-            const messageResponse = await axios.get(`${BASE_API_URL}/whatsapp/messages/${chat.id}`);
-            allMessages.push(...messageResponse.data.chatMessages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
+            const messageResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${chat.id}`);
+            allMessages.push(...messageResponse.data.messages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
           } catch {
           } finally {
             loadedChats++;
@@ -74,8 +74,8 @@ export function Whatsapp() {
     const interval = setInterval(async () => {
       try {
         if (!loadingMessages) {
-          const chatResponse = await axios.get(`${BASE_API_URL}/whatsapp/chats`);
-          const chats = chatResponse.data.chats;
+          const chatResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chats`);
+          const chats = chatResponse.data.chats.slice(0, 3);
           setChats(chats);
           setFilteredChats(chats);
         }
@@ -91,15 +91,15 @@ export function Whatsapp() {
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
     try {
-      await axios.post(`${BASE_API_URL}/whatsapp/message`, {
+      await axios.post(`${WHATSAPP_API_URL}/messages/send`, {
         message: newMessage,
         phoneNumber: selectedChat?.id?.replace('@c.us', ''),
       });
       setNewMessage('');
-      const updatedMessages = await axios.get(`${BASE_API_URL}/whatsapp/messages/${selectedChat?.id}`);
+      const updatedMessages = await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${selectedChat?.id}`);
       setMessages((prev) => [
         ...prev.filter((m) => m.chatId !== selectedChat?.id),
-        ...updatedMessages.data.chatMessages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat?.id })),
+        ...updatedMessages.data.messages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat?.id })),
       ]);
     } catch (error) {
       console.error('Error sending message:', error);
@@ -132,11 +132,11 @@ export function Whatsapp() {
     setLoadingMessages(true);
 
     // Mark all messages in this chat as viewed
-    axios.get(`${BASE_API_URL}/whatsapp/chat/send-seen/${chat.id}`);
+    axios.get(`${WHATSAPP_API_URL}/messages/seen-chat/${chat.id}`);
 
     // Fetch the messages for the selected chat
-    axios.get(`${BASE_API_URL}/whatsapp/messages/${chat.id}`).then((messageResponse) => {
-      setMessages(messageResponse.data.chatMessages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
+    axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${chat.id}`).then((messageResponse) => {
+      setMessages(messageResponse.data.messages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
       setLoadingMessages(false);
     });
   };
@@ -152,10 +152,10 @@ export function Whatsapp() {
   useEffect(() => {
     if (selectedChat && !loadingMessages) {
       const interval = setInterval(() => {
-        axios.get(`${BASE_API_URL}/whatsapp/messages/${selectedChat.id}`).then((messageResponse) => {
+        axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${selectedChat.id}`).then((messageResponse) => {
           setMessages((prevMessages) => [
             ...prevMessages.filter((msg) => msg.chatId !== selectedChat.id),
-            ...messageResponse.data.chatMessages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat.id })),
+            ...messageResponse.data.messages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat.id })),
           ]);
         });
       }, 10000);

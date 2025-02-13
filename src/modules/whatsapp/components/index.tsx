@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Button, Progress, Spin } from 'antd';
 import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
-import { CheckIcon, DoubleBlueCheckIcon } from '../../../shared/assets/icons';
+import { DoubleCheckIcon, DoubleBlueCheckIcon } from '../../../shared/assets/icons';
 import { LoadingOutlined } from '@ant-design/icons';
 
 interface WChat {
@@ -126,13 +126,29 @@ export function Whatsapp() {
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
+  
     try {
       setLoadingSendMessage(true);
+  
+      // Check if the selected chat is a new chat (i.e., not in the original chats list)
+      const isNewChat = !chats.some((chat) => chat.id === selectedChat?.id);
+  
+      // Send the message with the correctly formatted chatId
       await axios.post(`${WHATSAPP_API_URL}/messages/send`, {
         message: newMessage,
         phoneNumber: selectedChat?.id?.replace('@c.us', ''),
       });
+  
       setNewMessage('');
+  
+      // If it's a new chat, add it to the chats list
+      if (isNewChat && selectedChat) {
+        const updatedChats = [selectedChat, ...chats];
+        setChats(updatedChats);
+        setFilteredChats([selectedChat]); // Ensure the new chat remains in the filtered list
+      }
+  
+      // Fetch the updated messages for the selected chat
       const updatedMessages = await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${selectedChat?.id}`);
       setMessages((prev) => [
         ...prev.filter((m) => m.chatId !== selectedChat?.id),
@@ -145,12 +161,39 @@ export function Whatsapp() {
     }
   };
 
-  const normalizeNumber = (number: string) => number.replace(/\D/g, '');
+  const normalizeNumber = (number: string) => {
+    // Remove all non-numeric characters
+    const cleanedNumber = number.replace(/\D/g, '');
+  
+    // If the number starts with '+', treat it as a foreign number
+    if (number.startsWith('+')) {
+      return cleanedNumber; // Return the number with the country code
+    }
+  
+    // If the number is a Spanish default number (e.g., 674218987), add the country code '34'
+    if (cleanedNumber.length === 9 && !cleanedNumber.startsWith('34')) {
+      return `34${cleanedNumber}`; // Add Spain's country code
+    }
+  
+    // If the number already starts with '34', assume it's a Spanish number
+    return cleanedNumber;
+  };
+
+  const formatChatId = (number: string) => {
+    const normalizedNumber = normalizeNumber(number);
+    return `${normalizedNumber}@c.us`;
+  };
+
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
+  };
 
   useEffect(() => {
-    const searchRegex = new RegExp(searchQuery.replace(/\s+/g, '.*'), 'i');
+    const escapedSearchQuery = escapeRegExp(searchQuery); // Escape special characters
+    const searchRegex = new RegExp(escapedSearchQuery.replace(/\s+/g, '.*'), 'i');
     const normalizedSearchQuery = normalizeNumber(searchQuery);
-
+  
+    // Filter chats based on the search query
     const filtered = chats.filter((chat) => {
       const normalizedChatId = normalizeNumber(chat.id);
       const matchesChatName = searchRegex.test(chat.name);
@@ -158,18 +201,46 @@ export function Whatsapp() {
       const matchesMessages = messages.some((msg) => msg.chatId === chat.id && searchRegex.test(msg.body));
       return matchesChatName || matchesChatId || matchesMessages;
     });
-
-    setFilteredChats(filtered);
+  
+    // If no matches are found and the search query is a valid number, add the new chat
+    if (filtered.length === 0 && normalizedSearchQuery) {
+      const newChat: WChat = {
+        id: formatChatId(normalizedSearchQuery), // Format the chatId correctly
+        name: searchQuery, // Use the search query as the chat name
+        isGroup: false,
+        unreadCount: 0,
+        timestamp: Date.now(),
+        lastMessage: { viewed: false, body: '' },
+      };
+  
+      // Set filteredChats to only contain the new chat
+      setFilteredChats([newChat]);
+    } else {
+      // Otherwise, set filteredChats to the filtered list
+      setFilteredChats(filtered);
+    }
   }, [searchQuery, chats, messages]);
 
   const selectChat = (chat: WChat) => {
     setSelectedChat(chat);
-    setChats((prevChats) => prevChats.map((c) => (c.id === chat.id ? { ...c, unreadCount: 0 } : c)));
+    setSearchQuery(''); // Clear the search query
+  
+    // Check if the chat is a new chat (i.e., not in the original chats list)
+    const isNewChat = !chats.some((c) => c.id === chat.id);
+  
+    // If it's a new chat, add it to the chats list
+    if (isNewChat) {
+      const updatedChats = [chat, ...chats];
+      setChats(updatedChats);
+      setFilteredChats(updatedChats); // Reset filteredChats to include all chats
+    }
+  
     setMessages([]);
     setLoadingMessages(true);
-
+  
+    // Send the correctly formatted chatId to the backend
     axios.get(`${WHATSAPP_API_URL}/messages/seen-chat/${chat.id}`);
-
+  
     axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${chat.id}`).then((messageResponse) => {
       setMessages(messageResponse.data.messages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
       setLoadingMessages(false);
@@ -184,7 +255,7 @@ export function Whatsapp() {
 
   return (
     <div className="whatsapp-container flex h-screen">
-      <div className="chat-list w-1/6 border-r border-gray-300 overflow-y-auto">
+      <div className="chat-list w-1/5 border-r border-gray-300 overflow-y-auto">
         <input
           type="text"
           placeholder="Buscar contactos o mensajes"
@@ -271,7 +342,7 @@ export function Whatsapp() {
                         hour12: false,
                       })}
                       {message.fromMe && (
-                        <span className="ml-1">{message.viewed ? <DoubleBlueCheckIcon /> : <CheckIcon />}</span>
+                        <span className="ml-1">{message.viewed ? <DoubleBlueCheckIcon /> : <DoubleCheckIcon />}</span>
                       )}
                     </div>
                   </div>

@@ -44,7 +44,9 @@ export const SquareBinaryIcon = <FontAwesomeIcon icon={faSquareBinary as any} cl
 
 export const CarIcon = <FontAwesomeIcon icon={faCar as any} className="text-gray-700 w-4 h-4" />;
 
-export const CheckIcon: React.FC = () => <FontAwesomeIcon icon={faCheck as any} className="text-gray-500 w-3 h-3" />;
+export const DoubleCheckIcon: React.FC = () => (
+  <FontAwesomeIcon icon={faCheckDouble as any} className="text-gray-500 w-3 h-3" />
+);
 
 export const DoubleBlueCheckIcon: React.FC = () => (
   <FontAwesomeIcon icon={faCheckDouble as any} className="text-blue-500 w-3 h-3" />

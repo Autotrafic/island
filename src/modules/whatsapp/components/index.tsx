@@ -262,7 +262,7 @@ export function Whatsapp() {
                         </div>
                       )
                     ) : (
-                      <p>{message.body}</p>
+                      <p dangerouslySetInnerHTML={{ __html: message.body.replace(/\n/g, '<br />') }} />
                     )}
                     <div className="text-xs text-gray-500 bottom-1 right-2 flex items-center">
                       {new Date(message.timestamp * 1000).toLocaleTimeString(undefined, {
@@ -281,13 +281,17 @@ export function Whatsapp() {
 
         {selectedChat && (
           <div className="message-input p-2 border-t border-gray-300 flex">
-            <input
-              type="text"
+            <textarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Escribe tu mensaje"
               className="flex-1 p-2 border border-gray-300 rounded-l"
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
             />
             <Button onClick={sendMessage} type="primary" loading={loadingSendMessage} className="h-full ml-2">
               Enviar

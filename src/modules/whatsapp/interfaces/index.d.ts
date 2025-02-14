@@ -20,3 +20,15 @@ interface WMessage {
   mediaUrl: string | undefined;
   mimetype: string | undefined;
 }
+
+interface SendMessagePayload {
+  chatId: string;
+  files: UploadFileData[];
+  message?: string;
+}
+
+interface UploadFileData {
+  base64Data: string;
+  filename: string;
+  mimetype: string;
+}

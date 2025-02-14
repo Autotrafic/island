@@ -40,3 +40,8 @@
 .custom-card-title .ant-card-head-title {
   white-space: normal;
 }
+
+:where(.css-dev-only-do-not-override-14i19y2).ant-upload-wrapper .ant-upload-select {
+  display: block !important;
+  width: 100% !important;
+}

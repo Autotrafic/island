@@ -120,7 +120,7 @@ export function Whatsapp() {
     async function fetchChatsAndMessages() {
       try {
         const chatResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chats`);
-        const chats = chatResponse.data.chats;
+        const chats = chatResponse.data.chats.slice(0, 5);
         setChats(chats);
         setFilteredChats(chats);
         setLoadingChats(false);
@@ -226,8 +226,11 @@ export function Whatsapp() {
           <MessageInput
             newMessage={newMessage}
             loadingSendMessage={loadingSendMessage}
+            selectedChatId={selectedChat.id}
             onMessageChange={setNewMessage}
             onSendMessage={sendMessage}
+            setLoadingSendMessage={setLoadingSendMessage}
+            setMessages={setMessages}
           />
         )}
       </div>

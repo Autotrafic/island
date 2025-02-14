@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { DoubleBlueCheckIcon, DoubleCheckIcon } from '../../../shared/assets/icons';
+import { DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
 import { formatDate, shouldRenderDateSeparator } from '../helpers';
 interface MessageListProps {
   messages: WMessage[];
@@ -89,7 +89,12 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                     className={`px-2 py-1 text-sm rounded-xl ${message.fromMe ? 'bg-green-100' : 'bg-white'} max-w-lg shadow flex gap-4 items-end`}
                     style={{ minHeight: '32px' }}
                   >
-                    {message.hasMedia && message.mimetype ? (
+                    {message.type === 'call_log' ? (
+                      <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
+                      <PhoneIcon />
+                      <span className="text-sm text-gray-700">Llamada realizada</span>
+                    </div>
+                    ) : message.hasMedia && message.mimetype ? (
                       <div className="flex flex-col gap-2">
                         {renderFilePreview(message.mimetype, message.mediaUrl!)}
                         <p>{message.body}</p>

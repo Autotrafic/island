@@ -14,6 +14,7 @@ import {
   faCity,
   faHandshakeSimple,
   faHashtag,
+  faPhone,
   faSquareBinary,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -51,3 +52,5 @@ export const DoubleCheckIcon: React.FC = () => (
 export const DoubleBlueCheckIcon: React.FC = () => (
   <FontAwesomeIcon icon={faCheckDouble as any} className="text-blue-500 w-3 h-3" />
 );
+
+export const PhoneIcon: React.FC = () => <FontAwesomeIcon icon={faPhone as any} className="text-gray-500 w-4 h-4" />;

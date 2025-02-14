@@ -114,7 +114,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                       <p className={`text-xs font-semibold ${senderColor}`}>{senderName}</p>
                     )}
 
-                    {message.type !== 'chat' ? (
+                    {message.type === 'call_log' || message.type === 'e2e_notification' ? (
                       <>{renderMessageType(message)} </>
                     ) : message.hasMedia && message.mimetype ? (
                       <div className="flex flex-col gap-2">
@@ -125,7 +125,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                       <p dangerouslySetInnerHTML={{ __html: message.body.replace(/\n/g, '<br />') }} />
                     )}
 
-                    <div className="text-xs text-gray-500 bottom-1 right-2 flex items-center">
+                    <div className="text-xs text-gray-500 bottom-1 right-2 flex items-center justify-end">
                       {new Date(message.timestamp * 1000).toLocaleTimeString(undefined, {
                         hour: '2-digit',
                         minute: '2-digit',

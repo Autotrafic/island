@@ -163,7 +163,7 @@ export function Whatsapp() {
     async function fetchChatsAndMessages() {
       try {
         const chatResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chats`);
-        const chats = chatResponse.data.chats.slice(0, 5);
+        const chats = chatResponse.data.chats;
         setChats(chats);
         setFilteredChats(chats);
         setLoadingChats(false);

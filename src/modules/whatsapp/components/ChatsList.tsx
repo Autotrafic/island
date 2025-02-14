@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface ChatListProps {
-  chats: WChat[];
   filteredChats: WChat[];
   selectedChat: WChat | null;
   searchQuery: string;
@@ -11,7 +10,6 @@ interface ChatListProps {
 }
 
 export const ChatsList: React.FC<ChatListProps> = ({
-  chats,
   filteredChats,
   selectedChat,
   searchQuery,

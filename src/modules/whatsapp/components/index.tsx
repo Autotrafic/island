@@ -66,12 +66,15 @@ export function Whatsapp() {
     // Check if the chat is a new chat (i.e., not in the original chats list)
     const isNewChat = !chats.some((c) => c.id === chat.id);
 
+    const updatedChat = { ...chat, unreadCount: 0 };
+
     // If it's a new chat, add it to the chats list
-    if (isNewChat) {
-      const updatedChats = [chat, ...chats];
-      setChats(updatedChats);
-      setFilteredChats(updatedChats); // Reset filteredChats to include all chats
-    }
+    const updatedChats = isNewChat ? [updatedChat, ...chats] : chats.map((c) => 
+      c.id === chat.id ? updatedChat : c
+    );
+  
+    setChats(updatedChats);
+    setFilteredChats(updatedChats);
 
     setMessages([]);
     setLoadingMessages(true);
@@ -120,7 +123,7 @@ export function Whatsapp() {
     async function fetchChatsAndMessages() {
       try {
         const chatResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chats`);
-        const chats = chatResponse.data.chats;
+        const chats = chatResponse.data.chats.slice(0, 5);
         setChats(chats);
         setFilteredChats(chats);
         setLoadingChats(false);
@@ -201,7 +204,6 @@ export function Whatsapp() {
   return (
     <div className="whatsapp-container flex h-screen">
       <ChatsList
-        chats={chats}
         filteredChats={filteredChats}
         selectedChat={selectedChat}
         searchQuery={searchQuery}

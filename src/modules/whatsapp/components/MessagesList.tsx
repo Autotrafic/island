@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
+import { BellIcon, DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
 import { formatDate, shouldRenderDateSeparator } from '../helpers';
+import { message } from 'antd';
 interface MessageListProps {
   messages: WMessage[];
   selectedChat: WChat | null;
@@ -38,33 +39,46 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
     if (mimetype === 'application/pdf') {
       return (
         <div className="flex flex-col gap-2">
-          <iframe
-            src={mediaUrl}
-            className="w-full h-[400px] rounded-lg border-none"
-            title="PDF Preview"
-          />
-          <a
-            href={mediaUrl}
-            download="file.pdf"
-            className="p-2 bg-blue-500 text-white rounded-lg text-xs text-center"
-          >
+          <iframe src={mediaUrl} className="w-full h-[400px] rounded-lg border-none" title="PDF Preview" />
+          <a href={mediaUrl} download="file.pdf" className="p-2 bg-blue-500 text-white rounded-lg text-xs text-center">
             Descargar PDF
           </a>
         </div>
       );
     }
     return (
-      <a href={mediaUrl} download={`file.${mimetype?.split('/')[1]}`} className="p-2 bg-blue-500 text-white rounded-lg text-xs">
+      <a
+        href={mediaUrl}
+        download={`file.${mimetype?.split('/')[1]}`}
+        className="p-2 bg-blue-500 text-white rounded-lg text-xs"
+      >
         Descargar archivo
       </a>
     );
   };
 
+  const renderMessageType = (message: WMessage) => {
+    if (message.type === 'call_log') {
+      return (
+        <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
+          <PhoneIcon />
+          <span className="text-sm text-gray-700">Llamada realizada</span>
+        </div>
+      );
+    }
+
+    if (message.type === 'e2e_notification') {
+      return (
+        <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
+          <BellIcon />
+          <span className="text-sm text-gray-700">Notificación de WhatsApp</span>
+        </div>
+      );
+    }
+  };
+
   return (
-    <div
-      ref={messageContainerRef}
-      className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse"
-    >
+    <div ref={messageContainerRef} className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse">
       {selectedChat &&
         messages
           .filter((msg) => msg.chatId === selectedChat.id)
@@ -86,14 +100,13 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
 
                 <div className={`flex ${message.fromMe ? 'justify-end' : 'justify-start'} my-2 mx-[10%]`}>
                   <div
-                    className={`px-2 py-1 text-sm rounded-xl ${message.fromMe ? 'bg-green-100' : 'bg-white'} max-w-lg shadow flex gap-4 items-end`}
+                    className={`px-2 py-1 text-sm rounded-xl ${
+                      message.fromMe ? 'bg-green-100' : 'bg-white'
+                    } max-w-lg shadow flex gap-4 items-end`}
                     style={{ minHeight: '32px' }}
                   >
-                    {message.type === 'call_log' ? (
-                      <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
-                      <PhoneIcon />
-                      <span className="text-sm text-gray-700">Llamada realizada</span>
-                    </div>
+                    {message.type !== 'chat' ? (
+                      <>{renderMessageType(message)} </>
                     ) : message.hasMedia && message.mimetype ? (
                       <div className="flex flex-col gap-2">
                         {renderFilePreview(message.mimetype, message.mediaUrl!)}

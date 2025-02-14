@@ -19,6 +19,8 @@ interface WMessage {
   hasMedia: boolean;
   mediaUrl: string | undefined;
   mimetype: string | undefined;
+  senderId: string;
+  senderName: string;
 }
 
 interface SendMessagePayload {

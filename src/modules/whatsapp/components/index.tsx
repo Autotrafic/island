@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Progress, Spin } from 'antd';
+import { message, Progress, Spin } from 'antd';
 import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
 import { LoadingOutlined } from '@ant-design/icons';
 import { ChatsList } from './ChatsList';
@@ -59,7 +59,7 @@ export function Whatsapp() {
     }
   };
 
-  const selectChat = (chat: WChat) => {
+  const selectChat = async (chat: WChat) => {
     setSelectedChat(chat);
     setSearchQuery(''); // Clear the search query
 
@@ -69,10 +69,8 @@ export function Whatsapp() {
     const updatedChat = { ...chat, unreadCount: 0 };
 
     // If it's a new chat, add it to the chats list
-    const updatedChats = isNewChat ? [updatedChat, ...chats] : chats.map((c) => 
-      c.id === chat.id ? updatedChat : c
-    );
-  
+    const updatedChats = isNewChat ? [updatedChat, ...chats] : chats.map((c) => (c.id === chat.id ? updatedChat : c));
+
     setChats(updatedChats);
     setFilteredChats(updatedChats);
 
@@ -80,15 +78,20 @@ export function Whatsapp() {
     setLoadingMessages(true);
 
     // Send the correctly formatted chatId to the backend
-    axios.get(`${WHATSAPP_API_URL}/messages/seen-chat/${chat.id}`);
+    try {
+      await axios.get(`${WHATSAPP_API_URL}/messages/seen-chat/${chat.id}`);
 
-    axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${chat.id}`).then((messageResponse) => {
-      setMessages(messageResponse.data.messages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
+      await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${chat.id}`).then((messageResponse) => {
+        setMessages(messageResponse.data.messages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
+        setLoadingMessages(false);
+      });
+    } catch (error) {
+      message.error('No se han podido obtener los mensajes del chat');
       setLoadingMessages(false);
-    });
+    }
   };
 
-  const onMessageReceived = (newMessage: WMessage) => {
+  const onMessageReceived = async (newMessage: WMessage) => {
     setMessages((prevMessages) => {
       const existingMessageIndex = prevMessages.findIndex((msg) => msg.id === newMessage.id);
       if (existingMessageIndex !== -1) {
@@ -102,20 +105,57 @@ export function Whatsapp() {
       }
     });
 
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === newMessage.chatId
-          ? {
-              ...chat,
-              unreadCount: chat.id === selectedChat?.id ? 0 : chat.unreadCount + 1,
+    setChats((prevChats) => {
+      const chatExists = prevChats.some((chat) => chat.id === newMessage.chatId);
+
+      if (chatExists) {
+        // Update existing chat
+        return prevChats.map((chat) =>
+          chat.id === newMessage.chatId
+            ? {
+                ...chat,
+                unreadCount: chat.id === selectedChat?.id ? 0 : chat.unreadCount + 1,
+                lastMessage: { viewed: newMessage.viewed, body: newMessage.body },
+              }
+            : chat
+        );
+      } else {
+        // Fetch chat details from backend
+        axios
+          .get(`${WHATSAPP_API_URL}/messages/chats/${newMessage.chatId}`)
+          .then((response) => {
+            const chatData: WChat = response.data.chat;
+
+            setChats((prevChats) => [
+              {
+                ...chatData,
+                lastMessage: { viewed: newMessage.viewed, body: newMessage.body },
+              },
+              ...prevChats,
+            ]);
+          })
+          .catch(() => {
+            // If fetching fails, create a temporary chat with minimal details
+            const newChat: WChat = {
+              id: newMessage.chatId,
+              name: 'Chat sin nombre',
+              isGroup: false,
+              unreadCount: 1,
+              timestamp: newMessage.timestamp,
               lastMessage: { viewed: newMessage.viewed, body: newMessage.body },
-            }
-          : chat
-      )
-    );
+              profilePicUrl: undefined,
+            };
+            setChats((prevChats) => [newChat, ...prevChats]);
+          });
+
+        return prevChats; // Prevent state mutation inside the async operation
+      }
+    });
 
     if (selectedChat && selectedChat.id === newMessage.chatId) {
-      axios.get(`${WHATSAPP_API_URL}/messages/seen-chat/${newMessage.chatId}`);
+      try {
+        await axios.get(`${WHATSAPP_API_URL}/messages/seen-chat/${newMessage.chatId}`);
+      } catch {}
     }
   };
 

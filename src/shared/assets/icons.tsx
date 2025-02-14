@@ -6,6 +6,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faBell,
   faBuilding,
   faBuildingUser,
   faCar,
@@ -54,3 +55,5 @@ export const DoubleBlueCheckIcon: React.FC = () => (
 );
 
 export const PhoneIcon: React.FC = () => <FontAwesomeIcon icon={faPhone as any} className="text-gray-500 w-4 h-4" />;
+
+export const BellIcon: React.FC = () => <FontAwesomeIcon icon={faBell as any} className="text-gray-500 w-4 h-4" />;

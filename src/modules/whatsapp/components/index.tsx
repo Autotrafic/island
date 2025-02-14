@@ -263,7 +263,7 @@ export function Whatsapp() {
             <Progress percent={progress} format={(percent) => `${percent}%`} />
           </div>
         )}
-        <MessagesList messages={messages} selectedChat={selectedChat} />
+        <MessagesList messages={messages} selectedChat={selectedChat} chats={chats} />
         {selectedChat && (
           <MessageInput
             newMessage={newMessage}

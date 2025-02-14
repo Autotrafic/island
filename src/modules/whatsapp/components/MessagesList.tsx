@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { BellIcon, DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
-import { formatDate, shouldRenderDateSeparator } from '../helpers';
-import { message } from 'antd';
+import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
 interface MessageListProps {
   messages: WMessage[];
   selectedChat: WChat | null;
+  chats: WChat[];
 }
 
-export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedChat }) => {
+export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedChat, chats }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -85,8 +85,13 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
           .map((message, index, filteredMessages) => {
             const currentTimestamp = message.timestamp;
             const previousTimestamp = index > 0 ? filteredMessages[index - 1].timestamp : null;
-
             const renderDateSeparator = shouldRenderDateSeparator(currentTimestamp, previousTimestamp);
+
+            // Determine if we should show the sender's name (only for group chats)
+            const showSenderName = selectedChat.isGroup && !message.fromMe;
+            const senderName = chats.find((chat) => chat.id === message.senderId)?.name || message.senderPhone;
+            const isSameSenderAsPrevious = index > 0 && filteredMessages[index - 1].senderId === message.senderId;
+            const senderColor = showSenderName ? getParticipantColor(message.senderId) : 'text-gray-700';
 
             return (
               <div key={message.id}>
@@ -102,9 +107,13 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                   <div
                     className={`px-2 py-1 text-sm rounded-xl ${
                       message.fromMe ? 'bg-green-100' : 'bg-white'
-                    } max-w-lg shadow flex gap-4 items-end`}
+                    } max-w-lg shadow flex flex-col gap-1`}
                     style={{ minHeight: '32px' }}
                   >
+                    {showSenderName && !isSameSenderAsPrevious && (
+                      <p className={`text-xs font-semibold ${senderColor}`}>{senderName}</p>
+                    )}
+
                     {message.type !== 'chat' ? (
                       <>{renderMessageType(message)} </>
                     ) : message.hasMedia && message.mimetype ? (
@@ -115,6 +124,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                     ) : (
                       <p dangerouslySetInnerHTML={{ __html: message.body.replace(/\n/g, '<br />') }} />
                     )}
+
                     <div className="text-xs text-gray-500 bottom-1 right-2 flex items-center">
                       {new Date(message.timestamp * 1000).toLocaleTimeString(undefined, {
                         hour: '2-digit',

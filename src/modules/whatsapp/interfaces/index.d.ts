@@ -20,7 +20,7 @@ interface WMessage {
   mediaUrl: string | undefined;
   mimetype: string | undefined;
   senderId: string;
-  senderName: string;
+  senderPhone: string;
 }
 
 interface SendMessagePayload {

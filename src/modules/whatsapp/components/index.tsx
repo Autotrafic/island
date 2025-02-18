@@ -115,7 +115,7 @@ export function Whatsapp() {
             ? {
                 ...chat,
                 unreadCount: chat.id === selectedChat?.id ? 0 : chat.unreadCount + 1,
-                lastMessage: { viewed: newMessage.viewed, body: newMessage.body },
+                lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
               }
             : chat
         );
@@ -129,7 +129,7 @@ export function Whatsapp() {
             setChats((prevChats) => [
               {
                 ...chatData,
-                lastMessage: { viewed: newMessage.viewed, body: newMessage.body },
+                lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
               },
               ...prevChats,
             ]);
@@ -142,7 +142,7 @@ export function Whatsapp() {
               isGroup: false,
               unreadCount: 1,
               timestamp: newMessage.timestamp,
-              lastMessage: { viewed: newMessage.viewed, body: newMessage.body },
+              lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
               profilePicUrl: undefined,
             };
             setChats((prevChats) => [newChat, ...prevChats]);
@@ -163,7 +163,7 @@ export function Whatsapp() {
     async function fetchChatsAndMessages() {
       try {
         const chatResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chats`);
-        const chats = chatResponse.data.chats;
+        const chats = chatResponse.data.chats.slice(0, 5);
         setChats(chats);
         setFilteredChats(chats);
         setLoadingChats(false);
@@ -230,7 +230,7 @@ export function Whatsapp() {
         isGroup: false,
         unreadCount: 0,
         timestamp: Date.now(),
-        lastMessage: { viewed: false, body: '' },
+        lastMessage: { viewed: false, fromMe: false, body: '' },
       };
 
       // Set filteredChats to only contain the new chat

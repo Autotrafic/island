@@ -1,4 +1,4 @@
-import { WMessageType } from "./enums";
+import { WMessageType } from './enums';
 
 interface WChat {
   id: string;
@@ -11,7 +11,7 @@ interface WChat {
 }
 
 interface WMessage {
-  id: string;
+  id: { id: string; remote: string; _serialized: string; fromMe: boolean };
   chatId: string;
   body: string;
   fromMe: boolean;
@@ -30,6 +30,7 @@ interface WMessage {
     phone: string;
     img: string;
   } | null;
+  quotedMessage: WMessage | null;
 }
 
 interface SendMessagePayload {

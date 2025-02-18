@@ -14,51 +14,13 @@ export function Whatsapp() {
   const [filteredChats, setFilteredChats] = useState<WChat[]>([]);
   const [selectedChat, setSelectedChat] = useState<WChat | null>(null);
   const [messages, setMessages] = useState<WMessage[]>([]);
-  const [newMessage, setNewMessage] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
-  const [loadingSendMessage, setLoadingSendMessage] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [quotedMessage, setQuotedMessage] = useState<WMessage | null>(null);
 
   const loadingInterface = loadingChats || loadingMessages;
-
-  const sendMessage = async () => {
-    if (!newMessage.trim()) return;
-
-    try {
-      setLoadingSendMessage(true);
-
-      // Check if the selected chat is a new chat (i.e., not in the original chats list)
-      const isNewChat = !chats.some((chat) => chat.id === selectedChat?.id);
-
-      // Send the message with the correctly formatted chatId
-      await axios.post(`${WHATSAPP_API_URL}/messages/send`, {
-        message: newMessage,
-        phoneNumber: selectedChat?.id?.replace('@c.us', ''),
-      });
-
-      setNewMessage('');
-
-      // If it's a new chat, add it to the chats list
-      if (isNewChat && selectedChat) {
-        const updatedChats = [selectedChat, ...chats];
-        setChats(updatedChats);
-        setFilteredChats([selectedChat]); // Ensure the new chat remains in the filtered list
-      }
-
-      // Fetch the updated messages for the selected chat
-      const updatedMessages = await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${selectedChat?.id}`);
-      setMessages((prev) => [
-        ...prev.filter((m) => m.chatId !== selectedChat?.id),
-        ...updatedMessages.data.messages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat?.id })),
-      ]);
-    } catch (error) {
-      console.error('Error sending message:', error);
-    } finally {
-      setLoadingSendMessage(false);
-    }
-  };
 
   const selectChat = async (chat: WChat) => {
     setSelectedChat(chat);
@@ -278,16 +240,13 @@ export function Whatsapp() {
             </div>
           </div>
         )}
-        <MessagesList messages={messages} selectedChat={selectedChat} chats={chats} />
+        <MessagesList messages={messages} selectedChat={selectedChat} chats={chats} setQuotedMessage={setQuotedMessage} />
         {selectedChat && (
           <MessageInput
-            newMessage={newMessage}
-            loadingSendMessage={loadingSendMessage}
-            selectedChatId={selectedChat.id}
-            onMessageChange={setNewMessage}
-            onSendMessage={sendMessage}
-            setLoadingSendMessage={setLoadingSendMessage}
+            selectedChat={selectedChat}
+            quotedMessage={quotedMessage}
             setMessages={setMessages}
+            setQuotedMessage={setQuotedMessage}
           />
         )}
       </div>

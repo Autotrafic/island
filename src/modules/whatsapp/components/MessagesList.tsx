@@ -1,15 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { BellIcon, DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
 import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
 import { WChat, WMessage } from '../interfaces';
 import { WMessageType } from '../interfaces/enums';
+import { useContextMenu } from '../context/useContextMenu';
 interface MessageListProps {
   messages: WMessage[];
   selectedChat: WChat | null;
   chats: WChat[];
+  setQuotedMessage: Dispatch<SetStateAction<WMessage | null>>;
 }
 
-export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedChat, chats }) => {
+export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedChat, chats, setQuotedMessage }) => {
+  const handleContextMenu = useContextMenu({ setQuotedMessage });
+
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -130,7 +134,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
             const senderColor = showSenderName ? getParticipantColor(message.senderId) : 'text-gray-700';
 
             return (
-              <div key={message.id}>
+              <div key={message.id.id} onContextMenu={(e) => handleContextMenu(e, message)}>
                 {renderDateSeparator && (
                   <div className="flex justify-center my-4">
                     <div className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full text-sm">
@@ -146,10 +150,47 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                     } max-w-lg shadow flex flex-col gap-1`}
                     style={{ minHeight: '32px' }}
                   >
+                    {/* Render quoted message if it exists */}
+                    {message.quotedMessage && (
+                      <div className="quoted-message bg-gray-100 p-2 rounded-lg border-l-4 border-blue-500">
+                        <div className="text-xs text-gray-600 mb-1">
+                          Respondiendo a{' '}
+                          <span className="font-semibold">
+                            {message.quotedMessage.fromMe ? 'Tú' : senderName}
+                          </span>
+                        </div>
+                        {message.quotedMessage.hasMedia && message.quotedMessage.mediaUrl ? (
+                          <div className="media-preview">
+                            {message.quotedMessage.mimetype?.startsWith('image/') ? (
+                              <img
+                                src={message.quotedMessage.mediaUrl}
+                                alt="Quoted media"
+                                className="max-w-[80px] max-h-[80px] rounded"
+                              />
+                            ) : message.quotedMessage.mimetype?.startsWith('video/') ? (
+                              <video
+                                src={message.quotedMessage.mediaUrl}
+                                controls
+                                className="max-w-[80px] max-h-[80px] rounded"
+                              />
+                            ) : (
+                              <div className="file-preview">
+                                <span className="text-xs text-gray-700">Archivo adjunto</span>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-gray-700 truncate">{message.quotedMessage.body}</p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Render sender's name (for group chats) */}
                     {showSenderName && !isSameSenderAsPrevious && (
                       <p className={`text-xs font-semibold ${senderColor}`}>{senderName}</p>
                     )}
 
+                    {/* Render message content */}
                     {Object.values(WMessageType).includes(message.type) ? (
                       <>{renderMessageType(message)} </>
                     ) : message.hasMedia && message.mimetype ? (
@@ -161,6 +202,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                       <>{renderMessageFormat(message)}</>
                     )}
 
+                    {/* Render message timestamp and read status */}
                     <div className="text-xs text-gray-500 bottom-1 right-2 flex items-center justify-end">
                       {new Date(message.timestamp * 1000).toLocaleTimeString(undefined, {
                         hour: '2-digit',

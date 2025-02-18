@@ -62,18 +62,18 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
   const renderMessageType = (message: WMessage) => {
     if (message.type === 'call_log') {
       return (
-        <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
-          <PhoneIcon />
-          <span className="text-sm text-gray-700">Llamada realizada</span>
+        <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
+          <PhoneIcon className="w-5 h-5 text-blue-400" />
+          <span className="text-sm text-gray-300">Llamada realizada</span>
         </div>
       );
     }
 
     if (message.type === 'e2e_notification') {
       return (
-        <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
-          <BellIcon />
-          <span className="text-sm text-gray-700">Notificación de WhatsApp</span>
+        <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
+          <BellIcon className="w-5 h-5 text-purple-400" />
+          <span className="text-sm text-gray-300">Notificación de WhatsApp</span>
         </div>
       );
     }
@@ -81,12 +81,18 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
     const { attachedContact } = message;
     if (message.type === 'vcard' && attachedContact) {
       return (
-        <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
-          {attachedContact.img && <img src={attachedContact.img} alt="contact" className="w-8 h-8 rounded-full" />}
+        <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
+          {attachedContact.img && (
+            <img
+              src={attachedContact.img}
+              alt="contact"
+              className="w-8 h-8 rounded-full border-2 border-blue-400"
+            />
+          )}
 
           <div className="flex flex-col gap-1">
-            <p className="text-sm text-gray-700">{attachedContact.name}</p>
-            <p className="text-xs text-gray-500">{attachedContact.phone}</p>
+            <p className="text-sm text-gray-300">{attachedContact.name}</p>
+            <p className="text-xs text-gray-400">{attachedContact.phone}</p>
           </div>
         </div>
       );

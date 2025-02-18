@@ -54,6 +54,10 @@ export const DoubleBlueCheckIcon: React.FC = () => (
   <FontAwesomeIcon icon={faCheckDouble as any} className="text-blue-500 w-3 h-3" />
 );
 
-export const PhoneIcon: React.FC = () => <FontAwesomeIcon icon={faPhone as any} className="text-gray-500 w-4 h-4" />;
+export const PhoneIcon = ({ className }: { className?: string }) => (
+  <FontAwesomeIcon icon={faPhone as any} className={`${className ? className : 'text-gray-500 w-4 h-4'}`} />
+);
 
-export const BellIcon: React.FC = () => <FontAwesomeIcon icon={faBell as any} className="text-gray-500 w-4 h-4" />;
+export const BellIcon = ({ className }: { className?: string }) => (
+  <FontAwesomeIcon icon={faBell as any} className={`${className ? className : 'text-gray-500 w-4 h-4'}`} />
+);

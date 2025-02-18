@@ -39,7 +39,7 @@ module.exports = (env: any, argv: any) => {
           use: ['style-loader', 'css-loader', 'postcss-loader'],
         },
         {
-          test: /\.(png|jpe?g|gif|svg)$/i,
+          test: /\.(png|jpe?g|gif|svg|mp3|wav|ogg)$/i,
           use: [
             {
               loader: 'file-loader',

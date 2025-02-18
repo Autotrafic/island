@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { message, Progress, Spin } from 'antd';
 import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
@@ -93,6 +93,13 @@ export function Whatsapp() {
   };
 
   const onMessageReceived = async (newMessage: WMessage) => {
+    if (newMessage.chatId === 'status@broadcast') return;
+
+    if (!newMessage.fromMe) {
+      const notification = new Audio('/notification.wav');
+      notification.play().catch((error) => console.error('Failed to play sound:', error));
+    }
+
     setMessages((prevMessages) => {
       const existingMessageIndex = prevMessages.findIndex((msg) => msg.id === newMessage.id);
       if (existingMessageIndex !== -1) {
@@ -213,7 +220,7 @@ export function Whatsapp() {
     const escapedSearchQuery = escapeRegExp(searchQuery); // Escape special characters
     const searchRegex = new RegExp(escapedSearchQuery.replace(/\s+/g, '.*'), 'i');
     const normalizedSearchQuery = normalizeNumber(searchQuery);
-  
+
     // Filter chats based on the search query
     const filtered = chats.filter((chat) => {
       const normalizedChatId = normalizeNumber(chat.id);
@@ -222,10 +229,10 @@ export function Whatsapp() {
       const matchesMessages = messages.some((msg) => msg.chatId === chat.id && searchRegex.test(msg.body));
       return matchesChatName || matchesChatId || matchesMessages;
     });
-  
+
     // If the search query is a valid number and no exact chat matches exist, add the new chat
-    const chatExists = filtered.some(chat => normalizeNumber(chat.id) === normalizedSearchQuery);
-  
+    const chatExists = filtered.some((chat) => normalizeNumber(chat.id) === normalizedSearchQuery);
+
     if (normalizedSearchQuery && !chatExists) {
       const newChat: WChat = {
         id: formatChatId(normalizedSearchQuery), // Format the chatId correctly
@@ -235,14 +242,13 @@ export function Whatsapp() {
         timestamp: Date.now(),
         lastMessage: { viewed: false, fromMe: false, body: '' },
       };
-  
+
       // Add the new chat to the filtered list
       setFilteredChats([...filtered, newChat]);
     } else {
       setFilteredChats(filtered);
     }
   }, [searchQuery, chats, messages]);
-  
 
   return (
     <div className="whatsapp-container flex h-screen">

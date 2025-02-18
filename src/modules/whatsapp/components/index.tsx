@@ -255,12 +255,18 @@ export function Whatsapp() {
       <div className={`chat-messages flex-1 flex flex-col relative ${!loadingInterface && 'bg-gray-200'}`}>
         {loadingChats && (
           <div className="absolute top-1/3 left-1/2">
-            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+            <div className="flex flex-col gap-10 items-center">
+              <h2>Cargando los chats</h2>
+              <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+            </div>
           </div>
         )}
         {loadingMessages && (
           <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-[20%]">
-            <Progress percent={progress} format={(percent) => `${percent}%`} />
+            <div className="flex flex-col gap-10 items-center">
+              <h2>Cargando los mensajes</h2>
+              <Progress percent={progress} format={(percent) => `${percent}%`} />
+            </div>
           </div>
         )}
         <MessagesList messages={messages} selectedChat={selectedChat} chats={chats} />

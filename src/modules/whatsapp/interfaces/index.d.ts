@@ -21,6 +21,7 @@ interface WMessage {
   mimetype: string | undefined;
   senderId: string;
   senderPhone: string;
+  links: { link: string; isSuspicious: boolean }[];
 }
 
 interface SendMessagePayload {

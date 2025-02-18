@@ -77,6 +77,20 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
     }
   };
 
+  const renderMessageFormat = (message: WMessage) => {
+    if (message.links.length > 0) {
+      const link = message.links[0];
+
+      return (
+        <a href={link.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+          {message.body}
+        </a>
+      );
+    } else {
+      return <p dangerouslySetInnerHTML={{ __html: message.body.replace(/\n/g, '<br />') }} />;
+    }
+  };
+
   return (
     <div ref={messageContainerRef} className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse">
       {selectedChat &&
@@ -119,10 +133,10 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                     ) : message.hasMedia && message.mimetype ? (
                       <div className="flex flex-col gap-2">
                         {renderFilePreview(message.mimetype, message.mediaUrl!)}
-                        <p>{message.body}</p>
+                        {renderMessageFormat(message)}
                       </div>
                     ) : (
-                      <p dangerouslySetInnerHTML={{ __html: message.body.replace(/\n/g, '<br />') }} />
+                      <>{renderMessageFormat(message)}</>
                     )}
 
                     <div className="text-xs text-gray-500 bottom-1 right-2 flex items-center justify-end">

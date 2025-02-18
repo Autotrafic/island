@@ -45,16 +45,17 @@ export const ChatsList: React.FC<ChatListProps> = ({
           />
           <div className="flex-1 min-w-0">
             <h4 className="font-medium truncate">{chat.name}</h4>
-            <div className="flex items-start gap-1 text-sm text-gray-600">
-              {chat.lastMessage.fromMe && (
-                <span className="flex items-center mt-1">
-                  {chat.lastMessage.viewed ? <DoubleBlueCheckIcon /> : <DoubleCheckIcon />}
-                </span>
-              )}
-              <span className="line-clamp-2 overflow-hidden overflow-ellipsis">
-                {chat.lastMessage.body}
-              </span>
-            </div>
+            {chat.lastMessage.body && (
+              <div className="flex items-start gap-1 text-sm text-gray-600">
+                {chat.lastMessage.fromMe && (
+                  <span className="flex items-center mt-1">
+                    {chat.lastMessage.viewed ? <DoubleBlueCheckIcon /> : <DoubleCheckIcon />}
+                  </span>
+                )}
+
+                <span className="line-clamp-2 overflow-hidden overflow-ellipsis">{chat.lastMessage.body}</span>
+              </div>
+            )}
           </div>
           {chat.unreadCount > 0 && (
             <div className="flex items-center justify-center w-6 h-6 text-white bg-green-500 rounded-full text-xs">

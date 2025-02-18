@@ -45,3 +45,21 @@
   display: block !important;
   width: 100% !important;
 }
+
+.whats-list-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.whats-list-scrollbar::-webkit-scrollbar-track {
+  background: #2d3748;
+  border-radius: 4px;
+}
+
+.whats-list-scrollbar::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 4px;
+}
+
+.whats-list-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}

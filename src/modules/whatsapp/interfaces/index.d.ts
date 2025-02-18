@@ -1,3 +1,5 @@
+import { WMessageType } from "./enums";
+
 interface WChat {
   id: string;
   name: string;
@@ -15,13 +17,19 @@ interface WMessage {
   fromMe: boolean;
   viewed: boolean | undefined;
   timestamp: number;
-  type: string;
+  type: WMessageType;
   hasMedia: boolean;
   mediaUrl: string | undefined;
   mimetype: string | undefined;
   senderId: string;
   senderPhone: string;
-  links: { link: string; isSuspicious: boolean }[];
+  link: { link: string; isSuspicious: boolean } | null;
+  vCard: any;
+  attachedContact: {
+    name: string;
+    phone: string;
+    img: string;
+  } | null;
 }
 
 interface SendMessagePayload {

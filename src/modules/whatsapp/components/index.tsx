@@ -7,6 +7,7 @@ import { ChatsList } from './ChatsList';
 import { MessagesList } from './MessagesList';
 import { MessageInput } from './MessageInput';
 import { escapeRegExp, formatChatId, normalizeNumber } from '../helpers/parser';
+import { WChat, WMessage } from '../interfaces';
 
 export function Whatsapp() {
   const [chats, setChats] = useState<WChat[]>([]);
@@ -212,7 +213,7 @@ export function Whatsapp() {
     const escapedSearchQuery = escapeRegExp(searchQuery); // Escape special characters
     const searchRegex = new RegExp(escapedSearchQuery.replace(/\s+/g, '.*'), 'i');
     const normalizedSearchQuery = normalizeNumber(searchQuery);
-
+  
     // Filter chats based on the search query
     const filtered = chats.filter((chat) => {
       const normalizedChatId = normalizeNumber(chat.id);
@@ -221,9 +222,11 @@ export function Whatsapp() {
       const matchesMessages = messages.some((msg) => msg.chatId === chat.id && searchRegex.test(msg.body));
       return matchesChatName || matchesChatId || matchesMessages;
     });
-
-    // If no matches are found and the search query is a valid number, add the new chat
-    if (filtered.length === 0 && normalizedSearchQuery) {
+  
+    // If the search query is a valid number and no exact chat matches exist, add the new chat
+    const chatExists = filtered.some(chat => normalizeNumber(chat.id) === normalizedSearchQuery);
+  
+    if (normalizedSearchQuery && !chatExists) {
       const newChat: WChat = {
         id: formatChatId(normalizedSearchQuery), // Format the chatId correctly
         name: searchQuery, // Use the search query as the chat name
@@ -232,14 +235,14 @@ export function Whatsapp() {
         timestamp: Date.now(),
         lastMessage: { viewed: false, fromMe: false, body: '' },
       };
-
-      // Set filteredChats to only contain the new chat
-      setFilteredChats([newChat]);
+  
+      // Add the new chat to the filtered list
+      setFilteredChats([...filtered, newChat]);
     } else {
-      // Otherwise, set filteredChats to the filtered list
       setFilteredChats(filtered);
     }
   }, [searchQuery, chats, messages]);
+  
 
   return (
     <div className="whatsapp-container flex h-screen">

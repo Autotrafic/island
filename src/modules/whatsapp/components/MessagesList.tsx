@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { BellIcon, DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
 import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
+import { WChat, WMessage } from '../interfaces';
+import { WMessageType } from '../interfaces/enums';
 interface MessageListProps {
   messages: WMessage[];
   selectedChat: WChat | null;
@@ -75,11 +77,25 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
         </div>
       );
     }
+
+    const { attachedContact } = message;
+    if (message.type === 'vcard' && attachedContact) {
+      return (
+        <div className="flex items-center gap-2 rounded bg-gray-200 border-2 border-gray-300 px-2 py-4">
+          {attachedContact.img && <img src={attachedContact.img} alt="contact" className="w-8 h-8 rounded-full" />}
+
+          <div className="flex flex-col gap-1">
+            <p className="text-sm text-gray-700">{attachedContact.name}</p>
+            <p className="text-xs text-gray-500">{attachedContact.phone}</p>
+          </div>
+        </div>
+      );
+    }
   };
 
   const renderMessageFormat = (message: WMessage) => {
-    if (message.links.length > 0) {
-      const link = message.links[0];
+    if (message.link) {
+      const link = message.link;
 
       return (
         <a href={link.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
@@ -92,7 +108,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
   };
 
   return (
-    <div ref={messageContainerRef} className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse">
+    <div ref={messageContainerRef} className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse whats-list-scrollbar">
       {selectedChat &&
         messages
           .filter((msg) => msg.chatId === selectedChat.id)
@@ -128,7 +144,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                       <p className={`text-xs font-semibold ${senderColor}`}>{senderName}</p>
                     )}
 
-                    {message.type === 'call_log' || message.type === 'e2e_notification' ? (
+                    {Object.values(WMessageType).includes(message.type) ? (
                       <>{renderMessageType(message)} </>
                     ) : message.hasMedia && message.mimetype ? (
                       <div className="flex flex-col gap-2">

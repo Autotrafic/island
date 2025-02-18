@@ -3,6 +3,7 @@ import { Button, Upload, message as antdMessage, UploadFile } from 'antd';
 import axios from 'axios';
 import { UploadOutlined } from '@ant-design/icons';
 import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
+import { WMessage } from '../interfaces';
 
 interface MessageInputProps {
   newMessage: string;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { DoubleBlueCheckIcon, DoubleCheckIcon } from '../../../shared/assets/icons';
+import { WChat } from '../interfaces';
 
 interface ChatListProps {
   filteredChats: WChat[];
@@ -19,7 +20,8 @@ export const ChatsList: React.FC<ChatListProps> = ({
   onSelectChat,
 }) => {
   return (
-    <div className="chat-list w-1/5 border-r border-gray-300 overflow-y-auto bg-gray-900 text-white">
+    <div
+      className="chat-list w-1/5 border-r border-gray-300 overflow-y-auto bg-gray-900 text-white whats-list-scrollbar">
       {/* Search Bar */}
       <input
         type="text"
@@ -35,9 +37,7 @@ export const ChatsList: React.FC<ChatListProps> = ({
           key={chat.id}
           className={`chat-item p-3 cursor-pointer flex items-center gap-3 ${
             selectedChat?.id === chat.id ? 'bg-gray-700' : 'bg-gray-800'
-          } transition-colors duration-300 hover:bg-gray-700 ${
-            loadingInterface ? 'pointer-events-none opacity-50' : ''
-          }`}
+          } transition-colors duration-300 hover:bg-gray-700 ${loadingInterface ? 'pointer-events-none opacity-50' : ''}`}
           onClick={() => onSelectChat(chat)}
         >
           {/* Profile Picture */}
@@ -71,5 +71,5 @@ export const ChatsList: React.FC<ChatListProps> = ({
         </div>
       ))}
     </div>
-);
+  );
 };

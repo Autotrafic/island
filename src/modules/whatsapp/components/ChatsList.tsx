@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { DoubleBlueCheckIcon, DoubleCheckIcon } from '../../../shared/assets/icons';
 import { WChat } from '../interfaces';
 import { escapeRegExp, formatChatId, normalizeNumber } from '../helpers/parser';
-import { getChatsByMessage } from '../services';
+import { getChatsByMessage } from '../services/whatsapp';
 import { Spin } from 'antd';
 
 interface ChatListProps {

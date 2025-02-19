@@ -1,4 +1,4 @@
-import { BASE_API_URL, WHATSAPP_API_URL } from '../utils/urls';
+import { BACKEND_API_URL, WHATSAPP_API_URL } from '../utils/urls';
 
 export const autotraficApi = {
   order: {
@@ -31,7 +31,7 @@ type RequestParams =
 
 const makeRequest = async (endpoint: string, data?: RequestParams) => {
   try {
-    const response = await fetch(`${BASE_API_URL}/${endpoint}`, {
+    const response = await fetch(`${BACKEND_API_URL}/${endpoint}`, {
       method: data ? 'POST' : 'GET',
       mode: 'cors',
       headers: {
@@ -72,7 +72,7 @@ async function fetchFiles(endpoint: string, files: File[], orderId: string) {
 
     formData.append('folderName', orderData ? orderData.vehicle.plate : '❌ CARPETA SIN NOMBRE');
 
-    const response = await fetch(`${BASE_API_URL}/${endpoint}`, {
+    const response = await fetch(`${BACKEND_API_URL}/${endpoint}`, {
       method: 'POST',
       body: formData,
     });

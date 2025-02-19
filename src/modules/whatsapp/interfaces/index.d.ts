@@ -46,3 +46,7 @@ interface UploadFileData {
   filename: string;
   mimetype: string;
 }
+
+interface TSesionWhatsapp {
+  estado: TSesionWhatsappEstado;
+}

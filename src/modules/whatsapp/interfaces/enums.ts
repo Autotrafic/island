@@ -3,3 +3,9 @@ export enum WMessageType {
   Notification = 'e2e_notification',
   VCard = 'vcard',
 }
+
+export enum TSesionWhatsappEstado {
+  Disponible = 'Disponible',
+  EnUso = 'En uso',
+  NoDisponible = 'No disponible',
+}

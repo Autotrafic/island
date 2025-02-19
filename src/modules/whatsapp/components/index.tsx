@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { message, Progress, Spin } from 'antd';
+import { useState, useEffect } from 'react';
+import { message, Spin } from 'antd';
 import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
 import { LoadingOutlined } from '@ant-design/icons';
 import { ChatsList } from './ChatsList';
 import { MessagesList } from './MessagesList';
 import { MessageInput } from './MessageInput';
-import { escapeRegExp, formatChatId, normalizeNumber } from '../helpers/parser';
 import { WChat, WMessage } from '../interfaces';
-import { getChatsByMessage } from '../services';
 
 export function Whatsapp() {
   const [chats, setChats] = useState<WChat[]>([]);
@@ -17,7 +15,6 @@ export function Whatsapp() {
   const [messages, setMessages] = useState<WMessage[]>([]);
   const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
-  const [progress, setProgress] = useState<number>(0);
   const [quotedMessage, setQuotedMessage] = useState<WMessage | null>(null);
 
   const loadingInterface = loadingChats || loadingMessages;
@@ -188,7 +185,7 @@ export function Whatsapp() {
   return (
     <div className="whatsapp-container flex h-screen">
       <ChatsList
-      chats={chats}
+        chats={chats}
         filteredChats={filteredChats}
         selectedChat={selectedChat}
         loadingInterface={loadingInterface}
@@ -205,15 +202,18 @@ export function Whatsapp() {
             </div>
           </div>
         )}
+
         {loadingMessages && (
           <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-[20%]">
             <div className="flex flex-col gap-10 items-center">
               <h2>Cargando los mensajes</h2>
-              <Progress percent={progress} format={(percent) => `${percent}%`} />
+              <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
             </div>
           </div>
         )}
+
         <MessagesList messages={messages} selectedChat={selectedChat} chats={chats} setQuotedMessage={setQuotedMessage} />
+
         {selectedChat && (
           <MessageInput
             selectedChat={selectedChat}

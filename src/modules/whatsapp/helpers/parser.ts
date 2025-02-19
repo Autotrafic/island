@@ -1,4 +1,6 @@
 export function normalizeNumber(number: string) {
+  if (!number) return;
+  
   const cleanedNumber = number.replace(/\D/g, '');
 
   if (number.startsWith('+')) {

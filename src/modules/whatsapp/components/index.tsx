@@ -8,13 +8,13 @@ import { MessagesList } from './MessagesList';
 import { MessageInput } from './MessageInput';
 import { escapeRegExp, formatChatId, normalizeNumber } from '../helpers/parser';
 import { WChat, WMessage } from '../interfaces';
+import { getChatsByMessage } from '../services';
 
 export function Whatsapp() {
   const [chats, setChats] = useState<WChat[]>([]);
   const [filteredChats, setFilteredChats] = useState<WChat[]>([]);
   const [selectedChat, setSelectedChat] = useState<WChat | null>(null);
   const [messages, setMessages] = useState<WMessage[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
   const [loadingChats, setLoadingChats] = useState<boolean>(true);
   const [progress, setProgress] = useState<number>(0);
@@ -24,7 +24,6 @@ export function Whatsapp() {
 
   const selectChat = async (chat: WChat) => {
     setSelectedChat(chat);
-    setSearchQuery(''); // Clear the search query
 
     // Check if the chat is a new chat (i.e., not in the original chats list)
     const isNewChat = !chats.some((c) => c.id === chat.id);
@@ -56,13 +55,13 @@ export function Whatsapp() {
 
   const onMessageReceived = async (newMessage: WMessage) => {
     if (newMessage.chatId === 'status@broadcast') return;
-  
+
     // Play notification sound if the message is not from the user
     if (!newMessage.fromMe) {
       const notification = new Audio('/notification.wav');
       notification.play().catch((error) => console.error('Failed to play sound:', error));
     }
-  
+
     // Update messages
     setMessages((prevMessages) => {
       const existingMessageIndex = prevMessages.findIndex((msg) => msg.id === newMessage.id);
@@ -76,11 +75,11 @@ export function Whatsapp() {
         return [...prevMessages, newMessage];
       }
     });
-  
+
     // Update chats
     setChats((prevChats) => {
       const existingChatIndex = prevChats.findIndex((chat) => chat.id === newMessage.chatId);
-  
+
       if (existingChatIndex !== -1) {
         // Update existing chat
         return prevChats.map((chat) =>
@@ -97,7 +96,7 @@ export function Whatsapp() {
         const temporaryChatExists = prevChats.some(
           (chat) => chat.id === newMessage.chatId && chat.name === 'Chat sin nombre'
         );
-  
+
         if (!temporaryChatExists) {
           // Create a temporary chat entry
           const newChat: WChat = {
@@ -109,13 +108,13 @@ export function Whatsapp() {
             lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
             profilePicUrl: undefined,
           };
-  
+
           // Fetch chat details from backend
           axios
             .get(`${WHATSAPP_API_URL}/messages/chats/${newMessage.chatId}`)
             .then((response) => {
               const chatData: WChat = response.data.chat;
-  
+
               // Replace the temporary chat with the fetched chat details
               setChats((prevChats) =>
                 prevChats.map((chat) =>
@@ -132,7 +131,7 @@ export function Whatsapp() {
               // If fetching fails, keep the temporary chat
               console.error('Failed to fetch chat details');
             });
-  
+
           // Add the temporary chat to the list
           return [newChat, ...prevChats];
         } else {
@@ -141,7 +140,7 @@ export function Whatsapp() {
         }
       }
     });
-  
+
     // Mark chat as seen if it's the selected chat
     if (selectedChat && selectedChat.id === newMessage.chatId) {
       try {
@@ -156,29 +155,14 @@ export function Whatsapp() {
     async function fetchChatsAndMessages() {
       try {
         const chatResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chats`);
-        const chats = chatResponse.data.chats.slice(0, 5);
+        const chats = chatResponse.data.chats;
+
         setChats(chats);
         setFilteredChats(chats);
-        setLoadingChats(false);
-        setLoadingMessages(true);
-
-        let loadedChats = 0;
-        const allMessages: WMessage[] = [];
-        for (const chat of chats) {
-          try {
-            const messageResponse = await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${chat.id}`);
-            allMessages.push(...messageResponse.data.messages.map((msg: WMessage) => ({ ...msg, chatId: chat.id })));
-          } catch {
-          } finally {
-            loadedChats++;
-            setProgress(Math.round((loadedChats / chats.length) * 100));
-          }
-        }
-        setMessages(allMessages);
       } catch (error) {
-        console.error('Error fetching chats and messages:', error);
+        message.error('No se han podido obtener los chats');
       } finally {
-        setLoadingMessages(false);
+        setLoadingChats(false);
       }
     }
     fetchChatsAndMessages();
@@ -201,49 +185,15 @@ export function Whatsapp() {
     };
   }, []);
 
-  useEffect(() => {
-    const escapedSearchQuery = escapeRegExp(searchQuery); // Escape special characters
-    const searchRegex = new RegExp(escapedSearchQuery.replace(/\s+/g, '.*'), 'i');
-    const normalizedSearchQuery = normalizeNumber(searchQuery);
-
-    // Filter chats based on the search query
-    const filtered = chats.filter((chat) => {
-      const normalizedChatId = normalizeNumber(chat.id);
-      const matchesChatName = searchRegex.test(chat.name);
-      const matchesChatId = normalizedSearchQuery && normalizedChatId.includes(normalizedSearchQuery);
-      const matchesMessages = messages.some((msg) => msg.chatId === chat.id && searchRegex.test(msg.body));
-      return matchesChatName || matchesChatId || matchesMessages;
-    });
-
-    // If the search query is a valid number and no exact chat matches exist, add the new chat
-    const chatExists = filtered.some((chat) => normalizeNumber(chat.id) === normalizedSearchQuery);
-
-    if (normalizedSearchQuery && !chatExists) {
-      const newChat: WChat = {
-        id: formatChatId(normalizedSearchQuery), // Format the chatId correctly
-        name: searchQuery, // Use the search query as the chat name
-        isGroup: false,
-        unreadCount: 0,
-        timestamp: Date.now(),
-        lastMessage: { viewed: false, fromMe: false, body: '' },
-      };
-
-      // Add the new chat to the filtered list
-      setFilteredChats([...filtered, newChat]);
-    } else {
-      setFilteredChats(filtered);
-    }
-  }, [searchQuery, chats, messages]);
-
   return (
     <div className="whatsapp-container flex h-screen">
       <ChatsList
+      chats={chats}
         filteredChats={filteredChats}
         selectedChat={selectedChat}
-        searchQuery={searchQuery}
         loadingInterface={loadingInterface}
-        onSearchChange={setSearchQuery}
         onSelectChat={selectChat}
+        setFilteredChats={setFilteredChats}
       />
 
       <div className={`chat-messages flex-1 flex flex-col relative ${!loadingInterface && 'bg-gray-200'}`}>

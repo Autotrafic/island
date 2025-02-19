@@ -1,33 +1,78 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { DoubleBlueCheckIcon, DoubleCheckIcon } from '../../../shared/assets/icons';
 import { WChat } from '../interfaces';
+import { escapeRegExp, formatChatId, normalizeNumber } from '../helpers/parser';
+import { getChatsByMessage } from '../services';
 
 interface ChatListProps {
+  chats: WChat[];
   filteredChats: WChat[];
   selectedChat: WChat | null;
-  searchQuery: string;
   loadingInterface: boolean;
-  onSearchChange: (query: string) => void;
   onSelectChat: (chat: WChat) => void;
+  setFilteredChats: Dispatch<SetStateAction<WChat[]>>;
 }
 
 export const ChatsList: React.FC<ChatListProps> = ({
+  chats,
   filteredChats,
   selectedChat,
-  searchQuery,
   loadingInterface,
-  onSearchChange,
   onSelectChat,
+  setFilteredChats,
 }) => {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  useEffect(() => {
+    const fetchAndFilterChats = async () => {
+      const escapedSearchQuery = escapeRegExp(searchQuery);
+      const searchRegex = new RegExp(escapedSearchQuery.replace(/\s+/g, ".*"), "i");
+      const normalizedSearchQuery = normalizeNumber(searchQuery);
+  
+      let filtered = chats.filter((chat) => searchRegex.test(chat.name));
+  
+      const chatsByPartialId = chats.filter((chat) =>
+        normalizeNumber(chat.id).includes(normalizedSearchQuery)
+      );
+  
+      const chatIdsFromSearch = await getChatsByMessage(searchQuery);
+      const chatsFromMessages = chats.filter((chat) => chatIdsFromSearch.includes(chat.id));
+  
+      const mergedChats = [
+        ...new Map([...filtered, ...chatsByPartialId, ...chatsFromMessages].map(chat => [chat.id, chat])).values(),
+      ].sort((a, b) => b.timestamp - a.timestamp);
+  
+      const chatExists = mergedChats.some((chat) =>
+        normalizeNumber(chat.id).includes(normalizedSearchQuery)
+      );
+      if (normalizedSearchQuery && !chatExists) {
+        const newChat: WChat = {
+          id: formatChatId(normalizedSearchQuery),
+          name: searchQuery,
+          isGroup: false,
+          unreadCount: 0,
+          timestamp: Date.now(),
+          lastMessage: { viewed: false, fromMe: false, body: "" },
+        };
+  
+        setFilteredChats([newChat, ...mergedChats]);
+      } else {
+        setFilteredChats(mergedChats);
+      }
+    };
+  
+    if (searchQuery) fetchAndFilterChats();
+  }, [searchQuery, chats]);
+  
+
   return (
-    <div
-      className="chat-list w-1/5 border-r border-gray-300 overflow-y-auto bg-gray-900 text-white whats-list-scrollbar">
+    <div className="chat-list w-1/5 border-r border-gray-300 overflow-y-auto bg-gray-900 text-white whats-list-scrollbar">
       {/* Search Bar */}
       <input
         type="text"
         placeholder="Buscar contactos o mensajes"
         value={searchQuery}
-        onChange={(e) => onSearchChange(e.target.value)}
+        onChange={(e) => setSearchQuery(e.target.value)}
         className="w-full p-3 bg-gray-800 border-b border-gray-700 focus:outline-none focus:border-blue-500 placeholder-gray-400 text-white transition-colors"
       />
 
@@ -50,7 +95,7 @@ export const ChatsList: React.FC<ChatListProps> = ({
           {/* Chat Info */}
           <div className="flex-1 min-w-0">
             <h4 className="font-medium truncate text-white">{chat.name}</h4>
-            {chat.lastMessage.body && (
+            {chat?.lastMessage?.body && (
               <div className="flex items-start gap-1 text-sm text-gray-400">
                 {chat.lastMessage.fromMe && (
                   <span className="flex items-center mt-1">

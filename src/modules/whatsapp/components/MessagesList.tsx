@@ -105,9 +105,26 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
           {message.body}
         </a>
       );
-    } else {
-      return <p dangerouslySetInnerHTML={{ __html: message.body.replace(/\n/g, '<br />') }} />;
     }
+
+    if (message.mentionedContacts.length > 0) {
+      const formatMentions = (body: string, mentionedContacts: { id: string; user: string; name: string }[]) => {
+        return body.replace(/@(\d+)/g, (match, id) => {
+          const mentionedContact = mentionedContacts.find((contact) => contact.user === id);
+          return mentionedContact ? `<b class="font-bold text-blue-500">@${mentionedContact.name}</b>` : match;
+        });
+      };
+
+      return (
+        <p
+          dangerouslySetInnerHTML={{
+            __html: formatMentions(message.body.replace(/\n/g, '<br />'), message.mentionedContacts),
+          }}
+        />
+      );
+    }
+
+    return <p dangerouslySetInnerHTML={{ __html: message.body.replace(/\n/g, '<br />') }} />;
   };
 
   useEffect(() => {

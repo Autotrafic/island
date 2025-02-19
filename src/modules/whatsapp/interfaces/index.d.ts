@@ -32,6 +32,7 @@ interface WMessage {
     img: string;
   } | null;
   quotedMessage: WMessage | null;
+  mentionedContacts: { id: string; user: string; name: string }[];
 }
 
 interface SendMessagePayload {

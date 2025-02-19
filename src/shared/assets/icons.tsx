@@ -6,6 +6,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faBan,
   faBell,
   faBuilding,
   faBuildingUser,
@@ -66,4 +67,8 @@ export const PhoneIcon = ({ className }: { className?: string }) => (
 
 export const BellIcon = ({ className }: { className?: string }) => (
   <FontAwesomeIcon icon={faBell as any} className={`${className ? className : 'text-gray-500 w-4 h-4'}`} />
+);
+
+export const BanIcon = ({ className }: { className?: string }) => (
+  <FontAwesomeIcon icon={faBan as any} className={`${className ? className : 'text-gray-500 w-4 h-4'}`} />
 );

@@ -5,14 +5,16 @@ interface ContextMenuOptions {
   setQuotedMessage: Dispatch<SetStateAction<WMessage | null>>;
   setMessageToEdit: Dispatch<SetStateAction<WMessage | null>>;
   setEditText: Dispatch<SetStateAction<string>>;
-  setRemoveMessage: Dispatch<SetStateAction<WMessage | null>>;
+  setDeleteMessage: Dispatch<SetStateAction<WMessage | null>>;
+  setModalDeleteMessage: Dispatch<SetStateAction<boolean>>;
 }
 
 export const useMessageContextMenu = ({
   setQuotedMessage,
   setMessageToEdit,
   setEditText,
-  setRemoveMessage,
+  setDeleteMessage,
+  setModalDeleteMessage,
 }: ContextMenuOptions) => {
   let currentContextMenu: HTMLDivElement | null = null;
 
@@ -48,6 +50,13 @@ export const useMessageContextMenu = ({
     event.preventDefault();
     closeContextMenu();
 
+    const target = event.target as HTMLElement;
+    const messageElement = target.closest('.message');
+
+    if (!messageElement) {
+      return;
+    }
+
     const contextMenu = document.createElement('div');
     contextMenu.style.position = 'absolute';
     contextMenu.style.top = `${event.clientY}px`;
@@ -69,7 +78,14 @@ export const useMessageContextMenu = ({
         setEditText(message.body);
       })
     );
-    contextMenu.appendChild(createMenuOption('Eliminar', () => setRemoveMessage(message)));
+    contextMenu.appendChild(
+      createMenuOption('Eliminar', () => {
+        if (message.fromMe) {
+          setDeleteMessage(message);
+          setModalDeleteMessage(true);
+        }
+      })
+    );
 
     document.body.appendChild(contextMenu);
     currentContextMenu = contextMenu;

@@ -19,6 +19,17 @@ export async function editMessage(messageId: string, newMessage: string) {
     await axios.post(`${WHATSAPP_API_URL}/messages/edit`, { messageId, newMessage });
   } catch (error) {
     const errorReceived = error as any;
-    throw new Error(`Error obteniendo los chats por mensaje: ${errorReceived.message}`);
+    throw new Error(`Error editando el mensaje: ${errorReceived.message}`);
+  }
+}
+
+export async function deleteMessage(messageId?: string) {
+  if (!messageId) return;
+
+  try {
+    await axios.get(`${WHATSAPP_API_URL}/messages/delete/${messageId}`);
+  } catch (error) {
+    const errorReceived = error as any;
+    throw new Error(`Error eliminando el mensaje: ${errorReceived.message}`);
   }
 }

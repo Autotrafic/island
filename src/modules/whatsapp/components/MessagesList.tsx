@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import {
+  BanIcon,
   BellIcon,
   CheckIcon,
   CrossIcon,
@@ -11,10 +12,10 @@ import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../h
 import { WChat, WMessage } from '../interfaces';
 import { WMessageType } from '../interfaces/enums';
 import { useMessageContextMenu } from '../context/useMessageContextMenu';
-import { editMessage } from '../services/whatsapp';
+import { editMessage, deleteMessage as doDeleteMessage } from '../services/whatsapp';
 import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
 import axios from 'axios';
-import { message, Spin } from 'antd';
+import { message, Modal, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 interface MessageListProps {
   messages: WMessage[];
@@ -32,9 +33,17 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
   const [editText, setEditText] = useState<string>('');
   const [loadingEditMessage, setLoadingEditMessage] = useState<boolean>(false);
 
-  const [removeMessage, setRemoveMessage] = useState<WMessage | null>(null);
+  const [deleteMessage, setDeleteMessage] = useState<WMessage | null>(null);
+  const [modalDeleteMessage, setModalDeleteMessage] = useState<boolean>(false);
+  const [loadingDeleteMessage, setLoadingDeleteMessage] = useState<boolean>(false);
 
-  const handleContextMenu = useMessageContextMenu({ setQuotedMessage, setMessageToEdit, setEditText, setRemoveMessage });
+  const handleContextMenu = useMessageContextMenu({
+    setQuotedMessage,
+    setMessageToEdit,
+    setEditText,
+    setDeleteMessage,
+    setModalDeleteMessage,
+  });
 
   const handleEditMessage = async (messageId: string) => {
     try {
@@ -46,10 +55,37 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
         ...prev.filter((m) => m.chatId !== selectedChat?.id),
         ...updatedMessages.data.messages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat?.id })),
       ]);
+
+      message.info('Se ha editado el mensaje correctamente');
     } catch {
       message.error('No se puede editar el mensaje porque tiene más de 5 minutos');
     } finally {
+      setMessageToEdit(null);
+      setEditText('');
       setLoadingEditMessage(false);
+    }
+  };
+
+  const handleDeleteMessage = async () => {
+    try {
+      setLoadingDeleteMessage(true);
+      await doDeleteMessage(deleteMessage?.id?._serialized);
+
+      setTimeout(async () => {
+        const updatedMessages = await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${selectedChat?.id}`);
+        setMessages((prev) => [
+          ...prev.filter((m) => m.chatId !== selectedChat?.id),
+          ...updatedMessages.data.messages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat?.id })),
+        ]);
+      }, 1000);
+
+      message.info('Se ha borrado el mensaje correctamente');
+    } catch {
+      message.error('No se ha podido eliminar el mensaje');
+    } finally {
+      setLoadingDeleteMessage(false);
+      setModalDeleteMessage(false);
+      setDeleteMessage(null);
     }
   };
 
@@ -95,7 +131,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
   };
 
   const renderMessageType = (message: WMessage) => {
-    if (message.type === 'call_log') {
+    if (message.type === WMessageType.CallLog) {
       return (
         <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
           <PhoneIcon className="w-5 h-5 text-blue-400" />
@@ -104,7 +140,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
       );
     }
 
-    if (message.type === 'e2e_notification') {
+    if (message.type === WMessageType.Notification) {
       return (
         <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
           <BellIcon className="w-5 h-5 text-purple-400" />
@@ -114,7 +150,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
     }
 
     const { attachedContact } = message;
-    if (message.type === 'vcard' && attachedContact) {
+    if (message.type === WMessageType.VCard && attachedContact) {
       return (
         <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
           {attachedContact.img && (
@@ -125,6 +161,15 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
             <p className="text-sm text-gray-300">{attachedContact.name}</p>
             <p className="text-xs text-gray-400">{attachedContact.phone}</p>
           </div>
+        </div>
+      );
+    }
+
+    if (message.type === WMessageType.Revoked) {
+      return (
+        <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
+          <BanIcon className="w-5 h-5 text-red-400" />
+          <span className="text-sm text-gray-300">Mensaje eliminado</span>
         </div>
       );
     }
@@ -155,7 +200,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
             className="p-2 w-9 h-9 bg-green-600 rounded-full hover:bg-green-700 transition-colors flex items-center justify-center shrink-0"
             onClick={() => handleEditMessage(message.id._serialized)}
           >
-            {loadingEditMessage ? <Spin indicator={<LoadingOutlined style={{ fontSize: 8 }} spin />} /> : <CheckIcon />}
+            {loadingEditMessage ? <Spin indicator={<LoadingOutlined style={{ fontSize: 16 }} spin />} /> : <CheckIcon />}
           </button>
         </div>
       );
@@ -217,6 +262,18 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
       ref={messageContainerRef}
       className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse whats-list-scrollbar"
     >
+      <Modal
+        title="Eliminar mensaje para todos"
+        open={modalDeleteMessage}
+        onOk={handleDeleteMessage}
+        onCancel={() => {
+          setModalDeleteMessage(false);
+          setDeleteMessage(null);
+        }}
+        loading={loadingDeleteMessage}
+      >
+        <h1>¿Seguro que quieres borrar el mensaje?</h1>
+      </Modal>
       {selectedChat &&
         messages
           .filter((msg) => msg.chatId === selectedChat.id)

@@ -1,3 +1,5 @@
+import { message } from "antd";
+
 export function formatDate(timestamp: number) {
   return new Date(timestamp * 1000).toLocaleDateString('es-ES', {
     day: '2-digit',
@@ -30,3 +32,12 @@ export function getParticipantColor(senderId: string) {
   ];
   return colors[colorIndex];
 }
+
+export const copyToClipboard = (selectedText: string | undefined, messageBody?: string) => {
+  const textToCopy = selectedText || messageBody;
+
+  if (textToCopy)
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      message.info('Copiado correctamente');
+    });
+};

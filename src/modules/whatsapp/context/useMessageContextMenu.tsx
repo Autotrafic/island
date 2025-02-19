@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { WMessage } from '../interfaces';
+import { copyToClipboard } from '../helpers';
 
 interface ContextMenuOptions {
   setQuotedMessage: Dispatch<SetStateAction<WMessage | null>>;
@@ -17,12 +18,6 @@ export const useMessageContextMenu = ({
   setModalDeleteMessage,
 }: ContextMenuOptions) => {
   let currentContextMenu: HTMLDivElement | null = null;
-
-  const copyToClipboard = (message: WMessage) => {
-    const selectedText = window.getSelection()?.toString().trim();
-    const textToCopy = selectedText || message.body;
-    navigator.clipboard.writeText(textToCopy).catch((err) => console.error('Failed to copy:', err));
-  };
 
   const createMenuOption = (label: string, onClick: () => void) => {
     const option = document.createElement('div');
@@ -47,12 +42,18 @@ export const useMessageContextMenu = ({
   };
 
   const handleContextMenu = (event: React.MouseEvent, message: WMessage) => {
+    const target = event.target as HTMLElement;
+    console.log('Clicked element:', target);
+    if (target.classList.contains('messages-background') || target.classList.contains('messages-date')) {
+      return;
+    }
+
     event.preventDefault();
     closeContextMenu();
 
-    const target = event.target as HTMLElement;
-    const messageElement = target.closest('.message');
+    const selectedText = window.getSelection()?.toString();
 
+    const messageElement = target.closest('.message');
     if (!messageElement) {
       return;
     }
@@ -70,8 +71,8 @@ export const useMessageContextMenu = ({
     contextMenu.style.display = 'flex';
     contextMenu.style.flexDirection = 'column';
 
+    contextMenu.appendChild(createMenuOption('Copiar', () => copyToClipboard(selectedText, message.body)));
     contextMenu.appendChild(createMenuOption('Responder', () => setQuotedMessage(message)));
-    contextMenu.appendChild(createMenuOption('Copiar', () => copyToClipboard(message)));
     contextMenu.appendChild(
       createMenuOption('Editar', () => {
         setMessageToEdit(message);

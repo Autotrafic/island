@@ -8,7 +8,7 @@ import {
   DoubleCheckIcon,
   PhoneIcon,
 } from '../../../shared/assets/icons';
-import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
+import { copyToClipboard, formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
 import { WChat, WMessage } from '../interfaces';
 import { WMessageType } from '../interfaces/enums';
 import { useMessageContextMenu } from '../context/useMessageContextMenu';
@@ -257,6 +257,8 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
     }
   };
 
+ 
+
   return (
     <div
       ref={messageContainerRef}
@@ -298,14 +300,14 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                 }`}
               >
                 {renderDateSeparator && (
-                  <div className="flex justify-center my-4">
-                    <div className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full text-sm">
+                  <div className="messages-date flex justify-center my-4">
+                    <div className="messages-date px-3 py-1 bg-gray-300 text-gray-700 rounded-full text-sm">
                       {formatDate(currentTimestamp)}
                     </div>
                   </div>
                 )}
 
-                <div className={`flex ${message.fromMe ? 'justify-end' : 'justify-start'} my-2 mx-[10%]`}>
+                <div className={`messages-background flex ${message.fromMe ? 'justify-end' : 'justify-start'} my-2 mx-[10%]`}>
                   <div
                     className={`px-2 py-1 text-sm rounded-xl ${
                       message.fromMe ? 'bg-green-100' : 'bg-white'

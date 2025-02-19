@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { BellIcon, DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
 import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
 import { WChat, WMessage } from '../interfaces';
@@ -15,12 +15,9 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
   const handleContextMenu = useContextMenu({ setQuotedMessage });
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  useEffect(() => {
-    if (messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
+  const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
 
   const renderFilePreview = (mimetype: string, mediaUrl: string) => {
     if (mimetype?.startsWith('image/')) {
@@ -87,11 +84,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
       return (
         <div className="flex items-center gap-3 rounded-lg bg-gray-800 border border-gray-700 px-4 py-3 shadow-lg hover:bg-gray-750 transition-colors">
           {attachedContact.img && (
-            <img
-              src={attachedContact.img}
-              alt="contact"
-              className="w-8 h-8 rounded-full border-2 border-blue-400"
-            />
+            <img src={attachedContact.img} alt="contact" className="w-8 h-8 rounded-full border-2 border-blue-400" />
           )}
 
           <div className="flex flex-col gap-1">
@@ -117,8 +110,32 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
     }
   };
 
+  useEffect(() => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleQuotedMessageClick = (quotedMessageId: string | undefined) => {
+    if (!quotedMessageId) return;
+
+    const quotedMessageElement = messageRefs.current[quotedMessageId];
+    if (quotedMessageElement) {
+      quotedMessageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      setHighlightedMessageId(quotedMessageId);
+
+      setTimeout(() => {
+        setHighlightedMessageId(null);
+      }, 2000);
+    }
+  };
+
   return (
-    <div ref={messageContainerRef} className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse whats-list-scrollbar">
+    <div
+      ref={messageContainerRef}
+      className="messages flex-1 p-2 overflow-y-auto overflow-x-hidden flex-col-reverse whats-list-scrollbar"
+    >
       {selectedChat &&
         messages
           .filter((msg) => msg.chatId === selectedChat.id)
@@ -134,7 +151,14 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
             const senderColor = showSenderName ? getParticipantColor(message.senderId) : 'text-gray-700';
 
             return (
-              <div key={message.id.id} onContextMenu={(e) => handleContextMenu(e, message)}>
+              <div
+                key={message.id._serialized}
+                ref={(el) => (messageRefs.current[message.id._serialized] = el)}
+                onContextMenu={(e) => handleContextMenu(e, message)}
+                className={`message transition-colors duration-500 ${
+                  highlightedMessageId === message.id._serialized ? 'bg-blue-300' : 'bg-transparent'
+                }`}
+              >
                 {renderDateSeparator && (
                   <div className="flex justify-center my-4">
                     <div className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full text-sm">
@@ -152,12 +176,13 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
                   >
                     {/* Render quoted message if it exists */}
                     {message.quotedMessage && (
-                      <div className="quoted-message bg-gray-100 p-2 rounded-lg border-l-4 border-blue-500">
+                      <div
+                        className="quoted-message bg-gray-100 p-2 rounded-lg border-l-4 border-blue-500 cursor-pointer"
+                        onClick={() => handleQuotedMessageClick(message?.quotedMessage?.id?._serialized)}
+                      >
                         <div className="text-xs text-gray-600 mb-1">
                           Respondiendo a{' '}
-                          <span className="font-semibold">
-                            {message.quotedMessage.fromMe ? 'Tú' : senderName}
-                          </span>
+                          <span className="font-semibold">{message.quotedMessage.fromMe ? 'Tú' : senderName}</span>
                         </div>
                         {message.quotedMessage.hasMedia && message.quotedMessage.mediaUrl ? (
                           <div className="media-preview">

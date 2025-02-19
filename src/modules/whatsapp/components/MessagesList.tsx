@@ -129,7 +129,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
 
             // Determine if we should show the sender's name (only for group chats)
             const showSenderName = selectedChat.isGroup && !message.fromMe;
-            const senderName = chats.find((chat) => chat.id === message.senderId)?.name || message.senderPhone;
+            const senderName = message.contactName || message.senderPhone;
             const isSameSenderAsPrevious = index > 0 && filteredMessages[index - 1].senderId === message.senderId;
             const senderColor = showSenderName ? getParticipantColor(message.senderId) : 'text-gray-700';
 
@@ -187,7 +187,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
 
                     {/* Render sender's name (for group chats) */}
                     {showSenderName && !isSameSenderAsPrevious && (
-                      <p className={`text-xs font-semibold ${senderColor}`}>{senderName}</p>
+                      <p className={`text-sm font-semibold ${senderColor}`}>{senderName}</p>
                     )}
 
                     {/* Render message content */}

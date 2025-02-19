@@ -176,7 +176,7 @@ export function Whatsapp() {
     return () => {
       eventSource.close();
     };
-  }, [selectedChat]);
+  }, []);
 
   useEffect(() => {
     const escapedSearchQuery = escapeRegExp(searchQuery); // Escape special characters

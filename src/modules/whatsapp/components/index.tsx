@@ -56,12 +56,14 @@ export function Whatsapp() {
 
   const onMessageReceived = async (newMessage: WMessage) => {
     if (newMessage.chatId === 'status@broadcast') return;
-
+  
+    // Play notification sound if the message is not from the user
     if (!newMessage.fromMe) {
       const notification = new Audio('/notification.wav');
       notification.play().catch((error) => console.error('Failed to play sound:', error));
     }
-
+  
+    // Update messages
     setMessages((prevMessages) => {
       const existingMessageIndex = prevMessages.findIndex((msg) => msg.id === newMessage.id);
       if (existingMessageIndex !== -1) {
@@ -74,11 +76,12 @@ export function Whatsapp() {
         return [...prevMessages, newMessage];
       }
     });
-
+  
+    // Update chats
     setChats((prevChats) => {
-      const chatExists = prevChats.some((chat) => chat.id === newMessage.chatId);
-
-      if (chatExists) {
+      const existingChatIndex = prevChats.findIndex((chat) => chat.id === newMessage.chatId);
+  
+      if (existingChatIndex !== -1) {
         // Update existing chat
         return prevChats.map((chat) =>
           chat.id === newMessage.chatId
@@ -90,42 +93,62 @@ export function Whatsapp() {
             : chat
         );
       } else {
-        // Fetch chat details from backend
-        axios
-          .get(`${WHATSAPP_API_URL}/messages/chats/${newMessage.chatId}`)
-          .then((response) => {
-            const chatData: WChat = response.data.chat;
-
-            setChats((prevChats) => [
-              {
-                ...chatData,
-                lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
-              },
-              ...prevChats,
-            ]);
-          })
-          .catch(() => {
-            // If fetching fails, create a temporary chat with minimal details
-            const newChat: WChat = {
-              id: newMessage.chatId,
-              name: 'Chat sin nombre',
-              isGroup: false,
-              unreadCount: 1,
-              timestamp: newMessage.timestamp,
-              lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
-              profilePicUrl: undefined,
-            };
-            setChats((prevChats) => [newChat, ...prevChats]);
-          });
-
-        return prevChats; // Prevent state mutation inside the async operation
+        // Check if a temporary chat already exists
+        const temporaryChatExists = prevChats.some(
+          (chat) => chat.id === newMessage.chatId && chat.name === 'Chat sin nombre'
+        );
+  
+        if (!temporaryChatExists) {
+          // Create a temporary chat entry
+          const newChat: WChat = {
+            id: newMessage.chatId,
+            name: 'Chat sin nombre',
+            isGroup: false,
+            unreadCount: 1,
+            timestamp: newMessage.timestamp,
+            lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
+            profilePicUrl: undefined,
+          };
+  
+          // Fetch chat details from backend
+          axios
+            .get(`${WHATSAPP_API_URL}/messages/chats/${newMessage.chatId}`)
+            .then((response) => {
+              const chatData: WChat = response.data.chat;
+  
+              // Replace the temporary chat with the fetched chat details
+              setChats((prevChats) =>
+                prevChats.map((chat) =>
+                  chat.id === newMessage.chatId && chat.name === 'Chat sin nombre'
+                    ? {
+                        ...chatData,
+                        lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
+                      }
+                    : chat
+                )
+              );
+            })
+            .catch(() => {
+              // If fetching fails, keep the temporary chat
+              console.error('Failed to fetch chat details');
+            });
+  
+          // Add the temporary chat to the list
+          return [newChat, ...prevChats];
+        } else {
+          // If a temporary chat already exists, do nothing
+          return prevChats;
+        }
       }
     });
-
+  
+    // Mark chat as seen if it's the selected chat
     if (selectedChat && selectedChat.id === newMessage.chatId) {
       try {
         await axios.get(`${WHATSAPP_API_URL}/messages/seen-chat/${newMessage.chatId}`);
-      } catch {}
+      } catch (error) {
+        console.error('Failed to mark chat as seen:', error);
+      }
     }
   };
 

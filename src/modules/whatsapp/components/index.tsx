@@ -270,6 +270,7 @@ export function Whatsapp() {
             quotedMessage={quotedMessage}
             setMessages={setMessages}
             setQuotedMessage={setQuotedMessage}
+            setFilteredChats={setFilteredChats}
           />
         )}
       </div>

@@ -10,6 +10,7 @@ interface MessageInputProps {
   quotedMessage: WMessage | null;
   setMessages: Dispatch<SetStateAction<WMessage[]>>;
   setQuotedMessage: Dispatch<SetStateAction<WMessage | null>>;
+  setFilteredChats: Dispatch<SetStateAction<WChat[]>>;
 }
 
 export const MessageInput: React.FC<MessageInputProps> = ({
@@ -17,6 +18,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   quotedMessage,
   setMessages,
   setQuotedMessage,
+  setFilteredChats
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
@@ -53,6 +55,13 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         ...prev.filter((m) => m.chatId !== selectedChat?.id),
         ...updatedMessages.data.messages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat?.id })),
       ]);
+
+      setFilteredChats((prev) => {
+        const chatIndex = prev.findIndex((c) => c.id === selectedChat?.id);
+        const chat = prev[chatIndex];
+        chat.lastMessage = updatedMessages.data.messages[updatedMessages.data.messages.length - 1];
+        return [...prev.filter((c) => c.id !== selectedChat?.id), chat];
+      });
 
       setFileList([]);
       setNewMessage('');

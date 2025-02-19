@@ -13,11 +13,13 @@ import {
   faCheck,
   faCheckDouble,
   faCity,
+  faCross,
   faHandshakeSimple,
   faHashtag,
   faPhone,
   faSquareBinary,
   faUser,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const CheckGreenIcon = <CheckCircleTwoTone twoToneColor="#52c41a" />;
@@ -45,6 +47,10 @@ export const HandshakeIcon = <FontAwesomeIcon icon={faHandshakeSimple as any} cl
 export const SquareBinaryIcon = <FontAwesomeIcon icon={faSquareBinary as any} className="text-gray-700 w-5 h-5" />;
 
 export const CarIcon = <FontAwesomeIcon icon={faCar as any} className="text-gray-700 w-4 h-4" />;
+
+export const CrossIcon: React.FC = () => <FontAwesomeIcon icon={faXmark as any} className="text-white-500 w-4 h-4" />;
+
+export const CheckIcon: React.FC = () => <FontAwesomeIcon icon={faCheck as any} className="text-white-500 w-4 h-4" />;
 
 export const DoubleCheckIcon: React.FC = () => (
   <FontAwesomeIcon icon={faCheckDouble as any} className="text-gray-500 w-3 h-3" />

@@ -3,20 +3,51 @@ import { WMessage } from '../interfaces';
 
 interface ContextMenuOptions {
   setQuotedMessage: Dispatch<SetStateAction<WMessage | null>>;
+  setMessageToEdit: Dispatch<SetStateAction<WMessage | null>>;
+  setEditText: Dispatch<SetStateAction<string>>;
+  setRemoveMessage: Dispatch<SetStateAction<WMessage | null>>;
 }
 
-export const useMessageContextMenu = ({ setQuotedMessage }: ContextMenuOptions) => {
+export const useMessageContextMenu = ({
+  setQuotedMessage,
+  setMessageToEdit,
+  setEditText,
+  setRemoveMessage,
+}: ContextMenuOptions) => {
   let currentContextMenu: HTMLDivElement | null = null;
 
-  const handleContextMenu = (event: React.MouseEvent, message: WMessage) => {
-    event.preventDefault();
+  const copyToClipboard = (message: WMessage) => {
+    const selectedText = window.getSelection()?.toString().trim();
+    const textToCopy = selectedText || message.body;
+    navigator.clipboard.writeText(textToCopy).catch((err) => console.error('Failed to copy:', err));
+  };
 
+  const createMenuOption = (label: string, onClick: () => void) => {
+    const option = document.createElement('div');
+    option.textContent = label;
+    option.style.cursor = 'pointer';
+    option.style.padding = '4px 8px';
+    option.style.borderRadius = '4px';
+    option.onclick = () => {
+      onClick();
+      closeContextMenu();
+    };
+    option.onmouseenter = () => (option.style.backgroundColor = '#f0f0f0');
+    option.onmouseleave = () => (option.style.backgroundColor = 'transparent');
+    return option;
+  };
+
+  const closeContextMenu = () => {
     if (currentContextMenu) {
       document.body.removeChild(currentContextMenu);
       currentContextMenu = null;
     }
+  };
 
-    // Create a new context menu
+  const handleContextMenu = (event: React.MouseEvent, message: WMessage) => {
+    event.preventDefault();
+    closeContextMenu();
+
     const contextMenu = document.createElement('div');
     contextMenu.style.position = 'absolute';
     contextMenu.style.top = `${event.clientY}px`;
@@ -27,36 +58,24 @@ export const useMessageContextMenu = ({ setQuotedMessage }: ContextMenuOptions) 
     contextMenu.style.zIndex = '1000';
     contextMenu.style.padding = '8px';
     contextMenu.style.borderRadius = '4px';
+    contextMenu.style.display = 'flex';
+    contextMenu.style.flexDirection = 'column';
 
-    // Add the "Reply" option
-    const replyOption = document.createElement('div');
-    replyOption.textContent = 'Responder';
-    replyOption.style.cursor = 'pointer';
-    replyOption.style.padding = '4px 8px';
-    replyOption.style.borderRadius = '4px';
-    replyOption.onclick = () => {
-      setQuotedMessage(message);
-      document.body.removeChild(contextMenu);
-      currentContextMenu = null;
-    };
-
-    replyOption.onmouseenter = () => {
-      replyOption.style.backgroundColor = '#f0f0f0';
-    };
-    replyOption.onmouseleave = () => {
-      replyOption.style.backgroundColor = 'transparent';
-    };
-
-    contextMenu.appendChild(replyOption);
+    contextMenu.appendChild(createMenuOption('Responder', () => setQuotedMessage(message)));
+    contextMenu.appendChild(createMenuOption('Copiar', () => copyToClipboard(message)));
+    contextMenu.appendChild(
+      createMenuOption('Editar', () => {
+        setMessageToEdit(message);
+        setEditText(message.body);
+      })
+    );
+    contextMenu.appendChild(createMenuOption('Eliminar', () => setRemoveMessage(message)));
 
     document.body.appendChild(contextMenu);
     currentContextMenu = contextMenu;
 
     const onClickOutside = () => {
-      if (currentContextMenu) {
-        document.body.removeChild(currentContextMenu);
-        currentContextMenu = null;
-      }
+      closeContextMenu();
       document.removeEventListener('click', onClickOutside);
     };
 

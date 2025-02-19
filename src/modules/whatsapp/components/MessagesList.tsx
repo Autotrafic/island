@@ -1,23 +1,57 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { BellIcon, DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../../../shared/assets/icons';
+import {
+  BellIcon,
+  CheckIcon,
+  CrossIcon,
+  DoubleBlueCheckIcon,
+  DoubleCheckIcon,
+  PhoneIcon,
+} from '../../../shared/assets/icons';
 import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
 import { WChat, WMessage } from '../interfaces';
 import { WMessageType } from '../interfaces/enums';
 import { useMessageContextMenu } from '../context/useMessageContextMenu';
+import { editMessage } from '../services/whatsapp';
+import { WHATSAPP_API_URL } from '../../../shared/utils/urls';
+import axios from 'axios';
+import { message, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 interface MessageListProps {
   messages: WMessage[];
   selectedChat: WChat | null;
-  chats: WChat[];
+  setMessages: Dispatch<SetStateAction<WMessage[]>>;
   setQuotedMessage: Dispatch<SetStateAction<WMessage | null>>;
 }
 
-export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedChat, chats, setQuotedMessage }) => {
-  const handleContextMenu = useMessageContextMenu({ setQuotedMessage });
-
+export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedChat, setMessages, setQuotedMessage }) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
+  const [messageToEdit, setMessageToEdit] = useState<WMessage | null>(null);
+  const [editText, setEditText] = useState<string>('');
+  const [loadingEditMessage, setLoadingEditMessage] = useState<boolean>(false);
+
+  const [removeMessage, setRemoveMessage] = useState<WMessage | null>(null);
+
+  const handleContextMenu = useMessageContextMenu({ setQuotedMessage, setMessageToEdit, setEditText, setRemoveMessage });
+
+  const handleEditMessage = async (messageId: string) => {
+    try {
+      setLoadingEditMessage(true);
+      await editMessage(messageId, editText);
+
+      const updatedMessages = await axios.get(`${WHATSAPP_API_URL}/messages/chat-messages/${selectedChat?.id}`);
+      setMessages((prev) => [
+        ...prev.filter((m) => m.chatId !== selectedChat?.id),
+        ...updatedMessages.data.messages.map((msg: WMessage) => ({ ...msg, chatId: selectedChat?.id })),
+      ]);
+    } catch {
+      message.error('No se puede editar el mensaje porque tiene más de 5 minutos');
+    } finally {
+      setLoadingEditMessage(false);
+    }
+  };
 
   const renderFilePreview = (mimetype: string, mediaUrl: string) => {
     if (mimetype?.startsWith('image/')) {
@@ -97,6 +131,36 @@ export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedCha
   };
 
   const renderMessageFormat = (message: WMessage) => {
+    if (messageToEdit && message.id === messageToEdit.id) {
+      return (
+        <div className="flex items-center mt-4 text-white rounded-lg gap-2">
+          <textarea
+            defaultValue={message.body}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            className="bg-white text-black border-none focus:outline-none w-full px-2 rounded-lg"
+          />
+
+          <button
+            className="ml-4 p-2 w-9 h-9 bg-red-600 rounded-full hover:bg-red-700 transition-colors flex items-center justify-center shrink-0"
+            onClick={() => {
+              setMessageToEdit(null);
+              setEditText('');
+            }}
+          >
+            <CrossIcon />
+          </button>
+
+          <button
+            className="p-2 w-9 h-9 bg-green-600 rounded-full hover:bg-green-700 transition-colors flex items-center justify-center shrink-0"
+            onClick={() => handleEditMessage(message.id._serialized)}
+          >
+            {loadingEditMessage ? <Spin indicator={<LoadingOutlined style={{ fontSize: 8 }} spin />} /> : <CheckIcon />}
+          </button>
+        </div>
+      );
+    }
+
     if (message.link) {
       const link = message.link;
 

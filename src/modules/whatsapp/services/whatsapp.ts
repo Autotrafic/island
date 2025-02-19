@@ -13,3 +13,12 @@ export async function getChatsByMessage(message: string) {
     throw new Error(`Error obteniendo los chats por mensaje: ${errorReceived.message}`);
   }
 }
+
+export async function editMessage(messageId: string, newMessage: string) {
+  try {
+    await axios.post(`${WHATSAPP_API_URL}/messages/edit`, { messageId, newMessage });
+  } catch (error) {
+    const errorReceived = error as any;
+    throw new Error(`Error obteniendo los chats por mensaje: ${errorReceived.message}`);
+  }
+}

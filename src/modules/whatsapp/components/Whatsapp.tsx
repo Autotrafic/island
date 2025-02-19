@@ -212,7 +212,7 @@ export function Whatsapp() {
           </div>
         )}
 
-        <MessagesList messages={messages} selectedChat={selectedChat} chats={chats} setQuotedMessage={setQuotedMessage} />
+        <MessagesList messages={messages} selectedChat={selectedChat} setMessages={setMessages}  setQuotedMessage={setQuotedMessage} />
 
         {selectedChat && (
           <MessageInput

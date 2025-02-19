@@ -3,7 +3,7 @@ import { BellIcon, DoubleBlueCheckIcon, DoubleCheckIcon, PhoneIcon } from '../..
 import { formatDate, getParticipantColor, shouldRenderDateSeparator } from '../helpers';
 import { WChat, WMessage } from '../interfaces';
 import { WMessageType } from '../interfaces/enums';
-import { useContextMenu } from '../context/useContextMenu';
+import { useMessageContextMenu } from '../context/useMessageContextMenu';
 interface MessageListProps {
   messages: WMessage[];
   selectedChat: WChat | null;
@@ -12,7 +12,7 @@ interface MessageListProps {
 }
 
 export const MessagesList: React.FC<MessageListProps> = ({ messages, selectedChat, chats, setQuotedMessage }) => {
-  const handleContextMenu = useContextMenu({ setQuotedMessage });
+  const handleContextMenu = useMessageContextMenu({ setQuotedMessage });
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});

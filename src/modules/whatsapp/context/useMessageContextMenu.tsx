@@ -5,7 +5,7 @@ interface ContextMenuOptions {
   setQuotedMessage: Dispatch<SetStateAction<WMessage | null>>;
 }
 
-export const useContextMenu = ({ setQuotedMessage }: ContextMenuOptions) => {
+export const useMessageContextMenu = ({ setQuotedMessage }: ContextMenuOptions) => {
   let currentContextMenu: HTMLDivElement | null = null;
 
   const handleContextMenu = (event: React.MouseEvent, message: WMessage) => {
@@ -30,7 +30,7 @@ export const useContextMenu = ({ setQuotedMessage }: ContextMenuOptions) => {
 
     // Add the "Reply" option
     const replyOption = document.createElement('div');
-    replyOption.textContent = 'Reply';
+    replyOption.textContent = 'Responder';
     replyOption.style.cursor = 'pointer';
     replyOption.style.padding = '4px 8px';
     replyOption.style.borderRadius = '4px';

@@ -83,7 +83,7 @@ export function Whatsapp() {
           chat.id === newMessage.chatId
             ? {
                 ...chat,
-                unreadCount: chat.id === selectedChat?.id ? 0 : chat.unreadCount + 1,
+                unreadCount: chat.id === selectedChat?.id || newMessage.fromMe ? 0 : chat.unreadCount + 1,
                 lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
               }
             : chat
@@ -102,6 +102,7 @@ export function Whatsapp() {
             isGroup: false,
             unreadCount: 1,
             timestamp: newMessage.timestamp,
+            pinned: false,
             lastMessage: { viewed: newMessage.viewed, fromMe: newMessage.fromMe, body: newMessage.body },
             profilePicUrl: undefined,
           };
@@ -212,7 +213,12 @@ export function Whatsapp() {
           </div>
         )}
 
-        <MessagesList messages={messages} selectedChat={selectedChat} setMessages={setMessages}  setQuotedMessage={setQuotedMessage} />
+        <MessagesList
+          messages={messages}
+          selectedChat={selectedChat}
+          setMessages={setMessages}
+          setQuotedMessage={setQuotedMessage}
+        />
 
         {selectedChat && (
           <MessageInput

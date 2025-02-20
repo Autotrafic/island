@@ -43,7 +43,6 @@ export const useMessageContextMenu = ({
 
   const handleContextMenu = (event: React.MouseEvent, message: WMessage) => {
     const target = event.target as HTMLElement;
-    console.log('Clicked element:', target);
     if (target.classList.contains('messages-background') || target.classList.contains('messages-date')) {
       return;
     }
@@ -71,14 +70,21 @@ export const useMessageContextMenu = ({
     contextMenu.style.display = 'flex';
     contextMenu.style.flexDirection = 'column';
 
-    contextMenu.appendChild(createMenuOption('Copiar', () => copyToClipboard(selectedText, message.body)));
+    contextMenu.appendChild(
+      createMenuOption(selectedText ? 'Copiar selección' : 'Copiar mensaje', () =>
+        copyToClipboard(selectedText, message.body)
+      )
+    );
+
     contextMenu.appendChild(createMenuOption('Responder', () => setQuotedMessage(message)));
+
     contextMenu.appendChild(
       createMenuOption('Editar', () => {
         setMessageToEdit(message);
         setEditText(message.body);
       })
     );
+
     contextMenu.appendChild(
       createMenuOption('Eliminar', () => {
         if (message.fromMe) {

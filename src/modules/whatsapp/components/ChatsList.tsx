@@ -50,7 +50,10 @@ export const ChatsList: React.FC<ChatListProps> = ({
 
         const mergedChats = [
           ...new Map([...filteredByName, ...chatsByPartialId, ...chatsFromMessages].map((chat) => [chat.id, chat])).values(),
-        ].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        ].sort((a, b) => {
+          if (a.pinned !== b.pinned) return b.pinned ? 1 : -1;
+          return (b.timestamp || 0) - (a.timestamp || 0);
+        });
 
         const chatExists = mergedChats.some((chat) => normalizeNumber(chat.id)?.includes(normalizedSearchQuery || ''));
         if (normalizedSearchQuery && !chatExists) {
@@ -60,6 +63,7 @@ export const ChatsList: React.FC<ChatListProps> = ({
             isGroup: false,
             unreadCount: 0,
             timestamp: Date.now(),
+            pinned: false,
             lastMessage: { viewed: false, fromMe: false, body: '' },
           };
 
@@ -77,7 +81,12 @@ export const ChatsList: React.FC<ChatListProps> = ({
     if (searchQuery) {
       fetchAndFilterChats();
     } else {
-      setFilteredChats(chats.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)));
+      setFilteredChats(
+        chats.sort((a, b) => {
+          if (a.pinned !== b.pinned) return b.pinned ? 1 : -1;
+          return (b.timestamp || 0) - (a.timestamp || 0);
+        })
+      );
     }
   }, [searchQuery, chats]);
 

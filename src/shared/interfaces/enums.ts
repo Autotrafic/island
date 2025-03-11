@@ -22,6 +22,9 @@ export enum TOrderState {
   PendientePagoDevolucionEnvio = 'Pendiente Pago Devolución Envío',
   PendientePagoTramite = 'Pendiente Pago Trámite',
   Cancelado = 'Cancelado',
+  EnRevision = 'En revisión',
+  EnIncidencia = 'En incidencia',
+  PendienteConfirmacionDireccion = 'Pendiente confirmación dirección',
 }
 
 export enum TOrderType {

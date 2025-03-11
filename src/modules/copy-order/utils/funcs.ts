@@ -91,8 +91,14 @@ export function getOrderStateColor(orderState: TOrderState): string {
       return '#ecb397';
     case TOrderState.Cancelado:
       return '#c3c3c3';
+    case TOrderState.EnRevision:
+      return '#de8504';
+    case TOrderState.EnIncidencia:
+      return '#ff1f00';
+    case TOrderState.PendienteConfirmacionDireccion:
+      return '#9b4aff';
     default:
-      return '#000000';
+      return '#c3c3c3';
   }
 }
 

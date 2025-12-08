@@ -7,8 +7,6 @@ import UploadExcelForm from './UploadExcelForm';
 export default function LeadsUploader() {
   const [loadingService, setLoadingService] = useState<boolean>(false);
 
-  console.log('here')
-
   useEffect(() => {
     (async () => {
       try {

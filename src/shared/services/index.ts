@@ -15,7 +15,7 @@ export const autotraficApi = {
   files: {
     upload: (files: File[], orderId: string) => fetchFiles('files/upload', files, orderId),
     createInformationFile: (data: CreateInformationFileBody) => makeRequest('files/create-information-file', data),
-    handleMetaLeads: (data: HandleMetaLeadsBody) => makeRequest('files/meta-leads-handling', data),
+    handleLeads: (data: HandleMetaLeadsBody) => makeRequest('files/handle-leads', data),
   },
   notification: {
     sendWhatsapp: (data: SendWhatsAppNotificationBody) => makeWhatsappRequest('messages/send', data),

@@ -1,4 +1,4 @@
-import { Select, Upload, Button, List, Switch, Spin, message } from 'antd';
+import { Upload, Button, List, Spin, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { requiredColumns } from '../utils/constants';
 import { useState } from 'react';

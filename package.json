@@ -8,10 +8,15 @@
     "build:start": "cd dist && PORT=5300 npx serve",
     "start": "webpack serve --open --mode development --env upload_files",
     "start:live": "webpack serve --open --mode development --live-reload --hot",
+    
     "start:copy_order": "webpack serve --open --mode development --env copy_order",
     "build:copy_order": "webpack --mode production --env copy_order",
+
     "start:whatsapp": "webpack serve --open --mode development --env whatsapp",
-    "build:whatsapp": "webpack --mode production --env whatsapp"
+    "build:whatsapp": "webpack --mode production --env whatsapp",
+
+    "start:leads_uploader": "webpack serve --open --mode development --env leads_uploader",
+    "build:leads_uploader": "webpack --mode production --env leads_uploader"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
@@ -27,7 +32,8 @@
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.26.1",
-    "react-scroll": "^1.9.0"
+    "react-scroll": "^1.9.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/dotenv-webpack": "^7.0.7",

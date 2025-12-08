@@ -6,10 +6,18 @@ import Dotenv from 'dotenv-webpack';
 
 module.exports = (env: any, argv: any) => {
   let entry = './src/modules/upload-customer-files/index.tsx';
+  let publicPath = 'https://upload-customer-files.onrender.com/';
 
-  if (env.copy_order) entry = './src/modules/copy-order/index.tsx';
-
-  if (env.whatsapp) entry = './src/modules/whatsapp/index.tsx';
+  if (env.copy_order) {
+    entry = './src/modules/copy-order/index.tsx';
+    publicPath = 'https://copy-order.onrender.com';
+  } else if (env.leads_uploader) {
+    entry = './src/modules/leads-uploader/index.tsx';
+    publicPath = 'https://leads.autotrafic.es/';
+  } else if (env.whatsapp) {
+    entry = './src/modules/whatsapp/index.tsx';
+    publicPath = 'https://whatsapp.autotrafic.es/';
+  }
 
   return {
     mode: (process.env.NODE_ENV as 'production' | 'development' | undefined) ?? 'development',
@@ -19,12 +27,7 @@ module.exports = (env: any, argv: any) => {
     output: {
       filename: 'bundle.js',
       path: path.resolve(__dirname, 'dist'),
-      publicPath:
-        process.env.NODE_ENV === 'development'
-          ? 'http://localhost:5100/'
-          : env.copy_order
-          ? 'https://copy-order.onrender.com'
-          : 'https://upload-customer-files.onrender.com/',
+      publicPath: process.env.NODE_ENV === 'development' ? 'http://localhost:5100/' : publicPath,
     },
 
     module: {

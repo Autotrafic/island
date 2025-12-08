@@ -1,3 +1,4 @@
+import { HandleMetaLeadsBody } from '../../modules/leads-uploader/interfaces';
 import { BACKEND_API_URL, WHATSAPP_API_URL } from '../utils/urls';
 
 export const autotraficApi = {
@@ -14,6 +15,7 @@ export const autotraficApi = {
   files: {
     upload: (files: File[], orderId: string) => fetchFiles('files/upload', files, orderId),
     createInformationFile: (data: CreateInformationFileBody) => makeRequest('files/create-information-file', data),
+    handleMetaLeads: (data: HandleMetaLeadsBody) => makeRequest('files/meta-leads-handling', data),
   },
   notification: {
     sendWhatsapp: (data: SendWhatsAppNotificationBody) => makeWhatsappRequest('messages/send', data),
@@ -27,7 +29,8 @@ type RequestParams =
   | UpdateTotalumOrderDetailsBody
   | UpdateTotalumOrderDocsUrlBody
   | SendWhatsAppNotificationBody
-  | SendNotificationBody;
+  | SendNotificationBody
+  | HandleMetaLeadsBody;
 
 const makeRequest = async (endpoint: string, data?: RequestParams) => {
   try {

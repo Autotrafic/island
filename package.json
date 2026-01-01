@@ -16,7 +16,10 @@
     "build:whatsapp": "webpack --mode production --env whatsapp",
 
     "start:leads_uploader": "webpack serve --open --mode development --env leads_uploader",
-    "build:leads_uploader": "webpack --mode production --env leads_uploader"
+    "build:leads_uploader": "webpack --mode production --env leads_uploader",
+
+    "start:trimestral_invoices": "webpack serve --open --mode development --env trimestral_invoices",
+    "build:trimestral_invoices": "webpack --mode production --env trimestral_invoices"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",

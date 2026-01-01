@@ -17,6 +17,9 @@ module.exports = (env: any, argv: any) => {
   } else if (env.whatsapp) {
     entry = './src/modules/whatsapp/index.tsx';
     publicPath = 'https://whatsapp.autotrafic.es/';
+  } else if (env.trimestral_invoices) {
+    entry = './src/modules/trimestral-invoices/index.tsx';
+    publicPath = 'https://trimestral-invoices.onrender.com/';
   }
 
   return {

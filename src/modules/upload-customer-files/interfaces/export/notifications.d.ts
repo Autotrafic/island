@@ -4,4 +4,5 @@ interface SendNotificationBody {
 }
 interface SendWhatsAppNotificationBody extends SendNotificationBody {
   phoneNumber: string;
+  evolutionInstanceSender: 'AutoTrafic';
 }

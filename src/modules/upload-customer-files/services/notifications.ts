@@ -5,8 +5,9 @@ async function sendWhatsAppConfirmation(order: DatabaseOrder) {
   const message = createWhatsAppConfirmationMessage(order);
 
   const phoneNumber = order.user.phoneNumber.replace(/\D/g, '');
+  const evolutionInstanceSender = 'AutoTrafic';
 
-  await autotraficApi.notification.sendWhatsapp({ phoneNumber, message });
+  await autotraficApi.notification.sendWhatsapp({ phoneNumber, message, evolutionInstanceSender });
 }
 
 async function sendSlackConfirmation(order: DatabaseOrder) {
